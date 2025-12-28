@@ -42,8 +42,19 @@
     "sign_in": "ورود",
     "sign_up": "ثبت‌نام",
     "welcome_back": "خوش آمدید",
+    "welcome": "خوش آمدید",
     "login_subtitle": "وارد حساب ایش‌یار خود شوید",
-    "invalid_credentials": "ایمیل یا رمز عبور نادرست است"
+    "invalid_credentials": "ایمیل یا رمز عبور نادرست است",
+    "enterprise_worksuite": "مجموعه کاری سازمانی",
+    "sign_in_title": "ورود به حساب کاربری",
+    "email_placeholder": "you{'@'}company.com",
+    "login_success": "با موفقیت وارد شدید.",
+    "login_failed": "ورود ناموفق",
+    "name": "نام",
+    "name_placeholder": "نام شما",
+    "confirm_password": "تایید رمز عبور",
+    "account_created": "حساب کاربری شما ایجاد شد.",
+    "registration_failed": "ثبت‌نام ناموفق"
   },
   "dashboard": {
     "title": "داشبورد",
@@ -148,5 +159,24 @@
     "timezone": "منطقه زمانی",
     "language": "زبان",
     "update_success": "پروفایل با موفقیت به‌روزرسانی شد"
+  },
+  "auth_pages": {
+    "forgot_password_title": "فراموشی رمز عبور",
+    "forgot_password_desc": "ایمیل خود را وارد کنید تا لینک بازنشانی رمز عبور برای شما ارسال شود.",
+    "send_reset_link": "ارسال لینک بازنشانی",
+    "check_email": "ایمیل خود را بررسی کنید",
+    "reset_link_sent": "لینک بازنشانی رمز عبور به این آدرس ارسال شد",
+    "back_to_login": "بازگشت به صفحه ورود",
+    "reset_password_title": "بازنشانی رمز عبور",
+    "invalid_reset_link": "لینک نامعتبر",
+    "invalid_reset_link_desc": "این لینک بازنشانی رمز عبور نامعتبر است یا منقضی شده است.",
+    "request_new_link": "درخواست لینک جدید",
+    "passwords_not_match": "رمزهای عبور مطابقت ندارند",
+    "password_reset_success": "رمز عبور شما بازنشانی شد. لطفا وارد شوید.",
+    "create_account": "ایجاد حساب کاربری",
+    "create_account_desc": "سفر خود را با ایش‌یار آغاز کنید",
+    "already_have_account": "قبلا حساب کاربری دارید؟",
+    "dont_have_account": "حساب کاربری ندارید؟",
+    "remember_password": "رمز عبور را به یاد دارید؟"
   }
 }

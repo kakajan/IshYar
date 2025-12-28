@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from '@tailwindcss/vite'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -15,10 +17,14 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/scripts',
     '@nuxt/test-utils',
-    '@nuxt/ui',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
   ],
+
+  // Vite configuration for Tailwind CSS v4
+  vite: {
+    plugins: [tailwindcss()],
+  },
 
   // i18n configuration
   i18n: {
@@ -26,16 +32,11 @@ export default defineNuxtConfig({
       { code: 'en', name: 'English', dir: 'ltr', file: 'en.json' },
       { code: 'fa', name: 'فارسی', dir: 'rtl', file: 'fa.json' },
     ],
-    defaultLocale: 'en',
+    defaultLocale: (process.env.NUXT_PUBLIC_DEFAULT_LOCALE || 'fa') as 'fa' | 'en',
     langDir: 'locales',
     strategy: 'no_prefix',
-    lazy: true,
     vueI18n: './i18n.config.ts',
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'i18n_redirected',
-      redirectOn: 'root',
-    },
+    detectBrowserLanguage: false,
   },
 
   // Runtime config
@@ -43,6 +44,7 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api/v1',
       appName: 'IshYar',
+      defaultLocale: process.env.NUXT_PUBLIC_DEFAULT_LOCALE || 'fa',
     }
   },
 
@@ -59,10 +61,14 @@ export default defineNuxtConfig({
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'manifest', href: '/manifest.json' },
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap' },
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap' },
       ],
       htmlAttrs: {
-        lang: 'en',
-        dir: 'ltr',
+        lang: process.env.NUXT_PUBLIC_DEFAULT_LOCALE || 'fa',
+        dir: (process.env.NUXT_PUBLIC_DEFAULT_LOCALE || 'fa') === 'fa' ? 'rtl' : 'ltr',
       },
     },
   },
@@ -70,6 +76,18 @@ export default defineNuxtConfig({
   // CSS
   // In Nuxt 4, `~`/`@` point to `srcDir` (often `app/`). Use `~~` for project root.
   css: ['~~/assets/css/main.css'],
+
+  // Components configuration
+  // Exclude index.ts barrel files from auto-import to avoid duplicate component warnings
+  components: {
+    dirs: [
+      {
+        path: '~/components',
+        extensions: ['.vue'],
+        pathPrefix: false,
+      },
+    ],
+  },
 
   // TypeScript
   typescript: {

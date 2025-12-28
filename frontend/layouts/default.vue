@@ -1,34 +1,38 @@
 <script setup lang="ts">
+import { Button } from '~/components/ui/button'
+import { Avatar } from '~/components/ui/avatar'
+import { DropdownMenu } from '~/components/ui/dropdown-menu'
+import { Toaster } from '~/components/ui/toast'
+import {
+  Home,
+  ClipboardList,
+  Building2,
+  Library,
+  Briefcase,
+  Users,
+  Settings,
+  Menu,
+  Sun,
+  Moon,
+  User,
+  LogOut,
+} from 'lucide-vue-next'
+
 const authStore = useAuthStore()
 const colorMode = useColorMode()
 const route = useRoute()
 const { t } = useI18n()
+const { toasts, dismiss } = useToast()
 
-// Navigation items
+// Navigation items with Lucide icons
 const navigation = computed(() => [
-  { name: t('nav.dashboard'), to: '/dashboard', icon: 'i-heroicons-home' },
-  {
-    name: t('nav.tasks'),
-    to: '/tasks',
-    icon: 'i-heroicons-clipboard-document-list',
-  },
-  {
-    name: t('nav.organization'),
-    to: '/organization',
-    icon: 'i-heroicons-building-office',
-  },
-  {
-    name: t('nav.departments'),
-    to: '/departments',
-    icon: 'i-heroicons-building-library',
-  },
-  {
-    name: t('nav.positions'),
-    to: '/positions',
-    icon: 'i-heroicons-briefcase',
-  },
-  { name: t('nav.users'), to: '/users', icon: 'i-heroicons-users' },
-  { name: t('nav.settings'), to: '/settings', icon: 'i-heroicons-cog-6-tooth' },
+  { name: t('nav.dashboard'), to: '/dashboard', icon: Home },
+  { name: t('nav.tasks'), to: '/tasks', icon: ClipboardList },
+  { name: t('nav.organization'), to: '/organization', icon: Building2 },
+  { name: t('nav.departments'), to: '/departments', icon: Library },
+  { name: t('nav.positions'), to: '/positions', icon: Briefcase },
+  { name: t('nav.users'), to: '/users', icon: Users },
+  { name: t('nav.settings'), to: '/settings', icon: Settings },
 ])
 
 const isSidebarOpen = ref(true)
@@ -38,55 +42,49 @@ const toggleSidebar = () => {
 }
 
 const toggleColorMode = () => {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+  colorMode.preference.value =
+    colorMode.value.value === 'dark' ? 'light' : 'dark'
 }
 
 const userMenuItems = computed(() => [
   [
-    { label: t('nav.profile'), icon: 'i-heroicons-user', to: '/profile' },
+    {
+      label: t('nav.profile'),
+      icon: User,
+      click: () => navigateTo('/profile'),
+    },
     {
       label: t('nav.settings'),
-      icon: 'i-heroicons-cog-6-tooth',
-      to: '/settings',
+      icon: Settings,
+      click: () => navigateTo('/settings'),
     },
   ],
-  [
-    {
-      label: t('nav.logout'),
-      icon: 'i-heroicons-arrow-right-on-rectangle',
-      click: () => authStore.logout(),
-    },
-  ],
+  [{ label: t('nav.logout'), icon: LogOut, click: () => authStore.logout() }],
 ])
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+  <div class="min-h-screen bg-background">
     <!-- Sidebar -->
     <aside
       :class="[
-        'fixed inset-y-0 start-0 z-50 flex flex-col bg-white dark:bg-gray-800 border-e border-gray-200 dark:border-gray-700 transition-all duration-300',
+        'fixed inset-y-0 start-0 z-50 flex flex-col bg-card border-e transition-all duration-300',
         isSidebarOpen ? 'w-64' : 'w-20',
       ]"
     >
       <!-- Logo -->
-      <div
-        class="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-700"
-      >
+      <div class="flex items-center justify-between h-16 px-4 border-b">
         <NuxtLink to="/dashboard" class="flex items-center gap-3">
           <div
-            class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center"
+            class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center"
           >
-            <span class="text-white font-bold">I</span>
+            <span class="text-primary-foreground font-bold">I</span>
           </div>
           <span v-if="isSidebarOpen" class="font-semibold text-lg">IshYar</span>
         </NuxtLink>
-        <UButton
-          variant="ghost"
-          icon="i-heroicons-bars-3"
-          size="sm"
-          @click="toggleSidebar"
-        />
+        <Button variant="ghost" size="icon" @click="toggleSidebar">
+          <Menu class="h-5 w-5" />
+        </Button>
       </div>
 
       <!-- Navigation -->
@@ -98,25 +96,25 @@ const userMenuItems = computed(() => [
           :class="[
             'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
             route.path.startsWith(item.to)
-              ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
-              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
+              ? 'bg-primary/10 text-primary'
+              : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
           ]"
         >
-          <UIcon :name="item.icon" class="w-5 h-5 flex-shrink-0" />
+          <component :is="item.icon" class="h-5 w-5 shrink-0" />
           <span v-if="isSidebarOpen">{{ item.name }}</span>
         </NuxtLink>
       </nav>
 
       <!-- User section -->
-      <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-        <UDropdownMenu :items="userMenuItems">
-          <UButton variant="ghost" class="w-full justify-start gap-3">
-            <UAvatar :alt="authStore.user?.name" size="sm" />
+      <div class="p-4 border-t">
+        <DropdownMenu :items="userMenuItems">
+          <Button variant="ghost" class="w-full justify-start gap-3">
+            <Avatar :alt="authStore.user?.name" size="sm" />
             <span v-if="isSidebarOpen" class="truncate">
               {{ authStore.user?.name }}
             </span>
-          </UButton>
-        </UDropdownMenu>
+          </Button>
+        </DropdownMenu>
       </div>
     </aside>
 
@@ -129,30 +127,23 @@ const userMenuItems = computed(() => [
     >
       <!-- Top bar -->
       <header
-        class="sticky top-0 z-40 h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6"
+        class="sticky top-0 z-40 h-16 bg-card border-b flex items-center justify-between px-6"
       >
         <div class="flex items-center gap-4">
-          <!-- Breadcrumb -->
-          <AppBreadcrumb />
+          <div class="text-sm text-muted-foreground">
+            {{ route.meta?.title || '' }}
+          </div>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2">
           <!-- Theme toggle -->
-          <UButton
-            variant="ghost"
-            :icon="
-              colorMode.value === 'dark'
-                ? 'i-heroicons-sun'
-                : 'i-heroicons-moon'
-            "
-            @click="toggleColorMode"
-          />
+          <Button variant="ghost" size="icon" @click="toggleColorMode">
+            <Sun v-if="colorMode.value.value === 'dark'" class="h-5 w-5" />
+            <Moon v-else class="h-5 w-5" />
+          </Button>
 
           <!-- Language Switcher -->
           <LanguageSwitcher />
-
-          <!-- Notifications -->
-          <NotificationDropdown />
         </div>
       </header>
 
@@ -161,5 +152,8 @@ const userMenuItems = computed(() => [
         <slot />
       </main>
     </div>
+
+    <!-- Toast notifications -->
+    <Toaster :toasts="toasts" @dismiss="dismiss" />
   </div>
 </template>

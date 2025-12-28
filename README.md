@@ -59,12 +59,12 @@ We believe that managing a company should feel as intuitive as scrolling through
 
 ### 🌳 Interactive Org-Tree
 
-Navigate your organization like never before. Our **D3.js-powered** animated hierarchy lets you:
+Navigate your organization like never before. Our **visual card-based** animated hierarchy lets you:
 
-- Zoom, pan, and explore departments intuitively
+- Explore departments with intuitive card layouts
 - Click any node to drill down into teams & individuals
 - Visualize workload distribution in real-time
-- Drag-and-drop organizational restructuring
+- Clean, interactive organizational restructuring
 
 </td>
 <td width="50%">
@@ -163,10 +163,12 @@ IshYar is built on a **Modular Monolith** architecture – combining the simplic
 ├─────────────────────────────────────────────────────────────┤
 │                         Vue 3 + Pinia                       │
 ├─────────────┬─────────────┬─────────────┬──────────────────┤
-│  Nuxt UI    │   D3.js     │   PWA       │   Tailwind       │
-│  (UI Kit)   │   Charts    │   Module    │   CSS 4          │
+│ Shadcn-Vue  │ ApexCharts  │   PWA       │   Tailwind       │
+│  (UI Kit)   │  (Charts)   │   Module    │   CSS 4          │
 └─────────────┴─────────────┴─────────────┴──────────────────┘
 ```
+
+> ⚠️ **Important**: We use [Shadcn Vue](https://www.shadcn-vue.com/) for UI components, **NOT Nuxt UI**. All new UI implementations should use Shadcn Vue components.
 
 **Why Nuxt 4 as SPA?**
 - ⚡ Single Page Application (optimized for authenticated-only apps)
@@ -182,9 +184,10 @@ IshYar is built on a **Modular Monolith** architecture – combining the simplic
 |-------|-----------|
 | **Backend Framework** | Laravel 12 |
 | **Frontend Framework** | Nuxt 4 / Vue 3 |
-| **UI Components** | Nuxt UI |
+| **UI Components** | [Shadcn Vue](https://www.shadcn-vue.com/) (NOT Nuxt UI) |
 | **Styling** | Tailwind CSS 4 |
-| **Data Visualization** | D3.js |
+| **Charts & Dashboards** | ApexCharts (vue3-apexcharts) |
+| **Visual Components** | Pure Vue + Tailwind CSS (Card-based layouts) |
 | **Progressive Web App** | Vite PWA Plugin |
 | **Authentication** | JWT (tymon/jwt-auth) |
 | **Database** | PostgreSQL / MySQL |

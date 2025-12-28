@@ -16,7 +16,8 @@ Instructions for AI coding assistants using OpenSpec for IshYar development.
 IshYar is an enterprise ERP and Task Management system with:
 - **Backend**: Laravel 12+ (PHP 8.3+), Filament 4 Admin
 - **Frontend**: Nuxt 4, Vue.js 3 (Composition API), Tailwind CSS 4.0
-- **Components**: Vue Shadcn (Radix Vue)
+- **Components**: [Shadcn Vue](https://www.shadcn-vue.com/) (built on Radix Vue/Reka UI)
+  - ⚠️ **IMPORTANT**: We use **Shadcn Vue**, NOT Nuxt UI. All new UI implementations MUST use Shadcn Vue components.
 - **Architecture**: PWA, Mobile-first, API-first
 
 See `openspec/project.md` for full technical stack and conventions.

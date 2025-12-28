@@ -3,126 +3,189 @@
     <!-- Header -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">
+        <h1 class="text-2xl font-semibold text-foreground">
           {{ $t('users.title') }}
         </h1>
-        <p class="text-gray-500 dark:text-gray-400">
+        <p class="text-muted-foreground">
           {{ $t('users.description') }}
         </p>
       </div>
     </div>
 
     <!-- Filters -->
-    <UCard>
-      <div class="flex flex-wrap gap-4">
-        <UInput
-          v-model="search"
-          icon="i-heroicons-magnifying-glass"
-          :placeholder="$t('users.search_placeholder')"
-          class="flex-1 min-w-[200px]"
-        />
-        <USelect
-          v-model="filters.department_id"
-          :options="departmentOptions"
-          :placeholder="$t('users.filter_department')"
-          class="w-48"
-        />
-        <USelect
-          v-model="filters.is_active"
-          :options="statusOptions"
-          :placeholder="$t('users.filter_status')"
-          class="w-36"
-        />
-      </div>
-    </UCard>
+    <Card>
+      <CardContent class="p-4">
+        <div class="flex flex-wrap gap-4">
+          <div class="flex-1 min-w-[200px] relative">
+            <Search
+              class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+            />
+            <Input
+              v-model="search"
+              :placeholder="$t('users.search_placeholder')"
+              class="pl-9"
+            />
+          </div>
+          <Select v-model="filters.department_id">
+            <SelectTrigger class="w-48">
+              <SelectValue :placeholder="$t('users.filter_department')" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">{{
+                $t('users.all_departments')
+              }}</SelectItem>
+              <SelectItem
+                v-for="dept in departments"
+                :key="dept.id"
+                :value="dept.id"
+              >
+                {{ dept.name }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <Select v-model="filters.is_active">
+            <SelectTrigger class="w-36">
+              <SelectValue :placeholder="$t('users.filter_status')" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">{{ $t('users.all_status') }}</SelectItem>
+              <SelectItem value="true">{{ $t('common.active') }}</SelectItem>
+              <SelectItem value="false">{{ $t('common.inactive') }}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </CardContent>
+    </Card>
 
     <!-- Users List -->
-    <UCard>
-      <UTable :rows="tableRows" :columns="columnsTyped" :loading="loading">
-        <template #name-data="slotProps">
-          <div class="flex items-center gap-3">
-            <UAvatar :alt="getUser(slotProps.row).name" size="sm" />
-            <div>
-              <div class="font-medium">{{ getUser(slotProps.row).name }}</div>
-              <div class="text-sm text-gray-500">
-                {{ getUser(slotProps.row).email }}
-              </div>
-            </div>
-          </div>
-        </template>
-        <template #department-data="slotProps">
-          <span v-if="getUser(slotProps.row).department">{{
-            getUser(slotProps.row).department?.name
-          }}</span>
-          <span v-else class="text-gray-400">—</span>
-        </template>
-        <template #position-data="slotProps">
-          <span v-if="getUser(slotProps.row).position">{{
-            getUser(slotProps.row).position?.name
-          }}</span>
-          <span v-else class="text-gray-400">—</span>
-        </template>
-        <template #roles-data="slotProps">
-          <div class="flex gap-1">
-            <UBadge
-              v-for="role in getUser(slotProps.row).roles"
-              :key="role.id"
-              size="xs"
-              :color="getRoleColor(role.name)"
-            >
-              {{ role.name }}
-            </UBadge>
-          </div>
-        </template>
-        <template #is_active-data="slotProps">
-          <UBadge
-            :color="getUser(slotProps.row).is_active ? 'success' : 'error'"
-            size="sm"
-          >
-            {{
-              getUser(slotProps.row).is_active
-                ? $t('common.active')
-                : $t('common.inactive')
-            }}
-          </UBadge>
-        </template>
-        <template #actions-data="slotProps">
-          <UButton
-            color="neutral"
-            variant="ghost"
-            icon="i-heroicons-eye"
-            @click="viewUser(getUser(slotProps.row))"
-          />
-        </template>
-      </UTable>
+    <Card>
+      <CardContent class="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{{ $t('users.name') }}</TableHead>
+              <TableHead>{{ $t('users.department') }}</TableHead>
+              <TableHead>{{ $t('users.position') }}</TableHead>
+              <TableHead>{{ $t('users.roles') }}</TableHead>
+              <TableHead>{{ $t('common.status') }}</TableHead>
+              <TableHead></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow v-if="loading">
+              <TableCell colspan="6" class="text-center py-8">
+                <div class="flex items-center justify-center gap-2">
+                  <Loader2 class="w-4 h-4 animate-spin" />
+                  {{ $t('common.loading') }}
+                </div>
+              </TableCell>
+            </TableRow>
+            <TableRow v-else-if="users.length === 0">
+              <TableCell
+                colspan="6"
+                class="text-center py-8 text-muted-foreground"
+              >
+                {{ $t('users.no_users') }}
+              </TableCell>
+            </TableRow>
+            <TableRow v-for="user in users" :key="user.id">
+              <TableCell>
+                <div class="flex items-center gap-3">
+                  <Avatar>
+                    <AvatarFallback>{{ user.name.charAt(0) }}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div class="font-medium">{{ user.name }}</div>
+                    <div class="text-sm text-muted-foreground">
+                      {{ user.email }}
+                    </div>
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell>
+                <span v-if="user.department">{{ user.department?.name }}</span>
+                <span v-else class="text-muted-foreground">—</span>
+              </TableCell>
+              <TableCell>
+                <span v-if="user.position">{{ user.position?.name }}</span>
+                <span v-else class="text-muted-foreground">—</span>
+              </TableCell>
+              <TableCell>
+                <div class="flex gap-1 flex-wrap">
+                  <Badge
+                    v-for="role in user.roles"
+                    :key="role.id"
+                    :variant="getRoleVariant(role.name)"
+                  >
+                    {{ role.name }}
+                  </Badge>
+                </div>
+              </TableCell>
+              <TableCell>
+                <Badge :variant="user.is_active ? 'success' : 'destructive'">
+                  {{
+                    user.is_active ? $t('common.active') : $t('common.inactive')
+                  }}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <Button variant="ghost" size="sm" @click="viewUser(user)">
+                  <Eye class="w-4 h-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
 
-      <!-- Pagination -->
-      <div class="flex justify-between items-center mt-4">
-        <div class="text-sm text-gray-500">
-          {{ $t('common.showing') }} {{ users.length }} {{ $t('common.of') }}
-          {{ total }}
+        <!-- Pagination -->
+        <div class="flex justify-between items-center p-4 border-t">
+          <div class="text-sm text-muted-foreground">
+            {{ $t('common.showing') }} {{ users.length }} {{ $t('common.of') }}
+            {{ total }}
+          </div>
+          <div class="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              :disabled="page <= 1"
+              @click="page--"
+            >
+              {{ $t('common.previous') }}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              :disabled="page >= Math.ceil(total / perPage)"
+              @click="page++"
+            >
+              {{ $t('common.next') }}
+            </Button>
+          </div>
         </div>
-        <UPagination v-model="page" :page-count="perPage" :total="total" />
-      </div>
-    </UCard>
+      </CardContent>
+    </Card>
 
     <!-- User Detail Modal -->
-    <UModal v-model="showUserModal">
-      <UCard v-if="selectedUser">
-        <template #header>
+    <Dialog v-model:open="showUserModal">
+      <DialogContent v-if="selectedUser" class="max-w-lg">
+        <DialogHeader>
           <div class="flex items-center gap-4">
-            <UAvatar :alt="selectedUser.name" size="lg" />
+            <Avatar size="lg">
+              <AvatarFallback>{{ selectedUser.name.charAt(0) }}</AvatarFallback>
+            </Avatar>
             <div>
-              <h3 class="text-lg font-semibold">{{ selectedUser.name }}</h3>
-              <p class="text-sm text-gray-500">{{ selectedUser.email }}</p>
+              <DialogTitle>{{ selectedUser.name }}</DialogTitle>
+              <p class="text-sm text-muted-foreground">
+                {{ selectedUser.email }}
+              </p>
             </div>
           </div>
-        </template>
+        </DialogHeader>
 
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <div class="text-sm text-gray-500">
+              <div class="text-sm text-muted-foreground">
                 {{ $t('users.department') }}
               </div>
               <div class="font-medium">
@@ -130,7 +193,7 @@
               </div>
             </div>
             <div>
-              <div class="text-sm text-gray-500">
+              <div class="text-sm text-muted-foreground">
                 {{ $t('users.position') }}
               </div>
               <div class="font-medium">
@@ -138,46 +201,84 @@
               </div>
             </div>
             <div>
-              <div class="text-sm text-gray-500">{{ $t('users.manager') }}</div>
+              <div class="text-sm text-muted-foreground">
+                {{ $t('users.manager') }}
+              </div>
               <div class="font-medium">
                 {{ selectedUser.manager?.name || '—' }}
               </div>
             </div>
             <div>
-              <div class="text-sm text-gray-500">{{ $t('users.phone') }}</div>
+              <div class="text-sm text-muted-foreground">
+                {{ $t('users.phone') }}
+              </div>
               <div class="font-medium">{{ selectedUser.phone || '—' }}</div>
             </div>
           </div>
 
-          <UDivider />
+          <Separator />
 
           <div>
-            <div class="text-sm text-gray-500 mb-2">
+            <div class="text-sm text-muted-foreground mb-2">
               {{ $t('users.roles') }}
             </div>
             <div class="flex gap-2">
-              <UBadge
+              <Badge
                 v-for="role in selectedUser.roles"
                 :key="role.id"
-                :color="getRoleColor(role.name)"
+                :variant="getRoleVariant(role.name)"
               >
                 {{ role.name }}
-              </UBadge>
+              </Badge>
             </div>
           </div>
         </div>
 
-        <template #footer>
-          <UButton block color="neutral" @click="showUserModal = false">
+        <DialogFooter>
+          <Button
+            variant="outline"
+            class="w-full"
+            @click="showUserModal = false"
+          >
             {{ $t('common.close') }}
-          </UButton>
-        </template>
-      </UCard>
-    </UModal>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
+import { Card, CardContent } from '~/components/ui/card'
+import { Button } from '~/components/ui/button'
+import { Input } from '~/components/ui/input'
+import { Badge } from '~/components/ui/badge'
+import { Avatar, AvatarFallback } from '~/components/ui/avatar'
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from '~/components/ui/table'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '~/components/ui/dialog'
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '~/components/ui/select'
+import { Separator } from '~/components/ui/separator'
+import { Search, Eye, Loader2 } from 'lucide-vue-next'
+
 interface User {
   id: string
   name: string
@@ -205,59 +306,30 @@ const page = ref(1)
 const perPage = ref(15)
 const total = ref(0)
 const showUserModal = ref(false)
-const selectedUser = ref<any>(null)
+const selectedUser = ref<User | null>(null)
 
 const filters = ref({
-  department_id: null as string | null,
-  is_active: null as boolean | null,
+  department_id: '' as string,
+  is_active: '' as string,
 })
 
-const columns = [
-  { key: 'name', label: $t('users.name') },
-  { key: 'department', label: $t('users.department') },
-  { key: 'position', label: $t('users.position') },
-  { key: 'roles', label: $t('users.roles') },
-  { key: 'is_active', label: $t('common.status') },
-  { key: 'actions', label: '' },
-]
-
-// Typed columns for UTable compatibility
-const columnsTyped = computed(() => columns as any)
-
-// Helper to type-cast row data
-const getUser = (row: unknown): User => row as User
-
-// Typed rows for UTable compatibility
-const tableRows = computed(() => users.value as any[])
-
-const departmentOptions = computed(() => [
-  { value: null, label: $t('users.all_departments') },
-  ...departments.value.map((d) => ({ value: d.id, label: d.name })),
-])
-
-const statusOptions = [
-  { value: null, label: $t('users.all_status') },
-  { value: true, label: $t('common.active') },
-  { value: false, label: $t('common.inactive') },
-]
-
-type BadgeColor =
-  | 'error'
-  | 'primary'
+type BadgeVariant =
+  | 'default'
   | 'secondary'
+  | 'destructive'
+  | 'outline'
   | 'success'
-  | 'info'
   | 'warning'
-  | 'neutral'
+  | 'info'
 
-const getRoleColor = (role: string): BadgeColor => {
-  const colors: Record<string, BadgeColor> = {
-    'super-admin': 'error',
+const getRoleVariant = (role: string): BadgeVariant => {
+  const variants: Record<string, BadgeVariant> = {
+    'super-admin': 'destructive',
     admin: 'warning',
     manager: 'info',
     employee: 'success',
   }
-  return colors[role] || 'neutral'
+  return variants[role] || 'secondary'
 }
 
 const fetchUsers = async () => {
@@ -267,13 +339,13 @@ const fetchUsers = async () => {
     if (search.value) params.append('search', search.value)
     if (filters.value.department_id)
       params.append('department_id', filters.value.department_id)
-    if (filters.value.is_active !== null)
-      params.append('is_active', String(filters.value.is_active))
+    if (filters.value.is_active !== '')
+      params.append('is_active', filters.value.is_active)
     params.append('page', String(page.value))
     params.append('per_page', String(perPage.value))
 
     const response = (await $api(`/users?${params.toString()}`)) as {
-      data: any[]
+      data: User[]
       meta?: { total?: number }
     }
     users.value = response.data
@@ -287,16 +359,18 @@ const fetchUsers = async () => {
 
 const fetchDepartments = async () => {
   try {
-    const response = (await $api('/departments')) as { data: any[] }
+    const response = (await $api('/departments')) as {
+      data: { id: string; name: string }[]
+    }
     departments.value = response.data
   } catch (error) {
     console.error('Failed to fetch departments:', error)
   }
 }
 
-const viewUser = async (user: any) => {
+const viewUser = async (user: User) => {
   try {
-    const response = (await $api(`/users/${user.id}`)) as { data: any }
+    const response = (await $api(`/users/${user.id}`)) as { data: User }
     selectedUser.value = response.data
     showUserModal.value = true
   } catch (error) {

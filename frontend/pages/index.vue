@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Loader2 } from 'lucide-vue-next'
+
 definePageMeta({
   layout: false,
 })
@@ -10,12 +12,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center">
+  <div class="min-h-screen flex items-center justify-center bg-background">
     <div class="text-center">
-      <div
-        class="animate-spin w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full mx-auto"
-      />
-      <p class="mt-4 text-gray-600">{{ $t('common.loading') }}</p>
+      <Loader2 class="w-8 h-8 animate-spin text-primary mx-auto" />
+      <p class="mt-4 text-muted-foreground">{{ $t('common.loading') }}</p>
     </div>
   </div>
 </template>

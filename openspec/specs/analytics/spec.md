@@ -4,6 +4,14 @@
 
 The Analytics & Dashboard module provides real-time productivity insights, visual KPIs, heatmaps, and performance tracking for owners, managers, and employees at appropriate organizational scopes.
 
+## Technical Approach
+
+- **Charts Library**: ApexCharts (vue3-apexcharts) for all data visualization
+- **Chart Types**: Bar, Line, Area, Pie, Donut, Heatmap, Radial Bar
+- **Real-time Updates**: WebSocket-driven chart updates
+- **Responsive**: All charts adapt to container size
+- **Theming**: Charts follow application color tokens and dark/light mode
+
 ## Requirements
 
 ### Requirement: Owner Dashboard
@@ -100,9 +108,10 @@ The system SHALL render various progress indicators with smooth animations.
 #### Scenario: Progress ring animation
 - **WHEN** progress ring is displayed
 - **THEN** animate from 0 to current value on load
-- **AND** use GSAP for smooth easing
+- **AND** use CSS transitions for smooth easing
 - **AND** display percentage in center
 - **AND** apply gradient based on completion level
+- **AND** keep animations subtle and performant
 
 #### Scenario: Status cards
 - **WHEN** status card is rendered

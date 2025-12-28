@@ -70,27 +70,37 @@ The system SHALL manage job positions within the organizational hierarchy.
 - **AND** redistribute responsibilities temporarily
 
 ### Requirement: Visual Org-Chart
-The system SHALL render an interactive, animated organizational tree.
+The system SHALL render an interactive, visual organizational hierarchy using card-based components.
 
 #### Scenario: Rendering full org-chart
 - **WHEN** org-chart view is accessed
-- **THEN** render hierarchical tree using D3.js/Vue Flow
-- **AND** display personnel photos in each node
-- **AND** show department name and head
-- **AND** apply GSAP entrance animations
+- **THEN** render hierarchical tree using Vue card-based components
+- **AND** display personnel photos in rounded containers
+- **AND** show position title, name, and department
+- **AND** use CSS transitions for smooth entrance animations
+- **AND** create visual hierarchy with connecting lines using CSS/SVG
+
+#### Scenario: Visual card layout
+- **WHEN** org-chart nodes are displayed
+- **THEN** render each node as a styled card component
+- **AND** show avatar/photo prominently with rounded styling
+- **AND** display title and brief description
+- **AND** use color coding for different departments/levels
+- **AND** support hover states for additional information
 
 #### Scenario: Expanding/collapsing branches
 - **WHEN** a user clicks on a department node
 - **THEN** toggle visibility of child nodes
-- **AND** animate expansion/collapse smoothly (300ms ease)
+- **AND** animate expansion/collapse with CSS transitions (300ms ease)
 - **AND** maintain viewport focus on clicked node
 - **AND** persist expansion state per user
 
-#### Scenario: Node interaction
-- **WHEN** a user hovers on an org-chart node
-- **THEN** display tooltip with department summary
-- **AND** show employee count and key metrics
-- **AND** highlight reporting chain (up and down)
+#### Scenario: Interactive node cards
+- **WHEN** a user interacts with an org-chart node
+- **THEN** highlight the selected card with visual feedback
+- **AND** show action buttons on hover (view details, edit, etc.)
+- **AND** display tooltip with quick summary
+- **AND** support click to navigate to detail view
 
 #### Scenario: Org-chart search
 - **WHEN** a user searches within org-chart

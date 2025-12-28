@@ -1,6 +1,26 @@
-# Nuxt Minimal Starter
+# IshYar Frontend
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Modern, visual-first frontend for the IshYar ERP & Task Management system.
+
+## Tech Stack
+
+- **Framework**: Nuxt 4 (SPA Mode)
+- **UI Library**: Vue 3 (Composition API)
+- **Styling**: Tailwind CSS 4.0
+- **Components**: [Shadcn Vue](https://www.shadcn-vue.com/) (built on Radix Vue / Reka UI)
+  - ⚠️ **Note**: We use **Shadcn Vue**, NOT Nuxt UI. All new UI implementations should use Shadcn Vue components.
+- **Charts**: ApexCharts (vue3-apexcharts)
+- **State Management**: Pinia
+- **Icons**: Lucide Vue
+- **Animations**: CSS Transitions + Vue Transitions
+
+## Design Philosophy
+
+- **Visual-First**: Card-based layouts, intuitive visual hierarchy
+- **Simple & Clean**: Pure Vue + Tailwind components
+- **Interactive**: Smooth transitions and hover states
+- **Accessible**: WCAG 2.1 AA compliance
+- **RTL Support**: Full right-to-left language support
 
 ## Setup
 

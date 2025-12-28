@@ -70,28 +70,35 @@ The system SHALL provide delightful micro-interactions throughout.
 - **AND** use subtle pulse for ongoing states
 
 ### Requirement: Animation Guidelines
-The system SHALL use GSAP for complex animations with consistent timing.
+The system SHALL use CSS transitions and Vue transitions for smooth animations with consistent timing.
 
 #### Scenario: Page transitions
 - **WHEN** navigating between pages
 - **THEN** fade out current content (150ms)
 - **AND** fade in new content (200ms)
-- **AND** stagger child elements entrance
+- **AND** stagger child elements entrance using CSS animation-delay
 - **AND** respect reduced-motion preferences
 
 #### Scenario: Modal/drawer animations
 - **WHEN** modal or drawer opens
 - **THEN** animate from trigger origin when possible
-- **AND** use spring physics for natural feel
+- **AND** use CSS cubic-bezier for natural feel
 - **AND** backdrop fades in simultaneously
-- **AND** content slides/scales in
+- **AND** content slides/scales in using transform
 
-#### Scenario: Data visualization animations
-- **WHEN** charts/graphs render
-- **THEN** animate data points entrance
-- **AND** stagger bars/segments
-- **AND** draw lines progressively
-- **AND** use 400-600ms duration with easing
+#### Scenario: Visual component animations
+- **WHEN** cards/visual elements render
+- **THEN** animate entrance with subtle fade and scale
+- **AND** stagger items using CSS animation-delay
+- **AND** use 300-500ms duration with easing
+- **AND** keep animations subtle and purposeful
+
+#### Scenario: Chart animations (ApexCharts)
+- **WHEN** charts render on dashboards
+- **THEN** use ApexCharts built-in animations
+- **AND** animate data points entrance smoothly
+- **AND** support real-time data updates with transitions
+- **AND** follow application theme colors
 
 ### Requirement: Responsive Design
 The system SHALL be mobile-first with fluid responsiveness.
@@ -231,7 +238,17 @@ The system SHALL provide complete RTL support for languages like Persian, Arabic
 - **AND** ensure proper text flow
 
 ### Requirement: Component Library
-The system SHALL use Vue Shadcn (Radix Vue) with custom styling.
+The system SHALL use [Shadcn Vue](https://www.shadcn-vue.com/) components (built on Radix Vue/Reka UI) with Tailwind CSS styling.
+
+> ⚠️ **IMPORTANT**: We use **Shadcn Vue** (https://www.shadcn-vue.com/), **NOT Nuxt UI**. All new UI implementations MUST use Shadcn Vue components.
+
+#### Scenario: Visual-first design approach
+- **WHEN** building UI components
+- **THEN** prefer card-based layouts over raw tables
+- **AND** use visual hierarchy with clear spacing
+- **AND** implement interactive states (hover, focus, active)
+- **AND** keep components simple and maintainable
+- **AND** avoid complex external visualization libraries
 
 #### Scenario: Button component
 - **WHEN** button is rendered

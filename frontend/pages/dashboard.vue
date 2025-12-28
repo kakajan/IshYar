@@ -1,4 +1,19 @@
 <script setup lang="ts">
+import { Card, CardHeader, CardTitle, CardContent } from '~/components/ui/card'
+import { Button } from '~/components/ui/button'
+import { Badge } from '~/components/ui/badge'
+import { Checkbox } from '~/components/ui/checkbox'
+import { Skeleton } from '~/components/ui/skeleton'
+import {
+  ClipboardList,
+  CheckCircle,
+  RefreshCw,
+  AlertTriangle,
+  Plus,
+  Calendar,
+  FileText,
+} from 'lucide-vue-next'
+
 const { t } = useI18n()
 const authStore = useAuthStore()
 const { stats: dashboardStats, isLoading, fetchDashboard } = useDashboard()
@@ -8,6 +23,14 @@ onMounted(() => {
   fetchDashboard()
 })
 
+// Icon components mapped
+const iconMap = {
+  'clipboard-list': ClipboardList,
+  'check-circle': CheckCircle,
+  refresh: RefreshCw,
+  alert: AlertTriangle,
+}
+
 // Dashboard stats (computed from API or fallback)
 const stats = computed(() => {
   const data = dashboardStats.value
@@ -16,25 +39,25 @@ const stats = computed(() => {
       name: t('dashboard.total_tasks'),
       value: data?.total_tasks?.toString() ?? '—',
       change: data ? `${data.completion_rate}%` : '',
-      icon: 'i-heroicons-clipboard-document-list',
+      iconKey: 'clipboard-list',
     },
     {
       name: t('dashboard.completed_today'),
       value: data?.completed_tasks?.toString() ?? '—',
       change: '',
-      icon: 'i-heroicons-check-circle',
+      iconKey: 'check-circle',
     },
     {
       name: t('dashboard.in_progress'),
       value: data?.in_progress_tasks?.toString() ?? '—',
       change: '',
-      icon: 'i-heroicons-arrow-path',
+      iconKey: 'refresh',
     },
     {
       name: t('dashboard.overdue'),
       value: data?.overdue_tasks?.toString() ?? '—',
       change: '',
-      icon: 'i-heroicons-exclamation-triangle',
+      iconKey: 'alert',
     },
   ]
 })
@@ -44,34 +67,34 @@ const recentTasks = computed(() => {
   return dashboardStats.value?.recent_tasks ?? []
 })
 
-type BadgeColor =
-  | 'error'
-  | 'primary'
+type BadgeVariant =
+  | 'default'
   | 'secondary'
+  | 'destructive'
+  | 'outline'
   | 'success'
-  | 'info'
   | 'warning'
-  | 'neutral'
+  | 'info'
 
-const priorityColor = (priority: string): BadgeColor => {
-  const colors: Record<string, BadgeColor> = {
-    low: 'neutral',
+const priorityVariant = (priority: string): BadgeVariant => {
+  const variants: Record<string, BadgeVariant> = {
+    low: 'secondary',
     medium: 'warning',
     high: 'warning',
-    urgent: 'error',
+    urgent: 'destructive',
   }
-  return colors[priority] || 'neutral'
+  return variants[priority] || 'secondary'
 }
 
-const statusColor = (status: string): BadgeColor => {
-  const colors: Record<string, BadgeColor> = {
-    pending: 'neutral',
+const statusVariant = (status: string): BadgeVariant => {
+  const variants: Record<string, BadgeVariant> = {
+    pending: 'secondary',
     in_progress: 'info',
     completed: 'success',
     on_hold: 'warning',
-    cancelled: 'error',
+    cancelled: 'destructive',
   }
-  return colors[status] || 'neutral'
+  return variants[status] || 'secondary'
 }
 </script>
 
@@ -79,11 +102,11 @@ const statusColor = (status: string): BadgeColor => {
   <div class="space-y-6 animate-fade-in">
     <!-- Welcome header -->
     <div>
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+      <h1 class="text-2xl font-bold text-foreground">
         {{ $t('dashboard.welcome') }},
         {{ authStore.user?.name?.split(' ')[0] }}! 👋
       </h1>
-      <p class="mt-1 text-gray-600 dark:text-gray-400">
+      <p class="mt-1 text-muted-foreground">
         {{ $t('dashboard.subtitle') }}
       </p>
     </div>
@@ -93,17 +116,13 @@ const statusColor = (status: string): BadgeColor => {
       v-if="isLoading"
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
     >
-      <UCard v-for="i in 4" :key="i" class="glass">
-        <div class="animate-pulse">
-          <div
-            class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"
-          ></div>
-          <div
-            class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-2"
-          ></div>
-          <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
-        </div>
-      </UCard>
+      <Card v-for="i in 4" :key="i">
+        <CardContent class="p-6">
+          <Skeleton class="h-4 w-1/2 mb-2" />
+          <Skeleton class="h-8 w-1/4 mb-2" />
+          <Skeleton class="h-3 w-1/3" />
+        </CardContent>
+      </Card>
     </div>
 
     <!-- Stats grid -->
@@ -111,121 +130,116 @@ const statusColor = (status: string): BadgeColor => {
       v-if="!isLoading"
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
     >
-      <UCard v-for="stat in stats" :key="stat.name" class="glass">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-              {{ stat.name }}
-            </p>
-            <p
-              class="mt-1 text-3xl font-semibold text-gray-900 dark:text-white"
-            >
-              {{ stat.value }}
-            </p>
-            <p
-              v-if="stat.change"
-              class="mt-1 text-sm"
-              :class="
-                stat.change.startsWith('+') || stat.change.startsWith('-')
-                  ? stat.change.startsWith('+')
-                    ? 'text-green-600'
-                    : 'text-red-600'
-                  : 'text-gray-500'
-              "
-            >
-              {{ stat.change }}
-              <span
-                v-if="
+      <Card v-for="stat in stats" :key="stat.name">
+        <CardContent class="p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground">
+                {{ stat.name }}
+              </p>
+              <p class="mt-1 text-3xl font-semibold text-foreground">
+                {{ stat.value }}
+              </p>
+              <p
+                v-if="stat.change"
+                class="mt-1 text-sm"
+                :class="
                   stat.change.startsWith('+') || stat.change.startsWith('-')
+                    ? stat.change.startsWith('+')
+                      ? 'text-green-600'
+                      : 'text-red-600'
+                    : 'text-muted-foreground'
                 "
-                >{{ $t('dashboard.from_last_week') }}</span
               >
-            </p>
+                {{ stat.change }}
+                <span
+                  v-if="
+                    stat.change.startsWith('+') || stat.change.startsWith('-')
+                  "
+                  >{{ $t('dashboard.from_last_week') }}</span
+                >
+              </p>
+            </div>
+            <div class="p-3 bg-primary/10 rounded-lg">
+              <component
+                :is="iconMap[stat.iconKey as keyof typeof iconMap]"
+                class="w-6 h-6 text-primary"
+              />
+            </div>
           </div>
-          <div class="p-3 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
-            <UIcon
-              :name="stat.icon"
-              class="w-6 h-6 text-primary-600 dark:text-primary-400"
-            />
-          </div>
-        </div>
-      </UCard>
+        </CardContent>
+      </Card>
     </div>
 
     <!-- Main content grid -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Recent tasks -->
-      <UCard class="lg:col-span-2">
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h2 class="text-lg font-semibold">
-              {{ $t('dashboard.recent_tasks') }}
-            </h2>
-            <NuxtLink to="/tasks">
-              <UButton variant="ghost" size="sm">{{
-                $t('dashboard.view_all')
-              }}</UButton>
-            </NuxtLink>
-          </div>
-        </template>
+      <Card class="lg:col-span-2">
+        <CardHeader class="flex flex-row items-center justify-between pb-2">
+          <CardTitle class="text-lg">
+            {{ $t('dashboard.recent_tasks') }}
+          </CardTitle>
+          <NuxtLink to="/tasks">
+            <Button variant="ghost" size="sm">
+              {{ $t('dashboard.view_all') }}
+            </Button>
+          </NuxtLink>
+        </CardHeader>
 
-        <div class="divide-y divide-gray-200 dark:divide-gray-700">
-          <div
-            v-for="task in recentTasks"
-            :key="task.id"
-            class="py-4 first:pt-0 last:pb-0 flex items-center justify-between"
-          >
-            <div class="flex items-center gap-4">
-              <UCheckbox :model-value="task.status === 'completed'" />
-              <div>
-                <p class="font-medium text-gray-900 dark:text-white">
-                  {{ task.title }}
-                </p>
-                <p class="text-sm text-gray-500">
-                  {{ $t('tasks.due_date') }} {{ task.due_date }}
-                </p>
+        <CardContent>
+          <div class="divide-y divide-border">
+            <div
+              v-for="task in recentTasks"
+              :key="task.id"
+              class="py-4 first:pt-0 last:pb-0 flex items-center justify-between"
+            >
+              <div class="flex items-center gap-4">
+                <Checkbox :checked="task.status === 'completed'" />
+                <div>
+                  <p class="font-medium text-foreground">
+                    {{ task.title }}
+                  </p>
+                  <p class="text-sm text-muted-foreground">
+                    {{ $t('tasks.due_date') }} {{ task.due_date }}
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <Badge :variant="priorityVariant(task.priority)">
+                  {{ task.priority }}
+                </Badge>
+                <Badge :variant="statusVariant(task.status)">
+                  {{ task.status.replace('_', ' ') }}
+                </Badge>
               </div>
             </div>
-            <div class="flex items-center gap-2">
-              <UBadge
-                :color="priorityColor(task.priority)"
-                variant="subtle"
-                size="sm"
-              >
-                {{ task.priority }}
-              </UBadge>
-              <UBadge
-                :color="statusColor(task.status)"
-                variant="subtle"
-                size="sm"
-              >
-                {{ task.status.replace('_', ' ') }}
-              </UBadge>
-            </div>
           </div>
-        </div>
-      </UCard>
+        </CardContent>
+      </Card>
 
       <!-- Quick actions -->
-      <UCard>
-        <template #header>
-          <h2 class="text-lg font-semibold">
+      <Card>
+        <CardHeader>
+          <CardTitle class="text-lg">
             {{ $t('dashboard.quick_actions') }}
-          </h2>
-        </template>
+          </CardTitle>
+        </CardHeader>
 
-        <div class="space-y-3">
-          <UButton block variant="outline" icon="i-heroicons-plus">
+        <CardContent class="space-y-3">
+          <Button class="w-full justify-start" variant="outline">
+            <Plus class="w-4 h-4 mr-2" />
             {{ $t('dashboard.create_task') }}
-          </UButton>
-          <UButton block variant="outline" icon="i-heroicons-calendar">
+          </Button>
+          <Button class="w-full justify-start" variant="outline">
+            <Calendar class="w-4 h-4 mr-2" />
             {{ $t('dashboard.schedule_meeting') }}
-          </UButton>
-          <UButton block variant="outline" icon="i-heroicons-document-text">
+          </Button>
+          <Button class="w-full justify-start" variant="outline">
+            <FileText class="w-4 h-4 mr-2" />
             {{ $t('dashboard.generate_report') }}
-          </UButton>
-        </div>
-      </UCard>
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   </div>
 </template>

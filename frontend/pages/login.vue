@@ -1,4 +1,16 @@
 <script setup lang="ts">
+import { Button } from '~/components/ui/button'
+import { Input } from '~/components/ui/input'
+import { Label } from '~/components/ui/label'
+import { Checkbox } from '~/components/ui/checkbox'
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from '~/components/ui/card'
+
 definePageMeta({
   layout: 'auth',
 })
@@ -10,6 +22,7 @@ const toast = useToast()
 const form = reactive({
   email: '',
   password: '',
+  remember: false,
 })
 
 const isLoading = ref(false)
@@ -39,75 +52,82 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div
-    class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4"
-  >
+  <div class="min-h-screen flex items-center justify-center bg-background px-4">
     <div class="w-full max-w-md">
       <!-- Logo -->
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">IshYar</h1>
-        <p class="mt-2 text-gray-600 dark:text-gray-400">
+        <h1 class="text-3xl font-bold">IshYar</h1>
+        <p class="mt-2 text-muted-foreground">
           {{ $t('auth.enterprise_worksuite') }}
         </p>
       </div>
 
       <!-- Login Card -->
-      <UCard class="glass">
-        <template #header>
-          <h2 class="text-xl font-semibold text-center">
+      <Card>
+        <CardHeader>
+          <CardTitle class="text-xl text-center">
             {{ $t('auth.sign_in_title') }}
-          </h2>
-        </template>
+          </CardTitle>
+        </CardHeader>
 
-        <form class="space-y-6" @submit.prevent="handleSubmit">
-          <UFormField :label="$t('auth.email')" name="email">
-            <UInput
-              v-model="form.email"
-              type="email"
-              :placeholder="$t('auth.email_placeholder')"
-              required
-              autofocus
-              size="lg"
-            />
-          </UFormField>
+        <CardContent>
+          <form class="space-y-6" @submit.prevent="handleSubmit">
+            <div class="space-y-2">
+              <Label for="email">{{ $t('auth.email') }}</Label>
+              <Input
+                id="email"
+                v-model="form.email"
+                type="email"
+                :placeholder="$t('auth.email_placeholder')"
+                required
+                autofocus
+              />
+            </div>
 
-          <UFormField :label="$t('auth.password')" name="password">
-            <UInput
-              v-model="form.password"
-              type="password"
-              placeholder="••••••••"
-              required
-              size="lg"
-            />
-          </UFormField>
+            <div class="space-y-2">
+              <Label for="password">{{ $t('auth.password') }}</Label>
+              <Input
+                id="password"
+                v-model="form.password"
+                type="password"
+                placeholder="••••••••"
+                required
+              />
+            </div>
 
-          <div class="flex items-center justify-between">
-            <UCheckbox :label="$t('auth.remember_me')" />
-            <NuxtLink
-              to="/forgot-password"
-              class="text-sm text-primary-600 hover:text-primary-500"
-            >
-              {{ $t('auth.forgot_password') }}
-            </NuxtLink>
-          </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <Checkbox id="remember" v-model:checked="form.remember" />
+                <Label for="remember" class="text-sm font-normal">
+                  {{ $t('auth.remember_me') }}
+                </Label>
+              </div>
+              <NuxtLink
+                to="/forgot-password"
+                class="text-sm text-primary hover:underline"
+              >
+                {{ $t('auth.forgot_password') }}
+              </NuxtLink>
+            </div>
 
-          <UButton type="submit" block size="lg" :loading="isLoading">
-            {{ $t('auth.sign_in') }}
-          </UButton>
-        </form>
+            <Button type="submit" class="w-full" :loading="isLoading">
+              {{ $t('auth.sign_in') }}
+            </Button>
+          </form>
+        </CardContent>
 
-        <template #footer>
-          <p class="text-center text-sm text-gray-600 dark:text-gray-400">
+        <CardFooter class="justify-center">
+          <p class="text-sm text-muted-foreground">
             {{ $t('auth_pages.dont_have_account') }}
             <NuxtLink
               to="/register"
-              class="text-primary-600 hover:text-primary-500 font-medium"
+              class="text-primary hover:underline font-medium"
             >
               {{ $t('auth.sign_up') }}
             </NuxtLink>
           </p>
-        </template>
-      </UCard>
+        </CardFooter>
+      </Card>
     </div>
   </div>
 </template>

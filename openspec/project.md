@@ -22,10 +22,12 @@ To create the world's most intuitive and visually stunning enterprise work manag
 - **Framework**: Nuxt 4 (SPA Mode - Experimental/Latest)
 - **UI Library**: Vue.js 3 (Composition API)
 - **Styling**: Tailwind CSS 4.0
-- **Component Library**: Nuxt UI
+- **Component Library**: [Shadcn Vue](https://www.shadcn-vue.com/) (built on Radix Vue/Reka UI)
+  - ⚠️ **Note**: We use **Shadcn Vue**, NOT Nuxt UI. All new UI implementations should use Shadcn Vue components.
 - **State Management**: Pinia
-- **Animations**: GSAP, Vue Transitions
-- **Visualization**: D3.js, Vue Flow
+- **Animations**: CSS Transitions, Vue Transitions
+- **Charts & Data Visualization**: ApexCharts (vue3-apexcharts)
+- **Visual Components**: Pure Vue + Tailwind CSS (Card-based layouts)
 
 ### Architecture Patterns
 - **Application Type**: Single Page Application (SPA) with PWA capabilities (fully installable)
@@ -59,7 +61,8 @@ To create the world's most intuitive and visually stunning enterprise work manag
 
 ### UI/UX Guidelines
 - **3-Click Rule**: Every action reachable within 3 clicks
-- **Visual-First**: Progress rings over tables, cards over lists
+- **Visual-First**: Card-based layouts, intuitive visual hierarchy, interactive components
+- **Simple & Clean**: Pure Vue + Tailwind components - no complex external visualization libraries
 - **Focus Mode**: Distraction-free employee interface
 - **Accessibility**: WCAG 2.1 AA compliance
 

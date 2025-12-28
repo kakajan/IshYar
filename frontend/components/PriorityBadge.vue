@@ -1,14 +1,23 @@
 <script setup lang="ts">
+import { Badge } from '~/components/ui/badge'
+import {
+  ArrowDown,
+  Minus,
+  ArrowUp,
+  AlertTriangle,
+  Flame,
+} from 'lucide-vue-next'
+
 const { t } = useI18n()
 
-type BadgeColor =
-  | 'error'
-  | 'primary'
+type BadgeVariant =
+  | 'default'
   | 'secondary'
+  | 'destructive'
+  | 'outline'
   | 'success'
-  | 'info'
   | 'warning'
-  | 'neutral'
+  | 'info'
 
 interface Props {
   priority: string
@@ -23,12 +32,12 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'sm',
 })
 
-const priorityMeta: Record<string, { color: BadgeColor; icon: string }> = {
-  low: { color: 'neutral', icon: 'i-heroicons-arrow-down' },
-  medium: { color: 'warning', icon: 'i-heroicons-minus' },
-  high: { color: 'warning', icon: 'i-heroicons-arrow-up' },
-  urgent: { color: 'error', icon: 'i-heroicons-exclamation-triangle' },
-  critical: { color: 'error', icon: 'i-heroicons-fire' },
+const priorityMeta: Record<string, { variant: BadgeVariant; icon: any }> = {
+  low: { variant: 'secondary', icon: ArrowDown },
+  medium: { variant: 'warning', icon: Minus },
+  high: { variant: 'warning', icon: ArrowUp },
+  urgent: { variant: 'destructive', icon: AlertTriangle },
+  critical: { variant: 'destructive', icon: Flame },
 }
 
 const config = computed(() => {
@@ -37,12 +46,10 @@ const config = computed(() => {
 
   return {
     label: t(`priority.${normalizedPriority}`),
-    color: meta.color,
+    variant: meta.variant,
     icon: meta.icon,
   }
 })
-
-const badgeColor = computed<BadgeColor>(() => config.value.color)
 
 const iconSize = computed(() => {
   const sizes: Record<string, string> = {
@@ -55,8 +62,8 @@ const iconSize = computed(() => {
 </script>
 
 <template>
-  <UBadge :color="badgeColor" variant="subtle" :size="size">
-    <UIcon v-if="showIcon" :name="config.icon" :class="[iconSize, 'mr-1']" />
+  <Badge :variant="config.variant">
+    <component :is="config.icon" v-if="showIcon" :class="[iconSize, 'mr-1']" />
     {{ config.label }}
-  </UBadge>
+  </Badge>
 </template>

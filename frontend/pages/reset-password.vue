@@ -1,11 +1,23 @@
 <script setup lang="ts">
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from '~/components/ui/card'
+import { Button } from '~/components/ui/button'
+import { Input } from '~/components/ui/input'
+import { Label } from '~/components/ui/label'
+import { Loader2, AlertTriangle } from 'lucide-vue-next'
+
 definePageMeta({
   layout: 'auth',
 })
 
 const route = useRoute()
 const router = useRouter()
-const toast = useToast()
+const { add: addToast } = useToast()
 const { t } = useI18n()
 
 const token = computed(() => (route.query.token as string) || '')
@@ -20,19 +32,19 @@ const isLoading = ref(false)
 
 const handleSubmit = async () => {
   if (form.password !== form.password_confirmation) {
-    toast.add({
+    addToast({
       title: t('common.error'),
       description: t('auth_pages.passwords_not_match'),
-      color: 'error',
+      variant: 'destructive',
     })
     return
   }
 
   if (form.password.length < 8) {
-    toast.add({
+    addToast({
       title: t('common.error'),
       description: t('profile.password_min_length'),
-      color: 'error',
+      variant: 'destructive',
     })
     return
   }
@@ -51,18 +63,18 @@ const handleSubmit = async () => {
       },
     })
 
-    toast.add({
+    addToast({
       title: t('common.success'),
       description: t('auth_pages.password_reset_success'),
-      color: 'success',
+      variant: 'default',
     })
 
     router.push('/login')
   } catch (error: any) {
-    toast.add({
+    addToast({
       title: t('common.error'),
       description: error.data?.message || t('messages.update_error'),
-      color: 'error',
+      variant: 'destructive',
     })
   } finally {
     isLoading.value = false
@@ -71,104 +83,100 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div
-    class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4"
-  >
+  <div class="min-h-screen flex items-center justify-center bg-background px-4">
     <div class="w-full max-w-md">
       <!-- Logo -->
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">IshYar</h1>
-        <p class="mt-2 text-gray-600 dark:text-gray-400">
-          Enterprise WorkSuite
-        </p>
+        <h1 class="text-3xl font-bold text-foreground">IshYar</h1>
+        <p class="mt-2 text-muted-foreground">Enterprise WorkSuite</p>
       </div>
 
       <!-- Invalid Token Warning -->
-      <UCard v-if="!token" class="glass text-center">
-        <div class="py-6">
+      <Card v-if="!token" class="text-center">
+        <CardContent class="py-6">
           <div
-            class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+            class="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-4"
           >
-            <UIcon
-              name="i-heroicons-exclamation-triangle"
-              class="w-8 h-8 text-red-600"
-            />
+            <AlertTriangle class="w-8 h-8 text-destructive" />
           </div>
           <h2 class="text-xl font-semibold mb-2">
             {{ t('auth_pages.invalid_reset_link') }}
           </h2>
-          <p class="text-gray-600 dark:text-gray-400 mb-6">
+          <p class="text-muted-foreground mb-6">
             {{ t('auth_pages.invalid_reset_link_desc') }}
           </p>
           <NuxtLink to="/forgot-password">
-            <UButton color="primary" block>
+            <Button class="w-full">
               {{ t('auth_pages.request_new_link') }}
-            </UButton>
+            </Button>
           </NuxtLink>
-        </div>
-      </UCard>
+        </CardContent>
+      </Card>
 
       <!-- Reset Form -->
-      <UCard v-else class="glass">
-        <template #header>
-          <h2 class="text-xl font-semibold text-center">
+      <Card v-else>
+        <CardHeader>
+          <CardTitle class="text-center">
             {{ t('auth_pages.reset_password_title') }}
-          </h2>
-        </template>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form class="space-y-6" @submit.prevent="handleSubmit">
+            <div class="space-y-2">
+              <Label for="email">{{ t('auth.email') }}</Label>
+              <Input
+                id="email"
+                v-model="form.email"
+                type="email"
+                placeholder="you@company.com"
+                required
+                :readonly="!!route.query.email"
+              />
+            </div>
 
-        <form class="space-y-6" @submit.prevent="handleSubmit">
-          <UFormField :label="t('auth.email')" name="email">
-            <UInput
-              v-model="form.email"
-              type="email"
-              placeholder="you@company.com"
-              required
-              size="lg"
-              :readonly="!!route.query.email"
-            />
-          </UFormField>
+            <div class="space-y-2">
+              <Label for="password">{{ t('profile.new_password') }}</Label>
+              <Input
+                id="password"
+                v-model="form.password"
+                type="password"
+                placeholder="••••••••"
+                required
+                autofocus
+              />
+            </div>
 
-          <UFormField :label="t('profile.new_password')" name="password">
-            <UInput
-              v-model="form.password"
-              type="password"
-              placeholder="••••••••"
-              required
-              size="lg"
-              autofocus
-            />
-          </UFormField>
+            <div class="space-y-2">
+              <Label for="password-confirmation">{{
+                t('profile.confirm_password')
+              }}</Label>
+              <Input
+                id="password-confirmation"
+                v-model="form.password_confirmation"
+                type="password"
+                placeholder="••••••••"
+                required
+              />
+            </div>
 
-          <UFormField
-            :label="t('profile.confirm_password')"
-            name="password_confirmation"
-          >
-            <UInput
-              v-model="form.password_confirmation"
-              type="password"
-              placeholder="••••••••"
-              required
-              size="lg"
-            />
-          </UFormField>
-
-          <UButton type="submit" block size="lg" :loading="isLoading">
-            {{ t('auth_pages.reset_password_title') }}
-          </UButton>
-        </form>
-
-        <template #footer>
-          <p class="text-center text-sm text-gray-600 dark:text-gray-400">
+            <Button type="submit" class="w-full" :disabled="isLoading">
+              <Loader2 v-if="isLoading" class="w-4 h-4 mr-2 animate-spin" />
+              {{ t('auth_pages.reset_password_title') }}
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter class="justify-center">
+          <p class="text-center text-sm text-muted-foreground">
             {{ t('auth_pages.remember_password') }}
             <NuxtLink
               to="/login"
-              class="text-primary-600 hover:text-primary-500 font-medium"
+              class="text-primary hover:underline font-medium"
             >
               {{ t('auth.sign_in') }}
             </NuxtLink>
           </p>
-        </template>
-      </UCard>
+        </CardFooter>
+      </Card>
     </div>
   </div>
 </template>

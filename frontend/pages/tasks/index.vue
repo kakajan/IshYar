@@ -1,4 +1,43 @@
 <script setup lang="ts">
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
+import { Button } from '~/components/ui/button'
+import { Input } from '~/components/ui/input'
+import { Badge } from '~/components/ui/badge'
+import { Checkbox } from '~/components/ui/checkbox'
+import { Label } from '~/components/ui/label'
+import { Textarea } from '~/components/ui/textarea'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '~/components/ui/dialog'
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '~/components/ui/select'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '~/components/ui/dropdown-menu'
+import {
+  Plus,
+  Search,
+  ClipboardList,
+  MoreVertical,
+  Pencil,
+  Eye,
+  Trash2,
+  Loader2,
+} from 'lucide-vue-next'
+
 const { $api } = useNuxtApp()
 const { t } = useI18n()
 const toast = useToast()
@@ -94,34 +133,34 @@ const resetForm = () => {
 }
 
 // Colors
-type BadgeColor =
-  | 'error'
-  | 'primary'
+type BadgeVariant =
+  | 'default'
   | 'secondary'
+  | 'destructive'
+  | 'outline'
   | 'success'
-  | 'info'
   | 'warning'
-  | 'neutral'
+  | 'info'
 
-const priorityColor = (priority: string): BadgeColor => {
-  const colors: Record<string, BadgeColor> = {
-    low: 'neutral',
+const priorityVariant = (priority: string): BadgeVariant => {
+  const variants: Record<string, BadgeVariant> = {
+    low: 'secondary',
     medium: 'warning',
     high: 'warning',
-    urgent: 'error',
+    urgent: 'destructive',
   }
-  return colors[priority] || 'neutral'
+  return variants[priority] || 'secondary'
 }
 
-const statusColor = (status: string): BadgeColor => {
-  const colors: Record<string, BadgeColor> = {
-    pending: 'neutral',
+const statusVariant = (status: string): BadgeVariant => {
+  const variants: Record<string, BadgeVariant> = {
+    pending: 'secondary',
     in_progress: 'info',
     completed: 'success',
     on_hold: 'warning',
-    cancelled: 'error',
+    cancelled: 'destructive',
   }
-  return colors[status] || 'neutral'
+  return variants[status] || 'secondary'
 }
 
 // Watch filters
@@ -159,194 +198,237 @@ interface Task {
     <!-- Header -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 class="text-2xl font-bold text-foreground">
           {{ $t('tasks.title') }}
         </h1>
-        <p class="mt-1 text-gray-600 dark:text-gray-400">
+        <p class="mt-1 text-muted-foreground">
           {{ $t('tasks.description') }}
         </p>
       </div>
-      <UButton icon="i-heroicons-plus" @click="isCreateModalOpen = true">
+      <Button @click="isCreateModalOpen = true">
+        <Plus class="w-4 h-4 mr-2" />
         {{ $t('tasks.create') }}
-      </UButton>
+      </Button>
     </div>
 
     <!-- Filters -->
-    <UCard>
-      <div class="flex flex-wrap gap-4">
-        <UInput
-          v-model="searchQuery"
-          :placeholder="$t('common.search')"
-          icon="i-heroicons-magnifying-glass"
-          class="w-64"
-        />
-        <USelectMenu
-          v-model="selectedStatus"
-          :options="statusOptions"
-          :placeholder="$t('common.status')"
-          class="w-40"
-        />
-        <USelectMenu
-          v-model="selectedPriority"
-          :options="priorityOptions"
-          :placeholder="$t('tasks.priority.label')"
-          class="w-40"
-        />
-      </div>
-    </UCard>
+    <Card>
+      <CardContent class="p-4">
+        <div class="flex flex-wrap gap-4">
+          <div class="relative w-64">
+            <Search
+              class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+            />
+            <Input
+              v-model="searchQuery"
+              :placeholder="$t('common.search')"
+              class="pl-9"
+            />
+          </div>
+          <Select v-model="selectedStatus">
+            <SelectTrigger class="w-40">
+              <SelectValue :placeholder="$t('common.status')" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem
+                v-for="opt in statusOptions"
+                :key="opt.value"
+                :value="opt.value"
+              >
+                {{ opt.label }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <Select v-model="selectedPriority">
+            <SelectTrigger class="w-40">
+              <SelectValue :placeholder="$t('tasks.priority.label')" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem
+                v-for="opt in priorityOptions"
+                :key="opt.value"
+                :value="opt.value"
+              >
+                {{ opt.label }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </CardContent>
+    </Card>
 
     <!-- Tasks list -->
-    <UCard>
-      <div v-if="isLoading" class="flex justify-center py-8">
-        <div
-          class="animate-spin w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full"
-        />
-      </div>
+    <Card>
+      <CardContent class="p-4">
+        <div v-if="isLoading" class="flex justify-center py-8">
+          <Loader2 class="w-8 h-8 animate-spin text-primary" />
+        </div>
 
-      <div v-else-if="tasks.length === 0" class="text-center py-12">
-        <UIcon
-          name="i-heroicons-clipboard-document-list"
-          class="w-12 h-12 text-gray-400 mx-auto"
-        />
-        <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">
-          {{ $t('tasks.no_tasks') }}
-        </h3>
-        <p class="mt-2 text-gray-600 dark:text-gray-400">
-          {{ $t('tasks.get_started') }}
-        </p>
-        <UButton class="mt-4" @click="isCreateModalOpen = true">
-          {{ $t('tasks.create') }}
-        </UButton>
-      </div>
+        <div v-else-if="tasks.length === 0" class="text-center py-12">
+          <ClipboardList class="w-12 h-12 text-muted-foreground mx-auto" />
+          <h3 class="mt-4 text-lg font-medium text-foreground">
+            {{ $t('tasks.no_tasks') }}
+          </h3>
+          <p class="mt-2 text-muted-foreground">
+            {{ $t('tasks.get_started') }}
+          </p>
+          <Button class="mt-4" @click="isCreateModalOpen = true">
+            {{ $t('tasks.create') }}
+          </Button>
+        </div>
 
-      <div v-else class="divide-y divide-gray-200 dark:divide-gray-700">
-        <div
-          v-for="task in tasks"
-          :key="task.id"
-          class="py-4 first:pt-0 last:pb-0 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 -mx-4 px-4 rounded-lg transition-colors cursor-pointer"
-        >
-          <div class="flex items-center gap-4 flex-1">
-            <UCheckbox :model-value="task.status === 'completed'" />
-            <div class="flex-1 min-w-0">
-              <p class="font-medium text-gray-900 dark:text-white truncate">
-                {{ task.title }}
-              </p>
-              <div class="flex items-center gap-3 mt-1 text-sm text-gray-500">
-                <span v-if="task.assignee">{{ task.assignee.name }}</span>
-                <span v-if="task.due_date">Due {{ task.due_date }}</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3">
-            <!-- Progress -->
-            <div v-if="task.progress > 0" class="w-20">
-              <div class="h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+        <div v-else class="divide-y divide-border">
+          <div
+            v-for="task in tasks"
+            :key="task.id"
+            class="py-4 first:pt-0 last:pb-0 flex items-center justify-between hover:bg-muted/50 -mx-4 px-4 rounded-lg transition-colors cursor-pointer"
+          >
+            <div class="flex items-center gap-4 flex-1">
+              <Checkbox :checked="task.status === 'completed'" />
+              <div class="flex-1 min-w-0">
+                <p class="font-medium text-foreground truncate">
+                  {{ task.title }}
+                </p>
                 <div
-                  class="h-full bg-primary-500 rounded-full transition-all"
-                  :style="{ width: `${task.progress}%` }"
-                />
+                  class="flex items-center gap-3 mt-1 text-sm text-muted-foreground"
+                >
+                  <span v-if="task.assignee">{{ task.assignee.name }}</span>
+                  <span v-if="task.due_date">Due {{ task.due_date }}</span>
+                </div>
               </div>
             </div>
 
-            <UBadge
-              :color="priorityColor(task.priority)"
-              variant="subtle"
-              size="sm"
-            >
-              {{ task.priority }}
-            </UBadge>
-            <UBadge
-              :color="statusColor(task.status)"
-              variant="subtle"
-              size="sm"
-            >
-              {{ task.status.replace('_', ' ') }}
-            </UBadge>
+            <div class="flex items-center gap-3">
+              <!-- Progress -->
+              <div v-if="task.progress > 0" class="w-20">
+                <div class="h-2 bg-muted rounded-full">
+                  <div
+                    class="h-full bg-primary rounded-full transition-all"
+                    :style="{ width: `${task.progress}%` }"
+                  />
+                </div>
+              </div>
 
-            <UDropdownMenu
-              :items="[
-                [
-                  { label: $t('common.edit'), icon: 'i-heroicons-pencil' },
-                  { label: $t('tasks.view'), icon: 'i-heroicons-eye' },
-                ],
-                [
-                  {
-                    label: $t('common.delete'),
-                    icon: 'i-heroicons-trash',
-                    color: 'red',
-                  },
-                ],
-              ]"
-            >
-              <UButton
-                variant="ghost"
-                icon="i-heroicons-ellipsis-vertical"
-                size="sm"
-              />
-            </UDropdownMenu>
+              <Badge :variant="priorityVariant(task.priority)">
+                {{ task.priority }}
+              </Badge>
+              <Badge :variant="statusVariant(task.status)">
+                {{ task.status.replace('_', ' ') }}
+              </Badge>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger as-child>
+                  <Button variant="ghost" size="sm">
+                    <MoreVertical class="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>
+                    <Pencil class="w-4 h-4 mr-2" />
+                    {{ $t('common.edit') }}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Eye class="w-4 h-4 mr-2" />
+                    {{ $t('tasks.view') }}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem class="text-destructive">
+                    <Trash2 class="w-4 h-4 mr-2" />
+                    {{ $t('common.delete') }}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
-      </div>
-    </UCard>
+      </CardContent>
+    </Card>
 
     <!-- Create Task Modal -->
-    <UModal v-model:open="isCreateModalOpen">
-      <template #header>
-        <h3 class="text-lg font-semibold">{{ $t('tasks.create') }}</h3>
-      </template>
+    <Dialog v-model:open="isCreateModalOpen">
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{{ $t('tasks.create') }}</DialogTitle>
+        </DialogHeader>
 
-      <form class="space-y-4 p-4" @submit.prevent="createTask">
-        <UFormField :label="$t('tasks.form.title')" name="title" required>
-          <UInput
-            v-model="newTask.title"
-            :placeholder="$t('tasks.form.title_placeholder')"
-          />
-        </UFormField>
-
-        <UFormField :label="$t('tasks.form.description')" name="description">
-          <UTextarea
-            v-model="newTask.description"
-            :placeholder="$t('tasks.form.description_placeholder')"
-            :rows="3"
-          />
-        </UFormField>
-
-        <div class="grid grid-cols-2 gap-4">
-          <UFormField :label="$t('tasks.form.type')" name="type">
-            <USelectMenu
-              v-model="newTask.type"
-              :options="[
-                { label: $t('tasks.situational'), value: 'situational' },
-                { label: $t('tasks.routine'), value: 'routine' },
-              ]"
+        <form class="space-y-4" @submit.prevent="createTask">
+          <div class="space-y-2">
+            <Label for="title">{{ $t('tasks.form.title') }} *</Label>
+            <Input
+              id="title"
+              v-model="newTask.title"
+              :placeholder="$t('tasks.form.title_placeholder')"
+              required
             />
-          </UFormField>
+          </div>
 
-          <UFormField :label="$t('tasks.priority.label')" name="priority">
-            <USelectMenu
-              v-model="newTask.priority"
-              :options="[
-                { label: $t('priority.low'), value: 'low' },
-                { label: $t('priority.medium'), value: 'medium' },
-                { label: $t('priority.high'), value: 'high' },
-                { label: $t('priority.urgent'), value: 'urgent' },
-              ]"
+          <div class="space-y-2">
+            <Label for="description">{{ $t('tasks.form.description') }}</Label>
+            <Textarea
+              id="description"
+              v-model="newTask.description"
+              :placeholder="$t('tasks.form.description_placeholder')"
+              :rows="3"
             />
-          </UFormField>
-        </div>
+          </div>
 
-        <UFormField :label="$t('tasks.due_date')" name="due_date">
-          <UInput v-model="newTask.due_date" type="date" />
-        </UFormField>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <Label>{{ $t('tasks.form.type') }}</Label>
+              <Select v-model="newTask.type">
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="situational">{{
+                    $t('tasks.situational')
+                  }}</SelectItem>
+                  <SelectItem value="routine">{{
+                    $t('tasks.routine')
+                  }}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-        <div class="flex justify-end gap-3 pt-4">
-          <UButton variant="ghost" @click="isCreateModalOpen = false">
-            {{ $t('common.cancel') }}
-          </UButton>
-          <UButton type="submit"> {{ $t('common.create') }} </UButton>
-        </div>
-      </form>
-    </UModal>
+            <div class="space-y-2">
+              <Label>{{ $t('tasks.priority.label') }}</Label>
+              <Select v-model="newTask.priority">
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">{{ $t('priority.low') }}</SelectItem>
+                  <SelectItem value="medium">{{
+                    $t('priority.medium')
+                  }}</SelectItem>
+                  <SelectItem value="high">{{
+                    $t('priority.high')
+                  }}</SelectItem>
+                  <SelectItem value="urgent">{{
+                    $t('priority.urgent')
+                  }}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <Label for="due_date">{{ $t('tasks.due_date') }}</Label>
+            <Input id="due_date" v-model="newTask.due_date" type="date" />
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              type="button"
+              @click="isCreateModalOpen = false"
+            >
+              {{ $t('common.cancel') }}
+            </Button>
+            <Button type="submit">{{ $t('common.create') }}</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>

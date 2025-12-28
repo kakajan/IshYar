@@ -42,8 +42,19 @@
     "sign_in": "Sign In",
     "sign_up": "Sign Up",
     "welcome_back": "Welcome Back",
+    "welcome": "Welcome",
     "login_subtitle": "Sign in to your IshYar account",
-    "invalid_credentials": "Invalid email or password"
+    "invalid_credentials": "Invalid email or password",
+    "enterprise_worksuite": "Enterprise WorkSuite",
+    "sign_in_title": "Sign in to your account",
+    "email_placeholder": "you{'@'}company.com",
+    "login_success": "You have successfully logged in.",
+    "login_failed": "Login failed",
+    "name": "Name",
+    "name_placeholder": "Your name",
+    "confirm_password": "Confirm Password",
+    "account_created": "Your account has been created.",
+    "registration_failed": "Registration failed"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -148,5 +159,24 @@
     "timezone": "Timezone",
     "language": "Language",
     "update_success": "Profile updated successfully"
+  },
+  "auth_pages": {
+    "forgot_password_title": "Forgot Password",
+    "forgot_password_desc": "Enter your email address and we'll send you a link to reset your password.",
+    "send_reset_link": "Send reset link",
+    "check_email": "Check your email",
+    "reset_link_sent": "We've sent a password reset link to",
+    "back_to_login": "Back to login",
+    "reset_password_title": "Reset your password",
+    "invalid_reset_link": "Invalid reset link",
+    "invalid_reset_link_desc": "This password reset link is invalid or has expired.",
+    "request_new_link": "Request new link",
+    "passwords_not_match": "Passwords do not match",
+    "password_reset_success": "Your password has been reset. Please sign in.",
+    "create_account": "Create an account",
+    "create_account_desc": "Start your journey with IshYar",
+    "already_have_account": "Already have an account?",
+    "dont_have_account": "Don't have an account?",
+    "remember_password": "Remember your password?"
   }
 }

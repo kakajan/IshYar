@@ -1,20 +1,13 @@
-<template>
-  <UDropdown :items="localeItems">
-    <UButton
-      color="neutral"
-      variant="ghost"
-      :icon="
-        currentLocale?.code === 'fa'
-          ? 'i-heroicons-language'
-          : 'i-heroicons-globe-alt'
-      "
-    >
-      <span class="hidden sm:inline">{{ currentLocale?.name }}</span>
-    </UButton>
-  </UDropdown>
-</template>
-
 <script setup lang="ts">
+import { Button } from '~/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '~/components/ui/dropdown-menu'
+import { Globe, Languages } from 'lucide-vue-next'
+
 type LocaleCode = 'en' | 'fa'
 
 const { locale, locales, setLocale } = useI18n()
@@ -25,19 +18,12 @@ const currentLocale = computed(() => {
   )
 })
 
-const localeItems = computed(() => [
-  locales.value
-    .filter(
-      (l): l is { code: LocaleCode; name: string; dir?: 'ltr' | 'rtl' } =>
-        typeof l === 'object' && 'code' in l
-    )
-    .map((l) => ({
-      label: l.name,
-      icon: l.code === 'fa' ? 'i-heroicons-language' : 'i-heroicons-globe-alt',
-      click: () => switchLocale(l.code),
-      active: locale.value === l.code,
-    })),
-])
+const availableLocales = computed(() => {
+  return locales.value.filter(
+    (l): l is { code: LocaleCode; name: string; dir?: 'ltr' | 'rtl' } =>
+      typeof l === 'object' && 'code' in l
+  )
+})
 
 const switchLocale = (code: LocaleCode) => {
   setLocale(code)
@@ -81,3 +67,31 @@ onMounted(() => {
   }
 })
 </script>
+
+<template>
+  <DropdownMenu>
+    <DropdownMenuTrigger as-child>
+      <Button variant="ghost">
+        <component
+          :is="currentLocale?.code === 'fa' ? Languages : Globe"
+          class="w-4 h-4"
+        />
+        <span class="hidden sm:inline ms-2">{{ currentLocale?.name }}</span>
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent>
+      <DropdownMenuItem
+        v-for="l in availableLocales"
+        :key="l.code"
+        :class="{ 'bg-accent': locale === l.code }"
+        @select="switchLocale(l.code)"
+      >
+        <component
+          :is="l.code === 'fa' ? Languages : Globe"
+          class="w-4 h-4 mr-2"
+        />
+        {{ l.name }}
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+</template>

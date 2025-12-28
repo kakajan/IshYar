@@ -1,9 +1,12 @@
 <script setup lang="ts">
-// Auth layout - minimal, no sidebar
+import { Toaster } from '~/components/ui/toast'
+
+const { toasts, dismiss } = useToast()
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <div class="min-h-screen bg-background">
     <slot />
+    <Toaster :toasts="toasts" @dismiss="dismiss" />
   </div>
 </template>

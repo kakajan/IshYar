@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import { Card, CardHeader, CardTitle, CardContent } from '~/components/ui/card'
+import { Button } from '~/components/ui/button'
+import { Label } from '~/components/ui/label'
+import { Separator } from '~/components/ui/separator'
+import { Switch } from '~/components/ui/switch'
+import { Monitor, Sun, Moon, Bell, Globe, AlertTriangle } from 'lucide-vue-next'
+
 definePageMeta({
   layout: 'default',
 })
@@ -6,15 +13,17 @@ definePageMeta({
 const { t } = useI18n()
 const colorMode = useColorMode()
 
-const appearanceOptions = computed(() => [
-  {
-    value: 'system',
-    label: t('settings.theme_system'),
-    icon: 'i-heroicons-computer-desktop',
-  },
-  { value: 'light', label: t('settings.theme_light'), icon: 'i-heroicons-sun' },
-  { value: 'dark', label: t('settings.theme_dark'), icon: 'i-heroicons-moon' },
-])
+type ColorModeOption = 'system' | 'light' | 'dark'
+
+const appearanceOptions: {
+  value: ColorModeOption
+  label: string
+  icon: any
+}[] = [
+  { value: 'system', label: 'theme_system', icon: Monitor },
+  { value: 'light', label: 'theme_light', icon: Sun },
+  { value: 'dark', label: 'theme_dark', icon: Moon },
+]
 
 const notificationSettings = reactive({
   email_notifications: true,
@@ -25,31 +34,28 @@ const notificationSettings = reactive({
 </script>
 
 <template>
-  <div class="space-y-6 max-w-3xl animate-fade-in">
+  <div class="space-y-6 max-w-3xl p-6">
     <!-- Header -->
     <div>
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+      <h1 class="text-2xl font-bold text-foreground">
         {{ t('nav.settings') }}
       </h1>
-      <p class="mt-1 text-gray-600 dark:text-gray-400">
+      <p class="mt-1 text-muted-foreground">
         {{ t('settings.subtitle') }}
       </p>
     </div>
 
     <!-- Appearance -->
-    <UCard>
-      <template #header>
+    <Card>
+      <CardHeader>
         <div class="flex items-center gap-3">
-          <UIcon
-            name="i-heroicons-paint-brush"
-            class="w-5 h-5 text-primary-500"
-          />
-          <h2 class="text-lg font-semibold">{{ t('settings.appearance') }}</h2>
+          <Sun class="w-5 h-5 text-primary" />
+          <CardTitle>{{ t('settings.appearance') }}</CardTitle>
         </div>
-      </template>
-
-      <div class="space-y-4">
-        <UFormField :label="t('settings.theme')" name="theme">
+      </CardHeader>
+      <CardContent>
+        <div class="space-y-4">
+          <Label>{{ t('settings.theme') }}</Label>
           <div class="flex gap-3">
             <button
               v-for="option in appearanceOptions"
@@ -57,142 +63,136 @@ const notificationSettings = reactive({
               type="button"
               class="flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all"
               :class="
-                colorMode.preference === option.value
-                  ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'
+                colorMode.preference.value === option.value
+                  ? 'border-primary bg-primary/10'
+                  : 'border-border hover:border-muted-foreground/50'
               "
-              @click="colorMode.preference = option.value"
+              @click="colorMode.preference.value = option.value"
             >
-              <UIcon :name="option.icon" class="w-6 h-6" />
-              <span class="text-sm font-medium">{{ option.label }}</span>
+              <component :is="option.icon" class="w-6 h-6" />
+              <span class="text-sm font-medium">{{
+                t(`settings.${option.label}`)
+              }}</span>
             </button>
           </div>
-        </UFormField>
-      </div>
-    </UCard>
+        </div>
+      </CardContent>
+    </Card>
 
     <!-- Notifications -->
-    <UCard>
-      <template #header>
+    <Card>
+      <CardHeader>
         <div class="flex items-center gap-3">
-          <UIcon name="i-heroicons-bell" class="w-5 h-5 text-primary-500" />
-          <h2 class="text-lg font-semibold">
-            {{ t('settings.notifications') }}
-          </h2>
+          <Bell class="w-5 h-5 text-primary" />
+          <CardTitle>{{ t('settings.notifications') }}</CardTitle>
         </div>
-      </template>
-
-      <div class="space-y-4">
+      </CardHeader>
+      <CardContent class="space-y-4">
         <div class="flex items-center justify-between">
           <div>
             <p class="font-medium">{{ t('settings.email_notifications') }}</p>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted-foreground">
               {{ t('settings.email_notifications_desc') }}
             </p>
           </div>
-          <UToggle v-model="notificationSettings.email_notifications" />
+          <Switch v-model="notificationSettings.email_notifications" />
         </div>
 
-        <UDivider />
+        <Separator />
 
         <div class="flex items-center justify-between">
           <div>
             <p class="font-medium">{{ t('settings.push_notifications') }}</p>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted-foreground">
               {{ t('settings.push_notifications_desc') }}
             </p>
           </div>
-          <UToggle v-model="notificationSettings.push_notifications" />
+          <Switch v-model="notificationSettings.push_notifications" />
         </div>
 
-        <UDivider />
+        <Separator />
 
         <div class="flex items-center justify-between">
           <div>
             <p class="font-medium">{{ t('settings.task_reminders') }}</p>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted-foreground">
               {{ t('settings.task_reminders_desc') }}
             </p>
           </div>
-          <UToggle v-model="notificationSettings.task_reminders" />
+          <Switch v-model="notificationSettings.task_reminders" />
         </div>
 
-        <UDivider />
+        <Separator />
 
         <div class="flex items-center justify-between">
           <div>
             <p class="font-medium">{{ t('settings.weekly_digest') }}</p>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted-foreground">
               {{ t('settings.weekly_digest_desc') }}
             </p>
           </div>
-          <UToggle v-model="notificationSettings.weekly_digest" />
+          <Switch v-model="notificationSettings.weekly_digest" />
         </div>
-      </div>
-    </UCard>
+      </CardContent>
+    </Card>
 
     <!-- Language & Region -->
-    <UCard>
-      <template #header>
+    <Card>
+      <CardHeader>
         <div class="flex items-center gap-3">
-          <UIcon name="i-heroicons-language" class="w-5 h-5 text-primary-500" />
-          <h2 class="text-lg font-semibold">
-            {{ t('settings.language_region') }}
-          </h2>
+          <Globe class="w-5 h-5 text-primary" />
+          <CardTitle>{{ t('settings.language_region') }}</CardTitle>
         </div>
-      </template>
-
-      <p class="text-sm text-gray-500">
-        {{ t('settings.language_region_desc') }}
-        <NuxtLink to="/profile" class="text-primary-500 hover:underline">
-          {{ t('settings.profile_settings') }} </NuxtLink
-        >.
-      </p>
-    </UCard>
+      </CardHeader>
+      <CardContent>
+        <p class="text-sm text-muted-foreground">
+          {{ t('settings.language_region_desc') }}
+          <NuxtLink to="/profile" class="text-primary hover:underline">
+            {{ t('settings.profile_settings') }} </NuxtLink
+          >.
+        </p>
+      </CardContent>
+    </Card>
 
     <!-- Danger Zone -->
-    <UCard>
-      <template #header>
+    <Card>
+      <CardHeader>
         <div class="flex items-center gap-3">
-          <UIcon
-            name="i-heroicons-exclamation-triangle"
-            class="w-5 h-5 text-red-500"
-          />
-          <h2 class="text-lg font-semibold text-red-600">
-            {{ t('settings.danger_zone') }}
-          </h2>
+          <AlertTriangle class="w-5 h-5 text-destructive" />
+          <CardTitle class="text-destructive">{{
+            t('settings.danger_zone')
+          }}</CardTitle>
         </div>
-      </template>
-
-      <div class="space-y-4">
+      </CardHeader>
+      <CardContent class="space-y-4">
         <div class="flex items-center justify-between">
           <div>
             <p class="font-medium">{{ t('settings.export_data') }}</p>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted-foreground">
               {{ t('settings.export_data_desc') }}
             </p>
           </div>
-          <UButton color="neutral" variant="outline">
+          <Button variant="outline">
             {{ t('settings.export') }}
-          </UButton>
+          </Button>
         </div>
 
-        <UDivider />
+        <Separator />
 
         <div class="flex items-center justify-between">
           <div>
-            <p class="font-medium text-red-600">
+            <p class="font-medium text-destructive">
               {{ t('settings.delete_account') }}
             </p>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-muted-foreground">
               {{ t('settings.delete_account_desc') }}
             </p>
           </div>
-          <UButton color="error" variant="soft">
+          <Button variant="destructive">
             {{ t('settings.delete_account') }}
-          </UButton>
+          </Button>
         </div>
-      </div>
-    </UCard>
+      </CardContent>
+    </Card>
   </div>
 </template>
