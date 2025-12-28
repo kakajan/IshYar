@@ -31,7 +31,7 @@
               <SelectValue :placeholder="$t('users.filter_department')" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">{{
+              <SelectItem value="all">{{
                 $t('users.all_departments')
               }}</SelectItem>
               <SelectItem
@@ -48,7 +48,7 @@
               <SelectValue :placeholder="$t('users.filter_status')" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">{{ $t('users.all_status') }}</SelectItem>
+              <SelectItem value="all">{{ $t('users.all_status') }}</SelectItem>
               <SelectItem value="true">{{ $t('common.active') }}</SelectItem>
               <SelectItem value="false">{{ $t('common.inactive') }}</SelectItem>
             </SelectContent>
@@ -309,8 +309,8 @@ const showUserModal = ref(false)
 const selectedUser = ref<User | null>(null)
 
 const filters = ref({
-  department_id: '' as string,
-  is_active: '' as string,
+  department_id: 'all' as string,
+  is_active: 'all' as string,
 })
 
 type BadgeVariant =
@@ -337,9 +337,9 @@ const fetchUsers = async () => {
   try {
     const params = new URLSearchParams()
     if (search.value) params.append('search', search.value)
-    if (filters.value.department_id)
+    if (filters.value.department_id && filters.value.department_id !== 'all')
       params.append('department_id', filters.value.department_id)
-    if (filters.value.is_active !== '')
+    if (filters.value.is_active && filters.value.is_active !== 'all')
       params.append('is_active', filters.value.is_active)
     params.append('page', String(page.value))
     params.append('per_page', String(perPage.value))
