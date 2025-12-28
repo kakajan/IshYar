@@ -389,7 +389,7 @@ We believe in the power of community. IshYar is open-source, and we warmly welco
 # Click the 'Fork' button at the top right of this page
 
 # 2. Clone your fork
-git clone https://github.com/YOUR_USERNAME/IshYar.git
+git clone https://github.com/kakajan/IshYar.git
 
 # 3. Create a feature branch
 git checkout -b feature/amazing-feature

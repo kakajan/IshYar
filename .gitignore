@@ -1,0 +1,229 @@
+# ============================================
+# IshYar - Enterprise WorkSuite
+# .gitignore for Laravel + Nuxt Monorepo
+# ============================================
+
+# ==========================================
+# Laravel Backend (backend/)
+# ==========================================
+
+# Laravel specific
+backend/vendor/
+backend/node_modules/
+backend/.env
+backend/.env.backup
+backend/.env.production
+backend/.phpunit.result.cache
+backend/Homestead.json
+backend/Homestead.yaml
+backend/auth.json
+backend/npm-debug.log
+backend/yarn-error.log
+
+# Laravel storage
+backend/storage/*.key
+backend/storage/app/*
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*
+!backend/storage/app/.gitkeep
+!backend/storage/app/public/.gitkeep
+!backend/storage/framework/.gitkeep
+!backend/storage/framework/cache/.gitkeep
+!backend/storage/framework/cache/data/.gitkeep
+!backend/storage/framework/sessions/.gitkeep
+!backend/storage/framework/testing/.gitkeep
+!backend/storage/framework/views/.gitkeep
+!backend/storage/logs/.gitkeep
+
+# Laravel compiled
+backend/public/hot
+backend/public/storage
+backend/public/build/
+backend/bootstrap/cache/*
+!backend/bootstrap/cache/.gitkeep
+
+# Filament
+backend/public/css/filament/
+backend/public/js/filament/
+
+# ==========================================
+# Nuxt Frontend (frontend/)
+# ==========================================
+
+# Nuxt build output
+frontend/.nuxt/
+frontend/.output/
+frontend/dist/
+frontend/node_modules/
+
+# Nuxt env
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# Nitro
+frontend/.nitro/
+frontend/.cache/
+
+# ==========================================
+# Modules (modules/)
+# ==========================================
+
+modules/*/vendor/
+modules/*/node_modules/
+modules/*/.env
+
+# ==========================================
+# IDE & Editor
+# ==========================================
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.history/
+
+# JetBrains (PhpStorm, WebStorm)
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# ==========================================
+# OS Generated
+# ==========================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ==========================================
+# Logs & Debug
+# ==========================================
+
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ==========================================
+# Testing
+# ==========================================
+
+coverage/
+.nyc_output/
+*.lcov
+
+# Playwright
+frontend/test-results/
+frontend/playwright-report/
+frontend/playwright/.cache/
+
+# PHPUnit
+backend/.phpunit.cache/
+backend/coverage/
+
+# ==========================================
+# Build & Compiled
+# ==========================================
+
+*.tsbuildinfo
+*.js.map
+*.d.ts.map
+
+# ==========================================
+# Package Managers
+# ==========================================
+
+# pnpm
+pnpm-lock.yaml
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
+# npm
+package-lock.json
+
+# Composer
+composer.lock
+
+# ==========================================
+# Docker (optional)
+# ==========================================
+
+docker-compose.override.yml
+.docker/
+
+# ==========================================
+# Misc
+# ==========================================
+
+# Local env files
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.cache
+
+# SSL Certificates (local dev)
+*.pem
+*.key
+*.crt
+!*.example.pem
+
+# Installation lock (created after install)
+backend/storage/installed
+
+# API Documentation generated
+docs/api/
+
+# Backups
+*.sql
+*.sql.gz
+backups/
