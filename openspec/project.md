@@ -19,16 +19,17 @@ To create the world's most intuitive and visually stunning enterprise work manag
 - **Queue System**: Laravel Horizon with Redis
 
 ### Frontend
-- **Framework**: Nuxt 4 (Experimental/Latest)
+- **Framework**: Nuxt 4 (SPA Mode - Experimental/Latest)
 - **UI Library**: Vue.js 3 (Composition API)
 - **Styling**: Tailwind CSS 4.0
-- **Component Library**: Vue Shadcn (Radix Vue)
+- **Component Library**: Nuxt UI
 - **State Management**: Pinia
 - **Animations**: GSAP, Vue Transitions
 - **Visualization**: D3.js, Vue Flow
 
 ### Architecture Patterns
-- **Application Type**: Cross-platform PWA (fully installable)
+- **Application Type**: Single Page Application (SPA) with PWA capabilities (fully installable)
+- **Rendering Strategy**: Client-Side Rendering (optimized for authenticated-only application)
 - **Design Philosophy**: Mobile-first responsive
 - **API Design**: RESTful + Real-time WebSockets
 - **Authentication**: JWT + OAuth2 (SSO support)
@@ -180,8 +181,15 @@ The following modules are pre-installed with IshYar:
 
 #### Multilingual Module
 - **Languages**: English (default), Persian/Farsi
-- **Features**: RTL support, translation management admin, Jalali calendar
+- **Features**: RTL support, translation management admin
 - **Integration**: vue-i18n frontend, Laravel localization backend
+
+#### Jalali Date Module
+- **Features**: Persian/Jalali (Solar Hijri) calendar support
+- **Components**: Date pickers, date range selectors, formatted date display
+- **Options**: Persian numerals, holiday highlighting, dual calendar display
+- **Integration**: Filament date fields, Vue components, Laravel validation rules
+- **Default**: Enabled by default, can be disabled per organization/user
 
 #### Currencies Module
 - **Features**: Multi-currency support, real-time exchange rates
@@ -225,6 +233,13 @@ Each module can define its own installation wizard accessible from the Filament 
 | en   | English  | LTR       | Gregorian |
 | fa   | Persian  | RTL       | Jalali   |
 
+### Calendar Systems
+IshYar supports multiple calendar systems through the Jalali Date Module:
+- **Gregorian**: Default for English and most languages
+- **Jalali (Solar Hijri)**: Persian calendar for Farsi locale
+- **Auto Detection**: Automatically selects calendar based on user locale
+- **Dual Display**: Option to show Gregorian alongside Jalali dates
+
 ### Translation Architecture
 - **Backend**: Laravel trans() with JSON/PHP files
 - **Frontend**: vue-i18n with lazy loading per locale
@@ -256,5 +271,6 @@ Each module can define its own installation wizard accessible from the Filament 
 | [PWA](specs/pwa/spec.md) | Offline, service workers |
 | [Modular Architecture](specs/modular-architecture/spec.md) | Plugin system |
 | [Multilingual Module](specs/multilingual-module/spec.md) | i18n, RTL support |
+| [Jalali Date Module](specs/jalali-date-module/spec.md) | Persian calendar, date pickers |
 | [Currencies Module](specs/currencies-module/spec.md) | Multi-currency, exchange rates |
 | [Installer](specs/installer/spec.md) | App & module installation |

@@ -149,7 +149,7 @@ IshYar is built on a **Modular Monolith** architecture – combining the simplic
 
 **Why Laravel 12?**
 - 🚀 Best-in-class developer experience
-- 🔐 Built-in authentication with Sanctum
+- 🔐 JWT-based API authentication
 - 📡 Native queue system for background jobs
 - 🧪 First-class testing support
 
@@ -159,20 +159,20 @@ IshYar is built on a **Modular Monolith** architecture – combining the simplic
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                       Nuxt 4 (SSR/SPA)                      │
+│                     Nuxt 4 (SPA Mode)                       │
 ├─────────────────────────────────────────────────────────────┤
 │                         Vue 3 + Pinia                       │
 ├─────────────┬─────────────┬─────────────┬──────────────────┤
-│  Shadcn     │   D3.js     │   PWA       │   Tailwind       │
-│  Vue UI     │   Charts    │   Module    │   CSS 4          │
+│  Nuxt UI    │   D3.js     │   PWA       │   Tailwind       │
+│  (UI Kit)   │   Charts    │   Module    │   CSS 4          │
 └─────────────┴─────────────┴─────────────┴──────────────────┘
 ```
 
-**Why Nuxt 4?**
-- ⚡ Hybrid rendering (SSR + SPA + Static)
+**Why Nuxt 4 as SPA?**
+- ⚡ Single Page Application (optimized for authenticated-only apps)
 - 📁 File-based routing with layouts
 - 🔄 Auto-imports for a cleaner codebase
-- 🎯 Optimal SEO and performance out of the box
+- 🎯 Lightweight deployment with better client-side performance
 
 <br />
 
@@ -182,11 +182,11 @@ IshYar is built on a **Modular Monolith** architecture – combining the simplic
 |-------|-----------|
 | **Backend Framework** | Laravel 12 |
 | **Frontend Framework** | Nuxt 4 / Vue 3 |
-| **UI Components** | Shadcn Vue |
+| **UI Components** | Nuxt UI |
 | **Styling** | Tailwind CSS 4 |
 | **Data Visualization** | D3.js |
 | **Progressive Web App** | Vite PWA Plugin |
-| **Authentication** | Laravel Sanctum |
+| **Authentication** | JWT (tymon/jwt-auth) |
 | **Database** | PostgreSQL / MySQL |
 | **Caching** | Redis |
 | **Queue** | Laravel Horizon |
@@ -253,12 +253,38 @@ pnpm install
 cp .env.example .env
 
 # Configure API endpoint
-# NUXT_PUBLIC_API_BASE=http://localhost:8000/api
+# NUXT_PUBLIC_API_BASE=http://localhost:8000/api/v1
 
 # Start development server
 pnpm dev
 # or: npm run dev
 ```
+
+<br />
+
+### 🔑 Default Credentials
+
+After running `php artisan db:seed`, you can login with:
+
+| Role | Email | Password |
+|------|-------|----------|
+| **Super Admin** | `admin@ishyar.local` | `password` |
+| **Manager** | `manager@ishyar.local` | `password` |
+| **Employee** | `alice@ishyar.local` | `password` |
+| **Employee** | `bob@ishyar.local` | `password` |
+| **Employee** | `carol@ishyar.local` | `password` |
+
+<br />
+
+### 🔧 Admin Panel Access
+
+Access the Filament admin panel at: `http://localhost:8000/admin`
+
+Login with the Super Admin credentials to manage:
+- Users & Roles
+- Organizations & Departments
+- Tasks & Projects
+- System Settings
 
 <br />
 

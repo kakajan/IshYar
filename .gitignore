@@ -28,14 +28,23 @@ backend/storage/framework/sessions/*
 backend/storage/framework/views/*
 backend/storage/logs/*
 !backend/storage/app/.gitkeep
+!backend/storage/app/.gitignore
 !backend/storage/app/public/.gitkeep
+!backend/storage/app/public/.gitignore
 !backend/storage/framework/.gitkeep
+!backend/storage/framework/.gitignore
 !backend/storage/framework/cache/.gitkeep
+!backend/storage/framework/cache/.gitignore
 !backend/storage/framework/cache/data/.gitkeep
+!backend/storage/framework/cache/data/.gitignore
 !backend/storage/framework/sessions/.gitkeep
+!backend/storage/framework/sessions/.gitignore
 !backend/storage/framework/testing/.gitkeep
+!backend/storage/framework/testing/.gitignore
 !backend/storage/framework/views/.gitkeep
+!backend/storage/framework/views/.gitignore
 !backend/storage/logs/.gitkeep
+!backend/storage/logs/.gitignore
 
 # Laravel compiled
 backend/public/hot
@@ -43,6 +52,7 @@ backend/public/storage
 backend/public/build/
 backend/bootstrap/cache/*
 !backend/bootstrap/cache/.gitkeep
+!backend/bootstrap/cache/.gitignore
 
 # Filament
 backend/public/css/filament/

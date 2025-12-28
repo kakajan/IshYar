@@ -1,0 +1,109 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+/* IshYar Design System Tokens */
+:root {
+  /* Primary Colors */
+  --color-primary-50: oklch(0.97 0.02 250);
+  --color-primary-100: oklch(0.94 0.04 250);
+  --color-primary-500: oklch(0.55 0.18 250);
+  --color-primary-600: oklch(0.48 0.18 250);
+  --color-primary-700: oklch(0.40 0.16 250);
+
+  /* Glassmorphism */
+  --glass-bg-light: oklch(1 0 0 / 0.7);
+  --glass-bg-dark: oklch(0.2 0 0 / 0.7);
+  --glass-border: oklch(1 0 0 / 0.1);
+  --glass-blur: 16px;
+
+  /* Spacing (4px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+
+  /* Animation */
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* Direction */
+  --direction: 1;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  --direction: -1;
+}
+
+/* Glassmorphism utility classes */
+.glass {
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
+
+.dark .glass {
+  background: var(--glass-bg-dark);
+}
+
+/* RTL-aware utilities */
+.flip-rtl {
+  transform: scaleX(var(--direction));
+}
+
+/* Smooth animations */
+.animate-fade-in {
+  animation: fadeIn var(--duration-normal) ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(0.7 0 0 / 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.6 0 0 / 0.5);
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* Persian/Farsi font support */
+[lang="fa"] {
+  font-family: 'Vazirmatn', 'IRANSans', 'Tahoma', system-ui, sans-serif;
+}
+
+/* Persian numerals */
+.fa-digits {
+  font-feature-settings: "ss01";
+}
