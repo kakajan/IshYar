@@ -38,11 +38,7 @@
 
     <!-- Users List -->
     <UCard>
-      <UTable
-        :rows="(users as any[])"
-        :columns="columnsTyped"
-        :loading="loading"
-      >
+      <UTable :rows="tableRows" :columns="columnsTyped" :loading="loading">
         <template #name-data="slotProps">
           <div class="flex items-center gap-3">
             <UAvatar :alt="getUser(slotProps.row).name" size="sm" />
@@ -230,6 +226,9 @@ const columnsTyped = computed(() => columns as any)
 
 // Helper to type-cast row data
 const getUser = (row: unknown): User => row as User
+
+// Typed rows for UTable compatibility
+const tableRows = computed(() => users.value as any[])
 
 const departmentOptions = computed(() => [
   { value: null, label: $t('users.all_departments') },

@@ -71,6 +71,12 @@ const columns = computed(() => [
 // Typed columns for UTable compatibility
 const columnsTyped = computed(() => columns.value as any)
 
+// Helper to type-cast row data
+const getPos = (row: unknown): Position => row as Position
+
+// Typed rows for UTable compatibility
+const tableRows = computed(() => positions.value as any[])
+
 const fetchPositions = async (page = 1) => {
   isLoading.value = true
   try {
@@ -231,22 +237,18 @@ onMounted(() => {
 
     <!-- Positions Table -->
     <UCard>
-      <UTable
-        :columns="columnsTyped"
-        :rows="(positions as any[])"
-        :loading="isLoading"
-      >
+      <UTable :columns="columnsTyped" :rows="tableRows" :loading="isLoading">
         <template #department-data="slotProps">
-          {{ (slotProps.row as Position).department?.name || '—' }}
+          {{ getPos(slotProps.row).department?.name || '—' }}
         </template>
 
         <template #is_active-data="slotProps">
           <UBadge
-            :color="(slotProps.row as Position).is_active ? 'success' : 'error'"
+            :color="getPos(slotProps.row).is_active ? 'success' : 'error'"
             variant="subtle"
           >
             {{
-              (slotProps.row as Position).is_active
+              getPos(slotProps.row).is_active
                 ? t('common.active')
                 : t('common.inactive')
             }}
@@ -255,7 +257,7 @@ onMounted(() => {
 
         <template #users_count-data="slotProps">
           <UBadge color="neutral" variant="subtle">
-            {{ (slotProps.row as Position).users_count || 0 }}
+            {{ getPos(slotProps.row).users_count || 0 }}
           </UBadge>
         </template>
 
@@ -265,14 +267,14 @@ onMounted(() => {
               variant="ghost"
               icon="i-heroicons-pencil-square"
               size="xs"
-              @click="openEditModal(slotProps.row as Position)"
+              @click="openEditModal(getPos(slotProps.row))"
             />
             <UButton
               variant="ghost"
               icon="i-heroicons-trash"
               color="error"
               size="xs"
-              @click="openDeleteModal(slotProps.row as Position)"
+              @click="openDeleteModal(getPos(slotProps.row))"
             />
           </div>
         </template>

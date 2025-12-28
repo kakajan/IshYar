@@ -65,13 +65,13 @@ Route::prefix('v1')->group(function () {
         Route::prefix('tasks/{task}')->group(function () {
             Route::post('complete', [TaskController::class, 'complete']);
             Route::post('start', [TaskController::class, 'start']);
-            
+
             // Task Comments
             Route::get('comments', [TaskCommentController::class, 'index']);
             Route::post('comments', [TaskCommentController::class, 'store']);
             Route::put('comments/{comment}', [TaskCommentController::class, 'update']);
             Route::delete('comments/{comment}', [TaskCommentController::class, 'destroy']);
-            
+
             // Time entries for task
             Route::get('time-entries', [TimeEntryController::class, 'forTask']);
             Route::post('time-entries', [TimeEntryController::class, 'store']);

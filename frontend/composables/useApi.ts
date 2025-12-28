@@ -1,7 +1,7 @@
 /**
  * Composable for handling async API operations with loading and error states
  */
-export const useAsyncData = <T>() => {
+export const useApiData = <T>() => {
   const data = ref<T | null>(null) as Ref<T | null>
   const error = ref<Error | null>(null)
   const isLoading = ref(false)

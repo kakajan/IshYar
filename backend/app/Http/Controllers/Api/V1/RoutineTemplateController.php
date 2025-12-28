@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
@@ -49,17 +48,17 @@ class RoutineTemplateController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'title'          => ['required', 'string', 'max:255'],
-            'description'    => ['nullable', 'string'],
-            'department_id'  => ['nullable', 'uuid', 'exists:departments,id'],
-            'assignee_id'    => ['nullable', 'uuid', 'exists:users,id'],
-            'priority'       => ['required', 'in:low,medium,high,critical'],
-            'estimated_time' => ['nullable', 'integer', 'min:1'],
-            'frequency'      => ['required', 'in:daily,weekly,monthly,custom'],
+            'title'              => ['required', 'string', 'max:255'],
+            'description'        => ['nullable', 'string'],
+            'department_id'      => ['nullable', 'uuid', 'exists:departments,id'],
+            'assignee_id'        => ['nullable', 'uuid', 'exists:users,id'],
+            'priority'           => ['required', 'in:low,medium,high,critical'],
+            'estimated_time'     => ['nullable', 'integer', 'min:1'],
+            'frequency'          => ['required', 'in:daily,weekly,monthly,custom'],
             'frequency_settings' => ['nullable', 'array'],
-            'next_run_at'    => ['required', 'date', 'after:now'],
-            'is_active'      => ['boolean'],
-            'settings'       => ['nullable', 'array'],
+            'next_run_at'        => ['required', 'date', 'after:now'],
+            'is_active'          => ['boolean'],
+            'settings'           => ['nullable', 'array'],
         ]);
 
         $routine = RoutineTemplate::create([
@@ -90,17 +89,17 @@ class RoutineTemplateController extends Controller
     public function update(Request $request, RoutineTemplate $routine): JsonResponse
     {
         $validated = $request->validate([
-            'title'          => ['sometimes', 'required', 'string', 'max:255'],
-            'description'    => ['nullable', 'string'],
-            'department_id'  => ['nullable', 'uuid', 'exists:departments,id'],
-            'assignee_id'    => ['nullable', 'uuid', 'exists:users,id'],
-            'priority'       => ['sometimes', 'required', 'in:low,medium,high,critical'],
-            'estimated_time' => ['nullable', 'integer', 'min:1'],
-            'frequency'      => ['sometimes', 'required', 'in:daily,weekly,monthly,custom'],
+            'title'              => ['sometimes', 'required', 'string', 'max:255'],
+            'description'        => ['nullable', 'string'],
+            'department_id'      => ['nullable', 'uuid', 'exists:departments,id'],
+            'assignee_id'        => ['nullable', 'uuid', 'exists:users,id'],
+            'priority'           => ['sometimes', 'required', 'in:low,medium,high,critical'],
+            'estimated_time'     => ['nullable', 'integer', 'min:1'],
+            'frequency'          => ['sometimes', 'required', 'in:daily,weekly,monthly,custom'],
             'frequency_settings' => ['nullable', 'array'],
-            'next_run_at'    => ['nullable', 'date'],
-            'is_active'      => ['boolean'],
-            'settings'       => ['nullable', 'array'],
+            'next_run_at'        => ['nullable', 'date'],
+            'is_active'          => ['boolean'],
+            'settings'           => ['nullable', 'array'],
         ]);
 
         $routine->update($validated);
@@ -128,13 +127,13 @@ class RoutineTemplateController extends Controller
      */
     public function toggle(RoutineTemplate $routine): JsonResponse
     {
-        $routine->update(['is_active' => !$routine->is_active]);
+        $routine->update(['is_active' => ! $routine->is_active]);
 
         return response()->json([
-            'message' => $routine->is_active 
-                ? __('messages.routine_activated') 
+            'message' => $routine->is_active
+                ? __('messages.routine_activated')
                 : __('messages.routine_deactivated'),
-            'data' => $routine->fresh(),
+            'data'    => $routine->fresh(),
         ]);
     }
 
@@ -143,7 +142,7 @@ class RoutineTemplateController extends Controller
      */
     public function trigger(RoutineTemplate $routine): JsonResponse
     {
-        if (!$routine->is_active) {
+        if (! $routine->is_active) {
             return response()->json([
                 'message' => __('messages.routine_inactive'),
             ], 400);

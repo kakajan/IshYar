@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
@@ -108,7 +107,7 @@ class TaskCommentController extends Controller
         }
 
         // Only owner or admin can delete
-        if ($comment->user_id !== $request->user()->id && !$request->user()->hasRole('admin')) {
+        if ($comment->user_id !== $request->user()->id && ! $request->user()->hasRole('admin')) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 

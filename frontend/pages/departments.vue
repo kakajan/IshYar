@@ -61,7 +61,7 @@
       <!-- List View -->
       <UTable
         v-if="viewMode === 'list'"
-        :rows="(allDepartments as any[])"
+        :rows="tableRows"
         :columns="columnsTyped"
       >
         <template #name-data="slotProps">
@@ -70,9 +70,7 @@
               name="i-heroicons-building-library"
               class="text-primary-500"
             />
-            <span class="font-medium">{{
-              getDept(slotProps.row).name
-            }}</span>
+            <span class="font-medium">{{ getDept(slotProps.row).name }}</span>
             <UBadge
               v-if="getDept(slotProps.row).code"
               size="xs"
@@ -224,6 +222,9 @@ const columnsTyped = computed(() => columns as any)
 
 // Helper to type-cast row data
 const getDept = (row: unknown): Department => row as Department
+
+// Typed rows for UTable compatibility
+const tableRows = computed(() => allDepartments.value as any[])
 
 const parentOptions = computed(() => [
   { value: null, label: $t('departments.no_parent') },
