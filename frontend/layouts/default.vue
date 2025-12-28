@@ -22,6 +22,11 @@ const navigation = computed(() => [
     to: '/departments',
     icon: 'i-heroicons-building-library',
   },
+  {
+    name: t('nav.positions'),
+    to: '/positions',
+    icon: 'i-heroicons-briefcase',
+  },
   { name: t('nav.users'), to: '/users', icon: 'i-heroicons-users' },
   { name: t('nav.settings'), to: '/settings', icon: 'i-heroicons-cog-6-tooth' },
 ])
