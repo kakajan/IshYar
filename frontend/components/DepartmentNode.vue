@@ -46,9 +46,9 @@
           <UBadge v-if="department.code" size="xs" color="gray">{{
             department.code
           }}</UBadge>
-          <UBadge v-if="!department.is_active" size="xs" color="red"
-            >Inactive</UBadge
-          >
+          <UBadge v-if="!department.is_active" size="xs" color="red">
+            {{ $t('common.inactive') }}
+          </UBadge>
         </div>
         <div v-if="department.head" class="text-sm text-gray-500 truncate">
           {{ department.head.name }}

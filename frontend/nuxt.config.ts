@@ -3,9 +3,10 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
-  // Use Nuxt 3 folder structure (pages, components, etc. in root)
-  future: {
-    compatibilityVersion: 3,
+  // Keep folders in root (Nuxt 3 style)
+  srcDir: '.',
+  dir: {
+    app: 'app',
   },
 
   modules: [

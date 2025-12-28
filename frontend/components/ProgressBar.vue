@@ -44,7 +44,7 @@ const colorClasses: Record<string, string> = {
   <div class="w-full">
     <div v-if="showText" class="flex justify-between text-sm mb-1">
       <span class="text-gray-600 dark:text-gray-400">
-        <slot name="label">Progress</slot>
+        <slot name="label">{{ $t('tasks.progress') }}</slot>
       </span>
       <span class="text-gray-900 dark:text-white font-medium">
         {{ Math.round(percentage) }}%
