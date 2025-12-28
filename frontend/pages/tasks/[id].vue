@@ -302,28 +302,46 @@ onMounted(() => {
         <!-- Details Card -->
         <UCard>
           <template #header>
-            <h2 class="text-lg font-semibold">{{ t('task_detail.details') }}</h2>
+            <h2 class="text-lg font-semibold">
+              {{ t('task_detail.details') }}
+            </h2>
           </template>
 
           <dl class="space-y-4">
             <div>
-              <dt class="text-sm text-gray-500 dark:text-gray-400">{{ t('task_detail.assignee') }}</dt>
+              <dt class="text-sm text-gray-500 dark:text-gray-400">
+                {{ t('task_detail.assignee') }}
+              </dt>
               <dd class="flex items-center gap-2 mt-1">
-                <UAvatar :alt="task.assignee?.name || t('task_detail.unassigned')" size="xs" />
-                <span>{{ task.assignee?.name || t('task_detail.unassigned') }}</span>
+                <UAvatar
+                  :alt="task.assignee?.name || t('task_detail.unassigned')"
+                  size="xs"
+                />
+                <span>{{
+                  task.assignee?.name || t('task_detail.unassigned')
+                }}</span>
               </dd>
             </div>
 
             <div>
-              <dt class="text-sm text-gray-500 dark:text-gray-400">{{ t('task_detail.reporter') }}</dt>
+              <dt class="text-sm text-gray-500 dark:text-gray-400">
+                {{ t('task_detail.reporter') }}
+              </dt>
               <dd class="flex items-center gap-2 mt-1">
-                <UAvatar :alt="task.reporter?.name || t('task_detail.unknown')" size="xs" />
-                <span>{{ task.reporter?.name || t('task_detail.unknown') }}</span>
+                <UAvatar
+                  :alt="task.reporter?.name || t('task_detail.unknown')"
+                  size="xs"
+                />
+                <span>{{
+                  task.reporter?.name || t('task_detail.unknown')
+                }}</span>
               </dd>
             </div>
 
             <div>
-              <dt class="text-sm text-gray-500 dark:text-gray-400">{{ t('task_detail.due_date') }}</dt>
+              <dt class="text-sm text-gray-500 dark:text-gray-400">
+                {{ t('task_detail.due_date') }}
+              </dt>
               <dd class="mt-1">
                 <span
                   v-if="task.due_date"
@@ -335,12 +353,16 @@ onMounted(() => {
                 >
                   {{ formatDate(task.due_date) }}
                 </span>
-                <span v-else class="text-gray-400">{{ t('task_detail.not_set') }}</span>
+                <span v-else class="text-gray-400">{{
+                  t('task_detail.not_set')
+                }}</span>
               </dd>
             </div>
 
             <div v-if="task.started_at">
-              <dt class="text-sm text-gray-500 dark:text-gray-400">{{ t('task_detail.started') }}</dt>
+              <dt class="text-sm text-gray-500 dark:text-gray-400">
+                {{ t('task_detail.started') }}
+              </dt>
               <dd class="mt-1">{{ formatDateTime(task.started_at) }}</dd>
             </div>
 
@@ -363,7 +385,9 @@ onMounted(() => {
         <!-- Activity / Metadata -->
         <UCard>
           <template #header>
-            <h2 class="text-lg font-semibold">{{ t('task_detail.activity') }}</h2>
+            <h2 class="text-lg font-semibold">
+              {{ t('task_detail.activity') }}
+            </h2>
           </template>
 
           <div class="text-sm space-y-2 text-gray-600 dark:text-gray-400">

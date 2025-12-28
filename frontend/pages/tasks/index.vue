@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { $api } = useNuxtApp()
+const { t } = useI18n()
 const toast = useToast()
 
 // State
@@ -10,22 +11,22 @@ const selectedStatus = ref<string>('')
 const selectedPriority = ref<string>('')
 const searchQuery = ref('')
 
-// Filters
-const statusOptions = [
-  { label: 'All', value: '' },
-  { label: 'Pending', value: 'pending' },
-  { label: 'In Progress', value: 'in_progress' },
-  { label: 'Completed', value: 'completed' },
-  { label: 'On Hold', value: 'on_hold' },
-]
+// Filters (computed for i18n reactivity)
+const statusOptions = computed(() => [
+  { label: t('common.all'), value: '' },
+  { label: t('status.pending'), value: 'pending' },
+  { label: t('status.in_progress'), value: 'in_progress' },
+  { label: t('status.completed'), value: 'completed' },
+  { label: t('status.on_hold'), value: 'on_hold' },
+])
 
-const priorityOptions = [
-  { label: 'All', value: '' },
-  { label: 'Low', value: 'low' },
-  { label: 'Medium', value: 'medium' },
-  { label: 'High', value: 'high' },
-  { label: 'Urgent', value: 'urgent' },
-]
+const priorityOptions = computed(() => [
+  { label: t('common.all'), value: '' },
+  { label: t('priority.low'), value: 'low' },
+  { label: t('priority.medium'), value: 'medium' },
+  { label: t('priority.high'), value: 'high' },
+  { label: t('priority.urgent'), value: 'urgent' },
+])
 
 // Fetch tasks
 const fetchTasks = async () => {
@@ -41,8 +42,8 @@ const fetchTasks = async () => {
     tasks.value = response.data.data
   } catch (error) {
     toast.add({
-      title: 'Error',
-      description: 'Failed to fetch tasks',
+      title: t('common.error'),
+      description: t('tasks.fetch_error'),
       color: 'error',
     })
   } finally {
@@ -66,8 +67,8 @@ const createTask = async () => {
       body: newTask,
     })
     toast.add({
-      title: 'Success',
-      description: 'Task created successfully',
+      title: t('common.success'),
+      description: t('messages.create_success'),
       color: 'success',
     })
     isCreateModalOpen.value = false
@@ -75,8 +76,8 @@ const createTask = async () => {
     fetchTasks()
   } catch (error: any) {
     toast.add({
-      title: 'Error',
-      description: error.data?.message || 'Failed to create task',
+      title: t('common.error'),
+      description: error.data?.message || t('messages.create_error'),
       color: 'error',
     })
   }
@@ -149,13 +150,13 @@ interface Task {
     <!-- Header -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Tasks</h1>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('tasks.title') }}</h1>
         <p class="mt-1 text-gray-600 dark:text-gray-400">
-          Manage and track your tasks
+          {{ $t('tasks.description') }}
         </p>
       </div>
       <UButton icon="i-heroicons-plus" @click="isCreateModalOpen = true">
-        New Task
+        {{ $t('tasks.create') }}
       </UButton>
     </div>
 
@@ -164,20 +165,20 @@ interface Task {
       <div class="flex flex-wrap gap-4">
         <UInput
           v-model="searchQuery"
-          placeholder="Search tasks..."
+          :placeholder="$t('common.search')"
           icon="i-heroicons-magnifying-glass"
           class="w-64"
         />
         <USelectMenu
           v-model="selectedStatus"
           :options="statusOptions"
-          placeholder="Status"
+          :placeholder="$t('common.status')"
           class="w-40"
         />
         <USelectMenu
           v-model="selectedPriority"
           :options="priorityOptions"
-          placeholder="Priority"
+          :placeholder="$t('tasks.priority.label')"
           class="w-40"
         />
       </div>
@@ -197,13 +198,13 @@ interface Task {
           class="w-12 h-12 text-gray-400 mx-auto"
         />
         <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">
-          No tasks found
+          {{ $t('tasks.no_tasks') }}
         </h3>
         <p class="mt-2 text-gray-600 dark:text-gray-400">
-          Get started by creating a new task.
+          {{ $t('tasks.get_started') }}
         </p>
         <UButton class="mt-4" @click="isCreateModalOpen = true">
-          Create Task
+          {{ $t('tasks.create') }}
         </UButton>
       </div>
 
@@ -255,10 +256,10 @@ interface Task {
             <UDropdownMenu
               :items="[
                 [
-                  { label: 'Edit', icon: 'i-heroicons-pencil' },
-                  { label: 'View Details', icon: 'i-heroicons-eye' },
+                  { label: $t('common.edit'), icon: 'i-heroicons-pencil' },
+                  { label: $t('tasks.view'), icon: 'i-heroicons-eye' },
                 ],
-                [{ label: 'Delete', icon: 'i-heroicons-trash', color: 'red' }],
+                [{ label: $t('common.delete'), icon: 'i-heroicons-trash', color: 'red' }],
               ]"
             >
               <UButton
@@ -275,55 +276,55 @@ interface Task {
     <!-- Create Task Modal -->
     <UModal v-model:open="isCreateModalOpen">
       <template #header>
-        <h3 class="text-lg font-semibold">Create New Task</h3>
+        <h3 class="text-lg font-semibold">{{ $t('tasks.create') }}</h3>
       </template>
 
       <form class="space-y-4 p-4" @submit.prevent="createTask">
-        <UFormField label="Title" name="title" required>
-          <UInput v-model="newTask.title" placeholder="Enter task title" />
+        <UFormField :label="$t('tasks.form.title')" name="title" required>
+          <UInput v-model="newTask.title" :placeholder="$t('tasks.form.title_placeholder')" />
         </UFormField>
 
-        <UFormField label="Description" name="description">
+        <UFormField :label="$t('tasks.form.description')" name="description">
           <UTextarea
             v-model="newTask.description"
-            placeholder="Task description..."
+            :placeholder="$t('tasks.form.description_placeholder')"
             rows="3"
           />
         </UFormField>
 
         <div class="grid grid-cols-2 gap-4">
-          <UFormField label="Type" name="type">
+          <UFormField :label="$t('tasks.form.type')" name="type">
             <USelectMenu
               v-model="newTask.type"
               :options="[
-                { label: 'Situational', value: 'situational' },
-                { label: 'Routine', value: 'routine' },
+                { label: $t('tasks.situational'), value: 'situational' },
+                { label: $t('tasks.routine'), value: 'routine' },
               ]"
             />
           </UFormField>
 
-          <UFormField label="Priority" name="priority">
+          <UFormField :label="$t('tasks.priority.label')" name="priority">
             <USelectMenu
               v-model="newTask.priority"
               :options="[
-                { label: 'Low', value: 'low' },
-                { label: 'Medium', value: 'medium' },
-                { label: 'High', value: 'high' },
-                { label: 'Urgent', value: 'urgent' },
+                { label: $t('priority.low'), value: 'low' },
+                { label: $t('priority.medium'), value: 'medium' },
+                { label: $t('priority.high'), value: 'high' },
+                { label: $t('priority.urgent'), value: 'urgent' },
               ]"
             />
           </UFormField>
         </div>
 
-        <UFormField label="Due Date" name="due_date">
+        <UFormField :label="$t('tasks.due_date')" name="due_date">
           <UInput v-model="newTask.due_date" type="date" />
         </UFormField>
 
         <div class="flex justify-end gap-3 pt-4">
           <UButton variant="ghost" @click="isCreateModalOpen = false">
-            Cancel
+            {{ $t('common.cancel') }}
           </UButton>
-          <UButton type="submit"> Create Task </UButton>
+          <UButton type="submit"> {{ $t('common.create') }} </UButton>
         </div>
       </form>
     </UModal>

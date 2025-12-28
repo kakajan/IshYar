@@ -3,6 +3,7 @@ definePageMeta({
   layout: 'auth',
 })
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 const toast = useToast()
 
@@ -20,14 +21,14 @@ const handleSubmit = async () => {
 
   if (result.success) {
     toast.add({
-      title: 'Welcome back!',
-      description: 'You have successfully logged in.',
+      title: t('auth.welcome_back'),
+      description: t('auth.login_success'),
       color: 'success',
     })
     navigateTo('/dashboard')
   } else {
     toast.add({
-      title: 'Login failed',
+      title: t('auth.login_failed'),
       description: result.error,
       color: 'error',
     })
@@ -46,7 +47,7 @@ const handleSubmit = async () => {
       <div class="text-center mb-8">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white">IshYar</h1>
         <p class="mt-2 text-gray-600 dark:text-gray-400">
-          Enterprise WorkSuite
+          {{ $t('auth.enterprise_worksuite') }}
         </p>
       </div>
 
@@ -54,23 +55,23 @@ const handleSubmit = async () => {
       <UCard class="glass">
         <template #header>
           <h2 class="text-xl font-semibold text-center">
-            Sign in to your account
+            {{ $t('auth.sign_in_title') }}
           </h2>
         </template>
 
         <form class="space-y-6" @submit.prevent="handleSubmit">
-          <UFormField label="Email" name="email">
+          <UFormField :label="$t('auth.email')" name="email">
             <UInput
               v-model="form.email"
               type="email"
-              placeholder="you@company.com"
+              :placeholder="$t('auth.email_placeholder')"
               required
               autofocus
               size="lg"
             />
           </UFormField>
 
-          <UFormField label="Password" name="password">
+          <UFormField :label="$t('auth.password')" name="password">
             <UInput
               v-model="form.password"
               type="password"
@@ -81,28 +82,28 @@ const handleSubmit = async () => {
           </UFormField>
 
           <div class="flex items-center justify-between">
-            <UCheckbox label="Remember me" />
+            <UCheckbox :label="$t('auth.remember_me')" />
             <NuxtLink
               to="/forgot-password"
               class="text-sm text-primary-600 hover:text-primary-500"
             >
-              Forgot password?
+              {{ $t('auth.forgot_password') }}
             </NuxtLink>
           </div>
 
           <UButton type="submit" block size="lg" :loading="isLoading">
-            Sign in
+            {{ $t('auth.sign_in') }}
           </UButton>
         </form>
 
         <template #footer>
           <p class="text-center text-sm text-gray-600 dark:text-gray-400">
-            Don't have an account?
+            {{ $t('auth_pages.dont_have_account') }}
             <NuxtLink
               to="/register"
               class="text-primary-600 hover:text-primary-500 font-medium"
             >
-              Sign up
+              {{ $t('auth.sign_up') }}
             </NuxtLink>
           </p>
         </template>

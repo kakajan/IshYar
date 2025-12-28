@@ -22,7 +22,8 @@
     "error": "خطا",
     "created": "ایجاد شده",
     "updated": "به‌روزرسانی",
-    "back": "بازگشت"
+    "back": "بازگشت",
+    "all": "همه"
   },
   "nav": {
     "dashboard": "داشبورد",
@@ -45,12 +46,24 @@
     "sign_in": "ورود",
     "sign_up": "ثبت‌نام",
     "welcome_back": "خوش آمدید",
+    "welcome": "خوش آمدید",
     "login_subtitle": "وارد حساب ایش‌یار خود شوید",
-    "invalid_credentials": "ایمیل یا رمز عبور نادرست است"
+    "invalid_credentials": "ایمیل یا رمز عبور نادرست است",
+    "enterprise_worksuite": "مجموعه کاری سازمانی",
+    "sign_in_title": "ورود به حساب کاربری",
+    "email_placeholder": "you@company.com",
+    "login_success": "با موفقیت وارد شدید.",
+    "login_failed": "ورود ناموفق",
+    "name": "نام",
+    "name_placeholder": "نام شما",
+    "confirm_password": "تایید رمز عبور",
+    "account_created": "حساب کاربری شما ایجاد شد.",
+    "registration_failed": "ثبت‌نام ناموفق"
   },
   "dashboard": {
     "title": "داشبورد",
     "welcome": "خوش آمدید",
+    "subtitle": "آنچه امروز در وظایف شما اتفاق می‌افتد.",
     "my_tasks": "وظایف من",
     "today_tasks": "وظایف امروز",
     "pending": "در انتظار",
@@ -58,9 +71,15 @@
     "completed": "تکمیل شده",
     "overdue": "معوق",
     "quick_actions": "دسترسی سریع",
-    "create_task": "ایجاد وظیفه",
+    "create_task": "ایجاد وظیفه جدید",
     "view_all_tasks": "مشاهده همه وظایف",
-    "recent_tasks": "وظایف اخیر"
+    "recent_tasks": "وظایف اخیر",
+    "view_all": "مشاهده همه",
+    "total_tasks": "کل وظایف",
+    "completed_today": "تکمیل شده امروز",
+    "from_last_week": "از هفته گذشته",
+    "schedule_meeting": "زمان‌بندی جلسه",
+    "generate_report": "تولید گزارش"
   },
   "tasks": {
     "title": "وظایف",
@@ -88,10 +107,19 @@
     "creator": "ایجادکننده",
     "progress": "پیشرفت",
     "no_tasks": "وظیفه‌ای یافت نشد",
+    "get_started": "با ایجاد یک وظیفه جدید شروع کنید.",
     "mark_complete": "تکمیل شد",
     "start_task": "شروع وظیفه",
     "comments": "نظرات",
-    "add_comment": "افزودن نظر"
+    "add_comment": "افزودن نظر",
+    "fetch_error": "دریافت وظایف ناموفق بود",
+    "form": {
+      "title": "عنوان",
+      "title_placeholder": "عنوان وظیفه را وارد کنید",
+      "description": "توضیحات",
+      "description_placeholder": "توضیحات وظیفه...",
+      "type": "نوع"
+    }
   },
   "organization": {
     "title": "سازمان",

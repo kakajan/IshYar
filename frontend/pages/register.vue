@@ -3,6 +3,7 @@ definePageMeta({
   layout: 'auth',
 })
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 const toast = useToast()
 
@@ -27,14 +28,14 @@ const handleSubmit = async () => {
 
   if (result.success) {
     toast.add({
-      title: 'Welcome!',
-      description: 'Your account has been created.',
+      title: t('auth.welcome'),
+      description: t('auth.account_created'),
       color: 'success',
     })
     navigateTo('/dashboard')
   } else {
     toast.add({
-      title: 'Registration failed',
+      title: t('auth.registration_failed'),
       description: result.error,
       color: 'error',
     })
@@ -53,38 +54,38 @@ const handleSubmit = async () => {
       <div class="text-center mb-8">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white">IshYar</h1>
         <p class="mt-2 text-gray-600 dark:text-gray-400">
-          Enterprise WorkSuite
+          {{ $t('auth.enterprise_worksuite') }}
         </p>
       </div>
 
       <!-- Register Card -->
       <UCard class="glass">
         <template #header>
-          <h2 class="text-xl font-semibold text-center">Create your account</h2>
+          <h2 class="text-xl font-semibold text-center">{{ $t('auth_pages.create_account') }}</h2>
         </template>
 
         <form class="space-y-6" @submit.prevent="handleSubmit">
-          <UFormField label="Name" name="name">
+          <UFormField :label="$t('auth.name')" name="name">
             <UInput
               v-model="form.name"
-              placeholder="Your name"
+              :placeholder="$t('auth.name_placeholder')"
               required
               autofocus
               size="lg"
             />
           </UFormField>
 
-          <UFormField label="Email" name="email">
+          <UFormField :label="$t('auth.email')" name="email">
             <UInput
               v-model="form.email"
               type="email"
-              placeholder="you@company.com"
+              :placeholder="$t('auth.email_placeholder')"
               required
               size="lg"
             />
           </UFormField>
 
-          <UFormField label="Password" name="password">
+          <UFormField :label="$t('auth.password')" name="password">
             <UInput
               v-model="form.password"
               type="password"
@@ -94,7 +95,7 @@ const handleSubmit = async () => {
             />
           </UFormField>
 
-          <UFormField label="Confirm Password" name="password_confirmation">
+          <UFormField :label="$t('auth.confirm_password')" name="password_confirmation">
             <UInput
               v-model="form.password_confirmation"
               type="password"
@@ -105,18 +106,18 @@ const handleSubmit = async () => {
           </UFormField>
 
           <UButton type="submit" block size="lg" :loading="isLoading">
-            Create account
+            {{ $t('auth_pages.create_account') }}
           </UButton>
         </form>
 
         <template #footer>
           <p class="text-center text-sm text-gray-600 dark:text-gray-400">
-            Already have an account?
+            {{ $t('auth_pages.already_have_account') }}
             <NuxtLink
               to="/login"
               class="text-primary-600 hover:text-primary-500 font-medium"
             >
-              Sign in
+              {{ $t('auth.sign_in') }}
             </NuxtLink>
           </p>
         </template>

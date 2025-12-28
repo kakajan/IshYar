@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: false,
+})
+
 // Redirect to dashboard
 onMounted(() => {
   navigateTo('/dashboard')
@@ -11,7 +15,7 @@ onMounted(() => {
       <div
         class="animate-spin w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full mx-auto"
       />
-      <p class="mt-4 text-gray-600">Loading...</p>
+      <p class="mt-4 text-gray-600">{{ $t('common.loading') }}</p>
     </div>
   </div>
 </template>
