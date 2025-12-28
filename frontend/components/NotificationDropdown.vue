@@ -29,7 +29,9 @@ const notifications = ref([
   },
 ])
 
-const unreadCount = computed(() => notifications.value.filter((n) => !n.read).length)
+const unreadCount = computed(
+  () => notifications.value.filter((n) => !n.read).length
+)
 
 const iconMap: Record<string, string> = {
   task: 'i-heroicons-clipboard-document-list',
@@ -65,10 +67,10 @@ const formatTime = (dateStr: string) => {
   const diffHours = Math.floor(diffMins / 60)
   const diffDays = Math.floor(diffHours / 24)
 
-  if (diffMins < 1) return 'Just now'
-  if (diffMins < 60) return `${diffMins}m ago`
-  if (diffHours < 24) return `${diffHours}h ago`
-  if (diffDays < 7) return `${diffDays}d ago`
+  if (diffMins < 1) return t('notifications.just_now')
+  if (diffMins < 60) return t('notifications.minutes_ago', { count: diffMins })
+  if (diffHours < 24) return t('notifications.hours_ago', { count: diffHours })
+  if (diffDays < 7) return t('notifications.days_ago', { count: diffDays })
   return date.toLocaleDateString()
 }
 </script>
@@ -87,20 +89,24 @@ const formatTime = (dateStr: string) => {
     <template #content>
       <div class="w-80">
         <!-- Header -->
-        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-          <h3 class="font-semibold">Notifications</h3>
+        <div
+          class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700"
+        >
+          <h3 class="font-semibold">{{ t('notifications.title') }}</h3>
           <UButton
             v-if="unreadCount > 0"
             variant="ghost"
             size="xs"
             @click="markAllAsRead"
           >
-            Mark all read
+            {{ t('notifications.mark_all_read') }}
           </UButton>
         </div>
 
         <!-- Notifications list -->
-        <div class="max-h-96 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700">
+        <div
+          class="max-h-96 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700"
+        >
           <div
             v-for="notification in notifications"
             :key="notification.id"
@@ -116,11 +122,19 @@ const formatTime = (dateStr: string) => {
                 colorMap[notification.type],
               ]"
             >
-              <UIcon :name="iconMap[notification.type] || 'i-heroicons-bell'" class="w-4 h-4" />
+              <UIcon
+                :name="iconMap[notification.type] || 'i-heroicons-bell'"
+                class="w-4 h-4"
+              />
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-start justify-between gap-2">
-                <p :class="['text-sm font-medium truncate', !notification.read && 'text-gray-900 dark:text-white']">
+                <p
+                  :class="[
+                    'text-sm font-medium truncate',
+                    !notification.read && 'text-gray-900 dark:text-white',
+                  ]"
+                >
                   {{ notification.title }}
                 </p>
                 <span
@@ -142,8 +156,11 @@ const formatTime = (dateStr: string) => {
             v-if="notifications.length === 0"
             class="px-4 py-8 text-center text-gray-500"
           >
-            <UIcon name="i-heroicons-bell-slash" class="w-8 h-8 mx-auto mb-2 text-gray-400" />
-            <p>No notifications yet</p>
+            <UIcon
+              name="i-heroicons-bell-slash"
+              class="w-8 h-8 mx-auto mb-2 text-gray-400"
+            />
+            <p>{{ t('notifications.no_notifications') }}</p>
           </div>
         </div>
 
@@ -153,7 +170,7 @@ const formatTime = (dateStr: string) => {
             to="/settings"
             class="text-sm text-primary-600 hover:text-primary-500"
           >
-            Manage notification settings
+            {{ t('notifications.manage_settings') }}
           </NuxtLink>
         </div>
       </div>

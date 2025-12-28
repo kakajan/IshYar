@@ -20,10 +20,10 @@ interface ConfirmState {
 const state = reactive<ConfirmState>({
   isOpen: false,
   options: {
-    title: 'Confirm',
+    title: '',
     message: '',
-    confirmText: 'Confirm',
-    cancelText: 'Cancel',
+    confirmText: '',
+    cancelText: '',
     confirmColor: 'primary',
     icon: 'i-heroicons-question-mark-circle',
   },
@@ -31,13 +31,15 @@ const state = reactive<ConfirmState>({
 })
 
 export const useConfirm = () => {
+  const { t } = useI18n()
+
   const confirm = (options: ConfirmOptions): Promise<boolean> => {
     return new Promise((resolve) => {
       state.options = {
-        title: options.title || 'Confirm',
+        title: options.title || t('confirm.title'),
         message: options.message,
-        confirmText: options.confirmText || 'Confirm',
-        cancelText: options.cancelText || 'Cancel',
+        confirmText: options.confirmText || t('common.confirm'),
+        cancelText: options.cancelText || t('common.cancel'),
         confirmColor: options.confirmColor || 'primary',
         icon: options.icon || 'i-heroicons-question-mark-circle',
       }
@@ -48,12 +50,12 @@ export const useConfirm = () => {
 
   const confirmDelete = (itemName?: string): Promise<boolean> => {
     return confirm({
-      title: 'Delete Confirmation',
+      title: t('confirm.delete_title'),
       message: itemName
-        ? `Are you sure you want to delete "${itemName}"? This action cannot be undone.`
-        : 'Are you sure you want to delete this item? This action cannot be undone.',
-      confirmText: 'Delete',
-      cancelText: 'Cancel',
+        ? t('confirm.delete_message').replace('this item', `"${itemName}"`)
+        : t('confirm.delete_message'),
+      confirmText: t('common.delete'),
+      cancelText: t('common.cancel'),
       confirmColor: 'error',
       icon: 'i-heroicons-trash',
     })
@@ -61,10 +63,10 @@ export const useConfirm = () => {
 
   const confirmUnsavedChanges = (): Promise<boolean> => {
     return confirm({
-      title: 'Unsaved Changes',
-      message: 'You have unsaved changes. Are you sure you want to leave without saving?',
-      confirmText: 'Leave',
-      cancelText: 'Stay',
+      title: t('confirm.unsaved_title'),
+      message: t('confirm.unsaved_message'),
+      confirmText: t('confirm.leave'),
+      cancelText: t('confirm.stay'),
       confirmColor: 'warning',
       icon: 'i-heroicons-exclamation-triangle',
     })

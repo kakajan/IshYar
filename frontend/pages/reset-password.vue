@@ -21,8 +21,8 @@ const isLoading = ref(false)
 const handleSubmit = async () => {
   if (form.password !== form.password_confirmation) {
     toast.add({
-      title: 'Error',
-      description: 'Passwords do not match',
+      title: t('common.error'),
+      description: t('auth_pages.passwords_not_match'),
       color: 'error',
     })
     return
@@ -30,8 +30,8 @@ const handleSubmit = async () => {
 
   if (form.password.length < 8) {
     toast.add({
-      title: 'Error',
-      description: 'Password must be at least 8 characters',
+      title: t('common.error'),
+      description: t('profile.password_min_length'),
       color: 'error',
     })
     return
@@ -52,16 +52,16 @@ const handleSubmit = async () => {
     })
 
     toast.add({
-      title: 'Success',
-      description: 'Your password has been reset. Please sign in.',
+      title: t('common.success'),
+      description: t('auth_pages.password_reset_success'),
       color: 'success',
     })
 
     router.push('/login')
   } catch (error: any) {
     toast.add({
-      title: 'Error',
-      description: error.data?.message || 'Failed to reset password',
+      title: t('common.error'),
+      description: error.data?.message || t('messages.update_error'),
       color: 'error',
     })
   } finally {
@@ -94,12 +94,16 @@ const handleSubmit = async () => {
               class="w-8 h-8 text-red-600"
             />
           </div>
-          <h2 class="text-xl font-semibold mb-2">Invalid reset link</h2>
+          <h2 class="text-xl font-semibold mb-2">
+            {{ t('auth_pages.invalid_reset_link') }}
+          </h2>
           <p class="text-gray-600 dark:text-gray-400 mb-6">
-            This password reset link is invalid or has expired.
+            {{ t('auth_pages.invalid_reset_link_desc') }}
           </p>
           <NuxtLink to="/forgot-password">
-            <UButton color="primary" block> Request new link </UButton>
+            <UButton color="primary" block>
+              {{ t('auth_pages.request_new_link') }}
+            </UButton>
           </NuxtLink>
         </div>
       </UCard>
@@ -107,7 +111,9 @@ const handleSubmit = async () => {
       <!-- Reset Form -->
       <UCard v-else class="glass">
         <template #header>
-          <h2 class="text-xl font-semibold text-center">Reset your password</h2>
+          <h2 class="text-xl font-semibold text-center">
+            {{ t('auth_pages.reset_password_title') }}
+          </h2>
         </template>
 
         <form class="space-y-6" @submit.prevent="handleSubmit">
@@ -122,7 +128,7 @@ const handleSubmit = async () => {
             />
           </UFormField>
 
-          <UFormField label="New Password" name="password">
+          <UFormField :label="t('profile.new_password')" name="password">
             <UInput
               v-model="form.password"
               type="password"
@@ -133,7 +139,10 @@ const handleSubmit = async () => {
             />
           </UFormField>
 
-          <UFormField label="Confirm Password" name="password_confirmation">
+          <UFormField
+            :label="t('profile.confirm_password')"
+            name="password_confirmation"
+          >
             <UInput
               v-model="form.password_confirmation"
               type="password"
@@ -144,18 +153,18 @@ const handleSubmit = async () => {
           </UFormField>
 
           <UButton type="submit" block size="lg" :loading="isLoading">
-            Reset password
+            {{ t('auth_pages.reset_password_title') }}
           </UButton>
         </form>
 
         <template #footer>
           <p class="text-center text-sm text-gray-600 dark:text-gray-400">
-            Remember your password?
+            {{ t('auth_pages.remember_password') }}
             <NuxtLink
               to="/login"
               class="text-primary-600 hover:text-primary-500 font-medium"
             >
-              Sign in
+              {{ t('auth.sign_in') }}
             </NuxtLink>
           </p>
         </template>

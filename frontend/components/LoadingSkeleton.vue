@@ -30,7 +30,10 @@ const props = withDefaults(defineProps<Props>(), {
   <UCard v-else-if="variant === 'card'" class="animate-pulse">
     <div class="space-y-4">
       <div class="flex items-center gap-4">
-        <div v-if="avatar" class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700" />
+        <div
+          v-if="avatar"
+          class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700"
+        />
         <div class="flex-1 space-y-2">
           <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
           <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
@@ -58,7 +61,10 @@ const props = withDefaults(defineProps<Props>(), {
       :key="i"
       class="flex gap-4 p-4 border-b border-gray-100 dark:border-gray-800"
     >
-      <div v-if="avatar" class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700" />
+      <div
+        v-if="avatar"
+        class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700"
+      />
       <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4" />
       <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4" />
       <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4" />
@@ -73,7 +79,10 @@ const props = withDefaults(defineProps<Props>(), {
       :key="i"
       class="flex items-center gap-4 p-4 rounded-lg bg-gray-50 dark:bg-gray-800"
     >
-      <div v-if="avatar" class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700" />
+      <div
+        v-if="avatar"
+        class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700"
+      />
       <div class="flex-1 space-y-2">
         <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
         <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3" />

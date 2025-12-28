@@ -50,9 +50,17 @@ const colorClasses: Record<string, string> = {
         {{ Math.round(percentage) }}%
       </span>
     </div>
-    <div :class="['w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden', sizeClasses[size]]">
+    <div
+      :class="[
+        'w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden',
+        sizeClasses[size],
+      ]"
+    >
       <div
-        :class="['h-full rounded-full transition-all duration-300 ease-out', colorClasses[color]]"
+        :class="[
+          'h-full rounded-full transition-all duration-300 ease-out',
+          colorClasses[color],
+        ]"
         :style="{ width: `${percentage}%` }"
       />
     </div>

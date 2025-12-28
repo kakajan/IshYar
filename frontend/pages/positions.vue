@@ -48,14 +48,14 @@ const deletingPosition = ref<any>(null)
 // Departments for select
 const departments = ref<any[]>([])
 
-const columns = [
-  { key: 'title', label: t('common.title') },
-  { key: 'code', label: 'Code' },
-  { key: 'department', label: t('common.department') },
+const columns = computed(() => [
+  { key: 'title', label: t('positions.position_title') },
+  { key: 'code', label: t('positions.code') },
+  { key: 'department', label: t('positions.department') },
   { key: 'is_active', label: t('common.status') },
-  { key: 'users_count', label: 'Users' },
+  { key: 'users_count', label: t('positions.users_count') },
   { key: 'actions', label: '' },
-]
+])
 
 const fetchPositions = async (page = 1) => {
   isLoading.value = true
@@ -68,8 +68,8 @@ const fetchPositions = async (page = 1) => {
     meta.value = response.meta
   } catch (error) {
     toast.add({
-      title: 'Error',
-      description: 'Failed to load positions',
+      title: t('common.error'),
+      description: t('messages.load_error'),
       color: 'error',
     })
   } finally {
@@ -109,16 +109,16 @@ const handleCreate = async () => {
       body: createForm,
     })
     toast.add({
-      title: 'Success',
-      description: 'Position created successfully',
+      title: t('common.success'),
+      description: t('messages.create_success'),
       color: 'success',
     })
     isCreateModalOpen.value = false
     fetchPositions(meta.value.current_page)
   } catch (error: any) {
     toast.add({
-      title: 'Error',
-      description: error.data?.message || 'Failed to create position',
+      title: t('common.error'),
+      description: error.data?.message || t('messages.create_error'),
       color: 'error',
     })
   } finally {
@@ -146,16 +146,16 @@ const handleEdit = async () => {
       body: editForm,
     })
     toast.add({
-      title: 'Success',
-      description: 'Position updated successfully',
+      title: t('common.success'),
+      description: t('messages.update_success'),
       color: 'success',
     })
     isEditModalOpen.value = false
     fetchPositions(meta.value.current_page)
   } catch (error: any) {
     toast.add({
-      title: 'Error',
-      description: error.data?.message || 'Failed to update position',
+      title: t('common.error'),
+      description: error.data?.message || t('messages.update_error'),
       color: 'error',
     })
   } finally {
@@ -177,16 +177,16 @@ const handleDelete = async () => {
       method: 'DELETE',
     })
     toast.add({
-      title: 'Success',
-      description: 'Position deleted successfully',
+      title: t('common.success'),
+      description: t('messages.delete_success'),
       color: 'success',
     })
     isDeleteModalOpen.value = false
     fetchPositions(meta.value.current_page)
   } catch (error: any) {
     toast.add({
-      title: 'Error',
-      description: error.data?.message || 'Failed to delete position',
+      title: t('common.error'),
+      description: error.data?.message || t('messages.delete_error'),
       color: 'error',
     })
   } finally {
@@ -205,13 +205,13 @@ onMounted(() => {
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-bold">{{ t('common.positions') }}</h1>
+        <h1 class="text-2xl font-bold">{{ t('positions.title') }}</h1>
         <p class="text-gray-500 dark:text-gray-400">
-          Manage organizational positions and roles
+          {{ t('positions.description') }}
         </p>
       </div>
       <UButton icon="i-heroicons-plus" @click="openCreateModal">
-        Create Position
+        {{ t('positions.create') }}
       </UButton>
     </div>
 
@@ -224,7 +224,7 @@ onMounted(() => {
 
         <template #is_active-data="{ row }">
           <UBadge :color="row.is_active ? 'success' : 'error'" variant="subtle">
-            {{ row.is_active ? 'Active' : 'Inactive' }}
+            {{ row.is_active ? t('common.active') : t('common.inactive') }}
           </UBadge>
         </template>
 
@@ -257,10 +257,9 @@ onMounted(() => {
       <template #footer>
         <div class="flex items-center justify-between">
           <p class="text-sm text-gray-500">
-            Showing page {{ meta.current_page }} of {{ meta.last_page }} ({{
-              meta.total
-            }}
-            total)
+            {{ t('common.showing') }} {{ meta.current_page }}
+            {{ t('common.of') }} {{ meta.last_page }} ({{ meta.total }}
+            {{ t('tasks.total') }})
           </p>
           <UPagination
             v-model="meta.current_page"
@@ -277,45 +276,58 @@ onMounted(() => {
       <template #content>
         <UCard>
           <template #header>
-            <h3 class="text-lg font-semibold">Create Position</h3>
+            <h3 class="text-lg font-semibold">{{ t('positions.create') }}</h3>
           </template>
 
           <form class="space-y-4" @submit.prevent="handleCreate">
-            <UFormField label="Title" name="title" required>
+            <UFormField
+              :label="t('positions.position_title')"
+              name="title"
+              required
+            >
               <UInput
                 v-model="createForm.title"
-                placeholder="e.g., Senior Developer"
+                :placeholder="t('positions.title_placeholder')"
               />
             </UFormField>
 
-            <UFormField label="Code" name="code">
-              <UInput v-model="createForm.code" placeholder="e.g., SR-DEV" />
+            <UFormField :label="t('positions.code')" name="code">
+              <UInput
+                v-model="createForm.code"
+                :placeholder="t('positions.code_placeholder')"
+              />
             </UFormField>
 
-            <UFormField label="Department" name="department_id">
+            <UFormField :label="t('positions.department')" name="department_id">
               <USelect
                 v-model="createForm.department_id"
                 :items="departmentOptions"
-                placeholder="Select department"
+                :placeholder="t('positions.select_department')"
               />
             </UFormField>
 
-            <UFormField label="Description" name="description">
+            <UFormField
+              :label="t('departments.description')"
+              name="description"
+            >
               <UTextarea v-model="createForm.description" rows="3" />
             </UFormField>
 
             <UFormField>
-              <UCheckbox v-model="createForm.is_active" label="Active" />
+              <UCheckbox
+                v-model="createForm.is_active"
+                :label="t('common.active')"
+              />
             </UFormField>
           </form>
 
           <template #footer>
             <div class="flex justify-end gap-2">
               <UButton variant="outline" @click="isCreateModalOpen = false">
-                Cancel
+                {{ t('common.cancel') }}
               </UButton>
               <UButton :loading="isCreating" @click="handleCreate">
-                Create
+                {{ t('common.create') }}
               </UButton>
             </div>
           </template>
@@ -328,44 +340,59 @@ onMounted(() => {
       <template #content>
         <UCard>
           <template #header>
-            <h3 class="text-lg font-semibold">Edit Position</h3>
+            <h3 class="text-lg font-semibold">{{ t('positions.edit') }}</h3>
           </template>
 
           <form class="space-y-4" @submit.prevent="handleEdit">
-            <UFormField label="Title" name="title" required>
+            <UFormField
+              :label="t('positions.position_title')"
+              name="title"
+              required
+            >
               <UInput
                 v-model="editForm.title"
-                placeholder="e.g., Senior Developer"
+                :placeholder="t('positions.title_placeholder')"
               />
             </UFormField>
 
-            <UFormField label="Code" name="code">
-              <UInput v-model="editForm.code" placeholder="e.g., SR-DEV" />
+            <UFormField :label="t('positions.code')" name="code">
+              <UInput
+                v-model="editForm.code"
+                :placeholder="t('positions.code_placeholder')"
+              />
             </UFormField>
 
-            <UFormField label="Department" name="department_id">
+            <UFormField :label="t('positions.department')" name="department_id">
               <USelect
                 v-model="editForm.department_id"
                 :items="departmentOptions"
-                placeholder="Select department"
+                :placeholder="t('positions.select_department')"
               />
             </UFormField>
 
-            <UFormField label="Description" name="description">
+            <UFormField
+              :label="t('departments.description')"
+              name="description"
+            >
               <UTextarea v-model="editForm.description" rows="3" />
             </UFormField>
 
             <UFormField>
-              <UCheckbox v-model="editForm.is_active" label="Active" />
+              <UCheckbox
+                v-model="editForm.is_active"
+                :label="t('common.active')"
+              />
             </UFormField>
           </form>
 
           <template #footer>
             <div class="flex justify-end gap-2">
               <UButton variant="outline" @click="isEditModalOpen = false">
-                Cancel
+                {{ t('common.cancel') }}
               </UButton>
-              <UButton :loading="isEditing" @click="handleEdit"> Save </UButton>
+              <UButton :loading="isEditing" @click="handleEdit">
+                {{ t('common.save') }}
+              </UButton>
             </div>
           </template>
         </UCard>
@@ -377,26 +404,26 @@ onMounted(() => {
       <template #content>
         <UCard>
           <template #header>
-            <h3 class="text-lg font-semibold text-red-600">Delete Position</h3>
+            <h3 class="text-lg font-semibold text-red-600">
+              {{ t('confirm.delete_title') }}
+            </h3>
           </template>
 
           <p>
-            Are you sure you want to delete
-            <strong>{{ deletingPosition?.title }}</strong
-            >? This action cannot be undone.
+            {{ t('positions.confirm_delete') }}
           </p>
 
           <template #footer>
             <div class="flex justify-end gap-2">
               <UButton variant="outline" @click="isDeleteModalOpen = false">
-                Cancel
+                {{ t('common.cancel') }}
               </UButton>
               <UButton
                 color="error"
                 :loading="isDeleting"
                 @click="handleDelete"
               >
-                Delete
+                {{ t('common.delete') }}
               </UButton>
             </div>
           </template>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 interface Props {
   priority: string
   /** Show icon */
@@ -12,37 +14,23 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'sm',
 })
 
-const priorityConfig: Record<string, { label: string; color: string; icon: string }> = {
-  low: {
-    label: 'Low',
-    color: 'neutral',
-    icon: 'i-heroicons-arrow-down',
-  },
-  medium: {
-    label: 'Medium',
-    color: 'warning',
-    icon: 'i-heroicons-minus',
-  },
-  high: {
-    label: 'High',
-    color: 'orange',
-    icon: 'i-heroicons-arrow-up',
-  },
-  urgent: {
-    label: 'Urgent',
-    color: 'error',
-    icon: 'i-heroicons-exclamation-triangle',
-  },
-  critical: {
-    label: 'Critical',
-    color: 'error',
-    icon: 'i-heroicons-fire',
-  },
+const priorityMeta: Record<string, { color: string; icon: string }> = {
+  low: { color: 'neutral', icon: 'i-heroicons-arrow-down' },
+  medium: { color: 'warning', icon: 'i-heroicons-minus' },
+  high: { color: 'orange', icon: 'i-heroicons-arrow-up' },
+  urgent: { color: 'error', icon: 'i-heroicons-exclamation-triangle' },
+  critical: { color: 'error', icon: 'i-heroicons-fire' },
 }
 
 const config = computed(() => {
   const normalizedPriority = props.priority?.toLowerCase() || 'medium'
-  return priorityConfig[normalizedPriority] || priorityConfig.medium
+  const meta = priorityMeta[normalizedPriority] || priorityMeta.medium
+
+  return {
+    label: t(`priority.${normalizedPriority}`),
+    color: meta.color,
+    icon: meta.icon,
+  }
 })
 
 const iconSize = computed(() => {

@@ -66,7 +66,7 @@ const saveProfile = async () => {
   } catch (error: any) {
     toast.add({
       title: t('common.error'),
-      description: error.data?.message || 'Failed to update profile',
+      description: error.data?.message || t('messages.failed_profile'),
       color: 'error',
     })
   } finally {
@@ -84,7 +84,7 @@ const changePassword = async () => {
     })
     toast.add({
       title: t('common.success'),
-      description: 'Password changed successfully',
+      description: t('profile.password_success'),
       color: 'success',
     })
     // Reset password form
@@ -94,7 +94,7 @@ const changePassword = async () => {
   } catch (error: any) {
     toast.add({
       title: t('common.error'),
-      description: error.data?.message || 'Failed to change password',
+      description: error.data?.message || t('messages.failed_password'),
       color: 'error',
     })
   } finally {
@@ -111,7 +111,7 @@ const changePassword = async () => {
         {{ t('profile.title') }}
       </h1>
       <p class="mt-1 text-gray-600 dark:text-gray-400">
-        Manage your account settings and preferences
+        {{ t('profile.subtitle') }}
       </p>
     </div>
 
@@ -209,22 +209,22 @@ const changePassword = async () => {
     <!-- Account Info -->
     <UCard>
       <template #header>
-        <h2 class="text-lg font-semibold">Account Information</h2>
+        <h2 class="text-lg font-semibold">{{ t('profile.account_info') }}</h2>
       </template>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
         <div>
-          <span class="text-gray-500">Department</span>
+          <span class="text-gray-500">{{ t('users.department') }}</span>
           <p class="font-medium">
             {{ authStore.user?.department?.name || '—' }}
           </p>
         </div>
         <div>
-          <span class="text-gray-500">Position</span>
+          <span class="text-gray-500">{{ t('users.position') }}</span>
           <p class="font-medium">{{ authStore.user?.position?.name || '—' }}</p>
         </div>
         <div>
-          <span class="text-gray-500">Roles</span>
+          <span class="text-gray-500">{{ t('users.roles') }}</span>
           <div class="flex gap-1 mt-1">
             <UBadge
               v-for="role in authStore.user?.roles"
@@ -239,7 +239,7 @@ const changePassword = async () => {
           </div>
         </div>
         <div>
-          <span class="text-gray-500">Member since</span>
+          <span class="text-gray-500">{{ t('profile.member_since') }}</span>
           <p class="font-medium">{{ authStore.user?.created_at || '—' }}</p>
         </div>
       </div>

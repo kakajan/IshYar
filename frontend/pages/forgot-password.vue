@@ -25,8 +25,8 @@ const handleSubmit = async () => {
     isSubmitted.value = true
   } catch (error: any) {
     toast.add({
-      title: 'Error',
-      description: error.data?.message || 'Failed to send reset link',
+      title: t('common.error'),
+      description: error.data?.message || t('messages.load_error'),
       color: 'error',
     })
   } finally {
@@ -59,13 +59,17 @@ const handleSubmit = async () => {
               class="w-8 h-8 text-green-600"
             />
           </div>
-          <h2 class="text-xl font-semibold mb-2">Check your email</h2>
+          <h2 class="text-xl font-semibold mb-2">
+            {{ t('auth_pages.check_email') }}
+          </h2>
           <p class="text-gray-600 dark:text-gray-400 mb-6">
-            We've sent a password reset link to<br />
+            {{ t('auth_pages.reset_link_sent') }}<br />
             <strong>{{ form.email }}</strong>
           </p>
           <NuxtLink to="/login">
-            <UButton variant="outline" block> Back to login </UButton>
+            <UButton variant="outline" block>
+              {{ t('auth_pages.back_to_login') }}
+            </UButton>
           </NuxtLink>
         </div>
       </UCard>
@@ -74,13 +78,12 @@ const handleSubmit = async () => {
       <UCard v-else class="glass">
         <template #header>
           <h2 class="text-xl font-semibold text-center">
-            {{ t('auth.forgot_password') }}
+            {{ t('auth_pages.forgot_password_title') }}
           </h2>
         </template>
 
         <p class="text-sm text-gray-600 dark:text-gray-400 text-center mb-6">
-          Enter your email address and we'll send you a link to reset your
-          password.
+          {{ t('auth_pages.forgot_password_desc') }}
         </p>
 
         <form class="space-y-6" @submit.prevent="handleSubmit">
@@ -96,18 +99,18 @@ const handleSubmit = async () => {
           </UFormField>
 
           <UButton type="submit" block size="lg" :loading="isLoading">
-            Send reset link
+            {{ t('auth_pages.send_reset_link') }}
           </UButton>
         </form>
 
         <template #footer>
           <p class="text-center text-sm text-gray-600 dark:text-gray-400">
-            Remember your password?
+            {{ t('auth_pages.remember_password') }}
             <NuxtLink
               to="/login"
               class="text-primary-600 hover:text-primary-500 font-medium"
             >
-              Sign in
+              {{ t('auth.sign_in') }}
             </NuxtLink>
           </p>
         </template>

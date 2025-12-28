@@ -11,10 +11,14 @@ const { isOpen, options, handleConfirm, handleCancel } = useConfirm()
           <div
             :class="[
               'flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center',
-              options.confirmColor === 'error' && 'bg-red-100 dark:bg-red-900/30',
-              options.confirmColor === 'warning' && 'bg-yellow-100 dark:bg-yellow-900/30',
-              options.confirmColor === 'success' && 'bg-green-100 dark:bg-green-900/30',
-              options.confirmColor === 'primary' && 'bg-primary-100 dark:bg-primary-900/30',
+              options.confirmColor === 'error' &&
+                'bg-red-100 dark:bg-red-900/30',
+              options.confirmColor === 'warning' &&
+                'bg-yellow-100 dark:bg-yellow-900/30',
+              options.confirmColor === 'success' &&
+                'bg-green-100 dark:bg-green-900/30',
+              options.confirmColor === 'primary' &&
+                'bg-primary-100 dark:bg-primary-900/30',
             ]"
           >
             <UIcon

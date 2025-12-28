@@ -19,12 +19,12 @@ const newComment = ref('')
 const isSubmittingComment = ref(false)
 
 // Status options
-const statusOptions = [
-  { label: 'Pending', value: 'pending', color: 'warning' },
-  { label: 'In Progress', value: 'in_progress', color: 'info' },
-  { label: 'Completed', value: 'completed', color: 'success' },
-  { label: 'Cancelled', value: 'cancelled', color: 'error' },
-]
+const statusOptions = computed(() => [
+  { label: t('status.pending'), value: 'pending', color: 'warning' },
+  { label: t('status.in_progress'), value: 'in_progress', color: 'info' },
+  { label: t('status.completed'), value: 'completed', color: 'success' },
+  { label: t('status.cancelled'), value: 'cancelled', color: 'error' },
+])
 
 const priorityColors: Record<string, string> = {
   low: 'gray',
@@ -41,8 +41,8 @@ const fetchTask = async () => {
     task.value = response.data
   } catch (error: any) {
     toast.add({
-      title: 'Error',
-      description: error.data?.message || 'Failed to load task',
+      title: t('common.error'),
+      description: error.data?.message || t('task_detail.load_failed'),
       color: 'error',
     })
     router.push('/tasks')
@@ -68,15 +68,15 @@ const handleStart = async () => {
     const { $api } = useNuxtApp()
     await $api(`/tasks/${taskId.value}/start`, { method: 'POST' })
     toast.add({
-      title: 'Success',
-      description: 'Task started',
+      title: t('common.success'),
+      description: t('task_detail.started'),
       color: 'success',
     })
     fetchTask()
   } catch (error: any) {
     toast.add({
-      title: 'Error',
-      description: error.data?.message || 'Failed to start task',
+      title: t('common.error'),
+      description: error.data?.message || t('task_detail.start_failed'),
       color: 'error',
     })
   }
@@ -87,15 +87,15 @@ const handleComplete = async () => {
     const { $api } = useNuxtApp()
     await $api(`/tasks/${taskId.value}/complete`, { method: 'POST' })
     toast.add({
-      title: 'Success',
-      description: 'Task completed',
+      title: t('common.success'),
+      description: t('task_detail.completed'),
       color: 'success',
     })
     fetchTask()
   } catch (error: any) {
     toast.add({
-      title: 'Error',
-      description: error.data?.message || 'Failed to complete task',
+      title: t('common.error'),
+      description: error.data?.message || t('task_detail.complete_failed'),
       color: 'error',
     })
   }
@@ -114,8 +114,8 @@ const submitComment = async () => {
     fetchComments()
   } catch (error: any) {
     toast.add({
-      title: 'Error',
-      description: error.data?.message || 'Failed to add comment',
+      title: t('common.error'),
+      description: error.data?.message || t('task_detail.comment_failed'),
       color: 'error',
     })
   } finally {
@@ -163,7 +163,7 @@ onMounted(() => {
       class="inline-flex items-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 mb-6"
     >
       <UIcon name="i-heroicons-arrow-left" class="mr-2" />
-      {{ t('common.back') }} to Tasks
+      {{ t('task_detail.back_to_tasks') }}
     </NuxtLink>
 
     <!-- Loading State -->
@@ -184,7 +184,8 @@ onMounted(() => {
               <div class="flex-1">
                 <h1 class="text-2xl font-bold">{{ task.title }}</h1>
                 <p class="text-gray-500 dark:text-gray-400 mt-1">
-                  Created {{ formatDateTime(task.created_at) }}
+                  {{ t('task_detail.created_at') }}
+                  {{ formatDateTime(task.created_at) }}
                 </p>
               </div>
               <div class="flex gap-2">
@@ -210,7 +211,9 @@ onMounted(() => {
 
           <div class="prose dark:prose-invert max-w-none">
             <p v-if="task.description">{{ task.description }}</p>
-            <p v-else class="text-gray-400 italic">No description provided.</p>
+            <p v-else class="text-gray-400 italic">
+              {{ t('task_detail.no_description') }}
+            </p>
           </div>
 
           <template #footer>
@@ -220,7 +223,7 @@ onMounted(() => {
                 icon="i-heroicons-play"
                 @click="handleStart"
               >
-                Start Task
+                {{ t('task_detail.start_task') }}
               </UButton>
               <UButton
                 v-if="task.status === 'in_progress'"
@@ -228,11 +231,11 @@ onMounted(() => {
                 color="success"
                 @click="handleComplete"
               >
-                Mark Complete
+                {{ t('task_detail.mark_complete') }}
               </UButton>
               <NuxtLink :to="`/tasks?edit=${task.id}`">
                 <UButton variant="outline" icon="i-heroicons-pencil-square">
-                  Edit
+                  {{ t('common.edit') }}
                 </UButton>
               </NuxtLink>
             </div>
@@ -244,7 +247,7 @@ onMounted(() => {
           <template #header>
             <h2 class="text-lg font-semibold flex items-center gap-2">
               <UIcon name="i-heroicons-chat-bubble-left-right" />
-              Comments ({{ comments.length }})
+              {{ t('task_detail.comments') }} ({{ comments.length }})
             </h2>
           </template>
 
@@ -252,7 +255,7 @@ onMounted(() => {
           <form class="mb-6" @submit.prevent="submitComment">
             <UTextarea
               v-model="newComment"
-              placeholder="Add a comment..."
+              :placeholder="t('task_detail.add_comment')"
               rows="3"
               class="mb-2"
             />
@@ -261,7 +264,7 @@ onMounted(() => {
               :loading="isSubmittingComment"
               :disabled="!newComment.trim()"
             >
-              Post Comment
+              {{ t('task_detail.post_comment') }}
             </UButton>
           </form>
 
@@ -289,7 +292,7 @@ onMounted(() => {
             </div>
           </div>
           <div v-else class="text-center py-6 text-gray-500">
-            No comments yet. Be the first to add one!
+            {{ t('task_detail.no_comments') }}
           </div>
         </UCard>
       </div>
@@ -299,28 +302,28 @@ onMounted(() => {
         <!-- Details Card -->
         <UCard>
           <template #header>
-            <h2 class="text-lg font-semibold">Details</h2>
+            <h2 class="text-lg font-semibold">{{ t('task_detail.details') }}</h2>
           </template>
 
           <dl class="space-y-4">
             <div>
-              <dt class="text-sm text-gray-500 dark:text-gray-400">Assignee</dt>
+              <dt class="text-sm text-gray-500 dark:text-gray-400">{{ t('task_detail.assignee') }}</dt>
               <dd class="flex items-center gap-2 mt-1">
-                <UAvatar :alt="task.assignee?.name || 'Unassigned'" size="xs" />
-                <span>{{ task.assignee?.name || 'Unassigned' }}</span>
+                <UAvatar :alt="task.assignee?.name || t('task_detail.unassigned')" size="xs" />
+                <span>{{ task.assignee?.name || t('task_detail.unassigned') }}</span>
               </dd>
             </div>
 
             <div>
-              <dt class="text-sm text-gray-500 dark:text-gray-400">Reporter</dt>
+              <dt class="text-sm text-gray-500 dark:text-gray-400">{{ t('task_detail.reporter') }}</dt>
               <dd class="flex items-center gap-2 mt-1">
-                <UAvatar :alt="task.reporter?.name || 'Unknown'" size="xs" />
-                <span>{{ task.reporter?.name || 'Unknown' }}</span>
+                <UAvatar :alt="task.reporter?.name || t('task_detail.unknown')" size="xs" />
+                <span>{{ task.reporter?.name || t('task_detail.unknown') }}</span>
               </dd>
             </div>
 
             <div>
-              <dt class="text-sm text-gray-500 dark:text-gray-400">Due Date</dt>
+              <dt class="text-sm text-gray-500 dark:text-gray-400">{{ t('task_detail.due_date') }}</dt>
               <dd class="mt-1">
                 <span
                   v-if="task.due_date"
@@ -332,25 +335,25 @@ onMounted(() => {
                 >
                   {{ formatDate(task.due_date) }}
                 </span>
-                <span v-else class="text-gray-400">Not set</span>
+                <span v-else class="text-gray-400">{{ t('task_detail.not_set') }}</span>
               </dd>
             </div>
 
             <div v-if="task.started_at">
-              <dt class="text-sm text-gray-500 dark:text-gray-400">Started</dt>
+              <dt class="text-sm text-gray-500 dark:text-gray-400">{{ t('task_detail.started') }}</dt>
               <dd class="mt-1">{{ formatDateTime(task.started_at) }}</dd>
             </div>
 
             <div v-if="task.completed_at">
               <dt class="text-sm text-gray-500 dark:text-gray-400">
-                Completed
+                {{ t('status.completed') }}
               </dt>
               <dd class="mt-1">{{ formatDateTime(task.completed_at) }}</dd>
             </div>
 
             <div v-if="task.department">
               <dt class="text-sm text-gray-500 dark:text-gray-400">
-                Department
+                {{ t('users.department') }}
               </dt>
               <dd class="mt-1">{{ task.department.name }}</dd>
             </div>
@@ -360,16 +363,16 @@ onMounted(() => {
         <!-- Activity / Metadata -->
         <UCard>
           <template #header>
-            <h2 class="text-lg font-semibold">Activity</h2>
+            <h2 class="text-lg font-semibold">{{ t('task_detail.activity') }}</h2>
           </template>
 
           <div class="text-sm space-y-2 text-gray-600 dark:text-gray-400">
             <p>
-              <span class="font-medium">Created:</span>
+              <span class="font-medium">{{ t('common.created') }}:</span>
               {{ formatDateTime(task.created_at) }}
             </p>
             <p>
-              <span class="font-medium">Updated:</span>
+              <span class="font-medium">{{ t('common.updated') }}:</span>
               {{ formatDateTime(task.updated_at) }}
             </p>
           </div>

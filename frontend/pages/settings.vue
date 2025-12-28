@@ -6,11 +6,15 @@ definePageMeta({
 const { t } = useI18n()
 const colorMode = useColorMode()
 
-const appearanceOptions = [
-  { value: 'system', label: 'System', icon: 'i-heroicons-computer-desktop' },
-  { value: 'light', label: 'Light', icon: 'i-heroicons-sun' },
-  { value: 'dark', label: 'Dark', icon: 'i-heroicons-moon' },
-]
+const appearanceOptions = computed(() => [
+  {
+    value: 'system',
+    label: t('settings.theme_system'),
+    icon: 'i-heroicons-computer-desktop',
+  },
+  { value: 'light', label: t('settings.theme_light'), icon: 'i-heroicons-sun' },
+  { value: 'dark', label: t('settings.theme_dark'), icon: 'i-heroicons-moon' },
+])
 
 const notificationSettings = reactive({
   email_notifications: true,
@@ -28,7 +32,7 @@ const notificationSettings = reactive({
         {{ t('nav.settings') }}
       </h1>
       <p class="mt-1 text-gray-600 dark:text-gray-400">
-        Customize your application preferences
+        {{ t('settings.subtitle') }}
       </p>
     </div>
 
@@ -40,12 +44,12 @@ const notificationSettings = reactive({
             name="i-heroicons-paint-brush"
             class="w-5 h-5 text-primary-500"
           />
-          <h2 class="text-lg font-semibold">Appearance</h2>
+          <h2 class="text-lg font-semibold">{{ t('settings.appearance') }}</h2>
         </div>
       </template>
 
       <div class="space-y-4">
-        <UFormField label="Theme" name="theme">
+        <UFormField :label="t('settings.theme')" name="theme">
           <div class="flex gap-3">
             <button
               v-for="option in appearanceOptions"
@@ -72,16 +76,18 @@ const notificationSettings = reactive({
       <template #header>
         <div class="flex items-center gap-3">
           <UIcon name="i-heroicons-bell" class="w-5 h-5 text-primary-500" />
-          <h2 class="text-lg font-semibold">Notifications</h2>
+          <h2 class="text-lg font-semibold">
+            {{ t('settings.notifications') }}
+          </h2>
         </div>
       </template>
 
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <div>
-            <p class="font-medium">Email Notifications</p>
+            <p class="font-medium">{{ t('settings.email_notifications') }}</p>
             <p class="text-sm text-gray-500">
-              Receive important updates via email
+              {{ t('settings.email_notifications_desc') }}
             </p>
           </div>
           <UToggle v-model="notificationSettings.email_notifications" />
@@ -91,8 +97,10 @@ const notificationSettings = reactive({
 
         <div class="flex items-center justify-between">
           <div>
-            <p class="font-medium">Push Notifications</p>
-            <p class="text-sm text-gray-500">Get notified in your browser</p>
+            <p class="font-medium">{{ t('settings.push_notifications') }}</p>
+            <p class="text-sm text-gray-500">
+              {{ t('settings.push_notifications_desc') }}
+            </p>
           </div>
           <UToggle v-model="notificationSettings.push_notifications" />
         </div>
@@ -101,9 +109,9 @@ const notificationSettings = reactive({
 
         <div class="flex items-center justify-between">
           <div>
-            <p class="font-medium">Task Reminders</p>
+            <p class="font-medium">{{ t('settings.task_reminders') }}</p>
             <p class="text-sm text-gray-500">
-              Remind me about upcoming deadlines
+              {{ t('settings.task_reminders_desc') }}
             </p>
           </div>
           <UToggle v-model="notificationSettings.task_reminders" />
@@ -113,9 +121,9 @@ const notificationSettings = reactive({
 
         <div class="flex items-center justify-between">
           <div>
-            <p class="font-medium">Weekly Digest</p>
+            <p class="font-medium">{{ t('settings.weekly_digest') }}</p>
             <p class="text-sm text-gray-500">
-              Receive a weekly summary of activities
+              {{ t('settings.weekly_digest_desc') }}
             </p>
           </div>
           <UToggle v-model="notificationSettings.weekly_digest" />
@@ -128,14 +136,16 @@ const notificationSettings = reactive({
       <template #header>
         <div class="flex items-center gap-3">
           <UIcon name="i-heroicons-language" class="w-5 h-5 text-primary-500" />
-          <h2 class="text-lg font-semibold">Language & Region</h2>
+          <h2 class="text-lg font-semibold">
+            {{ t('settings.language_region') }}
+          </h2>
         </div>
       </template>
 
       <p class="text-sm text-gray-500">
-        Language and timezone settings are managed in your
+        {{ t('settings.language_region_desc') }}
         <NuxtLink to="/profile" class="text-primary-500 hover:underline">
-          profile settings </NuxtLink
+          {{ t('settings.profile_settings') }} </NuxtLink
         >.
       </p>
     </UCard>
@@ -148,31 +158,39 @@ const notificationSettings = reactive({
             name="i-heroicons-exclamation-triangle"
             class="w-5 h-5 text-red-500"
           />
-          <h2 class="text-lg font-semibold text-red-600">Danger Zone</h2>
+          <h2 class="text-lg font-semibold text-red-600">
+            {{ t('settings.danger_zone') }}
+          </h2>
         </div>
       </template>
 
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <div>
-            <p class="font-medium">Export My Data</p>
+            <p class="font-medium">{{ t('settings.export_data') }}</p>
             <p class="text-sm text-gray-500">
-              Download all your data in JSON format
+              {{ t('settings.export_data_desc') }}
             </p>
           </div>
-          <UButton color="gray" variant="outline"> Export </UButton>
+          <UButton color="gray" variant="outline">
+            {{ t('settings.export') }}
+          </UButton>
         </div>
 
         <UDivider />
 
         <div class="flex items-center justify-between">
           <div>
-            <p class="font-medium text-red-600">Delete Account</p>
+            <p class="font-medium text-red-600">
+              {{ t('settings.delete_account') }}
+            </p>
             <p class="text-sm text-gray-500">
-              Permanently delete your account and all data
+              {{ t('settings.delete_account_desc') }}
             </p>
           </div>
-          <UButton color="red" variant="soft"> Delete Account </UButton>
+          <UButton color="red" variant="soft">
+            {{ t('settings.delete_account') }}
+          </UButton>
         </div>
       </div>
     </UCard>
