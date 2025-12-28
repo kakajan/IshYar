@@ -38,6 +38,10 @@ import {
   Loader2,
 } from 'lucide-vue-next'
 
+definePageMeta({
+  layout: 'default',
+})
+
 const { $api } = useNuxtApp()
 const { t } = useI18n()
 const toast = useToast()
@@ -52,7 +56,7 @@ const searchQuery = ref('')
 
 // Filters (computed for i18n reactivity)
 const statusOptions = computed(() => [
-  { label: t('common.all'), value: '' },
+  { label: t('common.all'), value: 'all' },
   { label: t('status.pending'), value: 'pending' },
   { label: t('status.in_progress'), value: 'in_progress' },
   { label: t('status.completed'), value: 'completed' },
@@ -60,7 +64,7 @@ const statusOptions = computed(() => [
 ])
 
 const priorityOptions = computed(() => [
-  { label: t('common.all'), value: '' },
+  { label: t('common.all'), value: 'all' },
   { label: t('priority.low'), value: 'low' },
   { label: t('priority.medium'), value: 'medium' },
   { label: t('priority.high'), value: 'high' },
@@ -73,8 +77,14 @@ const fetchTasks = async () => {
   try {
     const response = (await $api('/tasks', {
       query: {
-        status: selectedStatus.value || undefined,
-        priority: selectedPriority.value || undefined,
+        status:
+          selectedStatus.value === 'all'
+            ? undefined
+            : selectedStatus.value || undefined,
+        priority:
+          selectedPriority.value === 'all'
+            ? undefined
+            : selectedPriority.value || undefined,
         search: searchQuery.value || undefined,
       },
     })) as { data: { data: Task[] } }
@@ -282,6 +292,7 @@ interface Task {
             v-for="task in tasks"
             :key="task.id"
             class="py-4 first:pt-0 last:pb-0 flex items-center justify-between hover:bg-muted/50 -mx-4 px-4 rounded-lg transition-colors cursor-pointer"
+            @click="navigateTo(`/tasks/${task.id}`)"
           >
             <div class="flex items-center gap-4 flex-1">
               <Checkbox :checked="task.status === 'completed'" />
@@ -293,7 +304,9 @@ interface Task {
                   class="flex items-center gap-3 mt-1 text-sm text-muted-foreground"
                 >
                   <span v-if="task.assignee">{{ task.assignee.name }}</span>
-                  <span v-if="task.due_date">Due {{ task.due_date }}</span>
+                  <span v-if="task.due_date"
+                    >{{ $t('tasks.due_date') }}: {{ task.due_date }}</span
+                  >
                 </div>
               </div>
             </div>
@@ -318,16 +331,18 @@ interface Task {
 
               <DropdownMenu>
                 <DropdownMenuTrigger as-child>
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" @click.stop>
                     <MoreVertical class="w-4 h-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem
+                    @select="navigateTo(`/tasks/${task.id}?edit=true`)"
+                  >
                     <Pencil class="w-4 h-4 mr-2" />
                     {{ $t('common.edit') }}
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem @select="navigateTo(`/tasks/${task.id}`)">
                     <Eye class="w-4 h-4 mr-2" />
                     {{ $t('tasks.view') }}
                   </DropdownMenuItem>
