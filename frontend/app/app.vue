@@ -1,6 +1,10 @@
 <template>
   <div>
     <NuxtRouteAnnouncer />
-    <NuxtWelcome />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+    <!-- Global Confirm Dialog -->
+    <ConfirmDialog />
   </div>
 </template>

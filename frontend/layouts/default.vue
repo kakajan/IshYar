@@ -127,7 +127,8 @@ const userMenuItems = computed(() => [
         class="sticky top-0 z-40 h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6"
       >
         <div class="flex items-center gap-4">
-          <!-- Breadcrumb or page title can go here -->
+          <!-- Breadcrumb -->
+          <AppBreadcrumb />
         </div>
 
         <div class="flex items-center gap-4">
@@ -146,7 +147,7 @@ const userMenuItems = computed(() => [
           <LanguageSwitcher />
 
           <!-- Notifications -->
-          <UButton variant="ghost" icon="i-heroicons-bell" />
+          <NotificationDropdown />
         </div>
       </header>
 
