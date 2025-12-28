@@ -182,10 +182,23 @@ modules/
 ### Default Modules
 The following modules are pre-installed with IshYar:
 
-#### Multilingual Module
-- **Languages**: English (default), Persian/Farsi
-- **Features**: RTL support, translation management admin
-- **Integration**: vue-i18n frontend, Laravel localization backend
+#### Multilingual Module (Built-in Feature)
+- **Status**: Core feature using Spatie Translatable package
+- **Languages**: English (default), Persian/Farsi (pre-configured)
+- **Implementation**: 
+  - Backend: Spatie Translatable with JSON column storage
+  - Frontend: vue-i18n with dynamic translation loading
+  - Models: Organization, Department, Position, Task, RoutineTemplate
+- **Features**: 
+  - RTL/LTR automatic switching
+  - API accepts both plain strings and `{en, fa}` objects
+  - Automatic locale detection via headers/query params
+  - Translations returned based on user's language preference
+- **Request/Response**: 
+  - Request: `Accept-Language: fa` or `?lang=fa`
+  - Response: Returns translated fields based on locale
+  - Validation: `TranslatableValue` rule for all translatable inputs
+- **Database**: JSON columns (e.g., `title: {"en": "Task", "fa": "وظیفه"}`)
 
 #### Jalali Date Module
 - **Features**: Persian/Jalali (Solar Hijri) calendar support

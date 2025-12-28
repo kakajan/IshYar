@@ -135,9 +135,9 @@ const changePassword = async () => {
 </script>
 
 <template>
-  <div class="space-y-6 max-w-3xl p-6">
+  <div class="p-6">
     <!-- Header -->
-    <div>
+    <div class="mb-6">
       <h1 class="text-2xl font-bold text-foreground">
         {{ t('profile.title') }}
       </h1>
@@ -146,7 +146,8 @@ const changePassword = async () => {
       </p>
     </div>
 
-    <!-- Profile Information -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Profile Information -->
     <Card>
       <CardHeader>
         <CardTitle>{{ t('profile.personal_info') }}</CardTitle>
@@ -346,5 +347,6 @@ const changePassword = async () => {
         </div>
       </CardContent>
     </Card>
+    </div>
   </div>
 </template>

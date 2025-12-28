@@ -10,10 +10,14 @@ export default defineNuxtPlugin(() => {
     baseURL: config.public.apiBase as string,
 
     async onRequest({ options }) {
+      // Get current locale
+      const { locale } = useI18n()
+      
       // Add auth token to requests
       const headers: Record<string, string> = {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Accept-Language': locale.value || 'en',
       }
       
       if (authStore.token) {

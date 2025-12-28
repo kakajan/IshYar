@@ -94,14 +94,29 @@ The system SHALL respect user language preferences.
 - **AND** preserve page state where possible
 
 ### Requirement: Content Translation
-The system SHALL support translation of user-generated content.
+The system SHALL support translation of user-generated content using Spatie Translatable.
 
 #### Scenario: Translating task content
 - **WHEN** task is created with translatable fields
-- **THEN** store content with original language tag
+- **THEN** store content as JSON with language keys: `{"en": "value", "fa": "قیمت"}`
 - **AND** allow adding translations for other languages
-- **AND** display in user's preferred language
-- **AND** fall back to original if translation missing
+- **AND** display in user's preferred language using `$task->translate('title', 'fa')`
+- **AND** fall back to default language if translation missing
+- **AND** support both plain strings and locale objects in API
+
+#### Scenario: Translating model content
+- **WHEN** model uses `HasTranslations` trait
+- **THEN** mark fields as translatable in `$translatable` array
+- **AND** store translations as JSON in single column
+- **AND** automatically return translated value based on `app()->getLocale()`
+- **AND** accept both string and `{en, fa}` object in API create/update
+
+#### Scenario: API request with translations
+- **WHEN** API receives translatable field value
+- **THEN** accept plain string (stored in default locale)
+- **AND** accept object with locale keys: `{"en": "Task", "fa": "وظیفه"}`
+- **AND** validate using `TranslatableValue` rule
+- **AND** automatically cast and store via Spatie Translatable
 
 #### Scenario: Translating notifications
 - **WHEN** notification is sent
@@ -377,6 +392,125 @@ Update current user's language preference.
   "language": "fa"
 }
 ```
+
+## Implementation Details
+
+### Backend (Laravel + Spatie Translatable)
+
+#### Package Installation
+```bash
+composer require spatie/laravel-translatable
+```
+
+#### Model Configuration
+```php
+use Spatie\Translatable\HasTranslations;
+
+class Task extends Model
+{
+    use HasTranslations;
+    
+    // Define translatable attributes
+    public $translatable = ['title', 'description'];
+    
+    protected $casts = [
+        'title' => 'array',
+        'description' => 'array',
+    ];
+}
+```
+
+#### Database Schema
+Translatable fields are stored as JSON columns:
+```php
+Schema::create('tasks', function (Blueprint $table) {
+    $table->uuid('id')->primary();
+    $table->json('title');        // {"en": "Task", "fa": "وظیفه"}
+    $table->json('description');  // {"en": "Description", "fa": "توضیحات"}
+    // ... other fields
+});
+```
+
+#### Locale Detection Middleware
+```php
+// app/Http/Middleware/SetRequestLocale.php
+class SetRequestLocale
+{
+    public function handle(Request $request, Closure $next)
+    {
+        $locale = $request->query('lang')
+            ?? $request->header('X-Locale')
+            ?? $request->header('Accept-Language');
+            
+        if ($locale && in_array($locale, ['fa', 'en'])) {
+            app()->setLocale(explode('-', explode(',', $locale)[0])[0]);
+        }
+        
+        return $next($request);
+    }
+}
+```
+
+#### API Validation Rule
+```php
+// app/Rules/TranslatableValue.php
+class TranslatableValue implements Rule
+{
+    public function passes($attribute, $value)
+    {
+        // Accept plain string
+        if (is_string($value)) {
+            return strlen($value) <= $this->max;
+        }
+        
+        // Accept {en, fa} object
+        if (is_array($value)) {
+            foreach ($value as $locale => $text) {
+                if (!in_array($locale, ['en', 'fa'])) {
+                    return false;
+                }
+                if (!is_string($text) || strlen($text) > $this->max) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        return false;
+    }
+}
+```
+
+#### Controller Usage
+```php
+// Accept both string and translated object
+$validated = $request->validate([
+    'title' => ['required', new TranslatableValue(max: 255)],
+    'description' => ['nullable', new TranslatableValue()],
+]);
+
+// Create with translations
+$task = Task::create([
+    'title' => $validated['title'],  // Auto-handled by Spatie
+    'description' => $validated['description'],
+]);
+
+// Returns translated value based on app()->getLocale()
+echo $task->title;  // "Task" when locale is 'en'
+echo $task->translate('title', 'fa');  // "وظیفه"
+```
+
+#### Supported Models with Translations
+
+The following models support multilingual content:
+
+| Model | Translatable Fields |
+|-------|---------------------|
+| `Organization` | name, description |
+| `Department` | name, description |
+| `Position` | name, description |
+| `Task` | title, description |
+| `RoutineTemplate` | title, description |
 
 ## Data Schema
 

@@ -39,8 +39,8 @@ import { Plus, Pencil, Trash2, Loader2 } from 'lucide-vue-next'
 
 interface Position {
   id: string | number
-  title: string
-  code?: string
+  name: string
+  slug?: string
   description?: string
   department?: { id: string | number; name: string }
   department_id?: number | null
@@ -67,8 +67,8 @@ const meta = ref<{ current_page: number; last_page: number; total: number }>({
 const isCreateModalOpen = ref(false)
 const isCreating = ref(false)
 const createForm = reactive({
-  title: '',
-  code: '',
+  name: '',
+  slug: '',
   description: '',
   department_id: null as number | null,
   is_active: true,
@@ -79,8 +79,8 @@ const isEditModalOpen = ref(false)
 const isEditing = ref(false)
 const editingPosition = ref<Position | null>(null)
 const editForm = reactive({
-  title: '',
-  code: '',
+  name: '',
+  slug: '',
   description: '',
   department_id: null as number | null,
   is_active: true,
@@ -128,8 +128,8 @@ const fetchDepartments = async () => {
 }
 
 const openCreateModal = () => {
-  createForm.title = ''
-  createForm.code = ''
+  createForm.name = ''
+  createForm.slug = ''
   createForm.description = ''
   createForm.department_id = null
   createForm.is_active = true
@@ -164,8 +164,8 @@ const handleCreate = async () => {
 
 const openEditModal = (position: Position) => {
   editingPosition.value = position
-  editForm.title = position.title
-  editForm.code = position.code || ''
+  editForm.name = position.name
+  editForm.slug = position.slug || ''
   editForm.description = position.description || ''
   editForm.department_id = position.department_id || null
   editForm.is_active = position.is_active
@@ -281,8 +281,8 @@ onMounted(() => {
               </TableCell>
             </TableRow>
             <TableRow v-for="position in positions" :key="position.id">
-              <TableCell class="font-medium">{{ position.title }}</TableCell>
-              <TableCell>{{ position.code || '—' }}</TableCell>
+              <TableCell class="font-medium">{{ position.name }}</TableCell>
+              <TableCell>{{ position.slug || '—' }}</TableCell>
               <TableCell>{{ position.department?.name || '—' }}</TableCell>
               <TableCell>
                 <Badge
@@ -360,22 +360,22 @@ onMounted(() => {
 
         <form class="space-y-4" @submit.prevent="handleCreate">
           <div class="space-y-2">
-            <Label for="create-title"
+            <Label for="create-name"
               >{{ t('positions.position_title') }} *</Label
             >
             <Input
-              id="create-title"
-              v-model="createForm.title"
+              id="create-name"
+              v-model="createForm.name"
               :placeholder="t('positions.title_placeholder')"
               required
             />
           </div>
 
           <div class="space-y-2">
-            <Label for="create-code">{{ t('positions.code') }}</Label>
+            <Label for="create-slug">{{ t('positions.code') }}</Label>
             <Input
-              id="create-code"
-              v-model="createForm.code"
+              id="create-slug"
+              v-model="createForm.slug"
               :placeholder="t('positions.code_placeholder')"
             />
           </div>
@@ -446,22 +446,20 @@ onMounted(() => {
 
         <form class="space-y-4" @submit.prevent="handleEdit">
           <div class="space-y-2">
-            <Label for="edit-title"
-              >{{ t('positions.position_title') }} *</Label
-            >
+            <Label for="edit-name">{{ t('positions.position_title') }} *</Label>
             <Input
-              id="edit-title"
-              v-model="editForm.title"
+              id="edit-name"
+              v-model="editForm.name"
               :placeholder="t('positions.title_placeholder')"
               required
             />
           </div>
 
           <div class="space-y-2">
-            <Label for="edit-code">{{ t('positions.code') }}</Label>
+            <Label for="edit-slug">{{ t('positions.code') }}</Label>
             <Input
-              id="edit-code"
-              v-model="editForm.code"
+              id="edit-slug"
+              v-model="editForm.slug"
               :placeholder="t('positions.code_placeholder')"
             />
           </div>

@@ -34,9 +34,9 @@ const notificationSettings = reactive({
 </script>
 
 <template>
-  <div class="space-y-6 max-w-3xl p-6">
+  <div class="p-6">
     <!-- Header -->
-    <div>
+    <div class="mb-6">
       <h1 class="text-2xl font-bold text-foreground">
         {{ t('nav.settings') }}
       </h1>
@@ -45,7 +45,8 @@ const notificationSettings = reactive({
       </p>
     </div>
 
-    <!-- Appearance -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Appearance -->
     <Card>
       <CardHeader>
         <div class="flex items-center gap-3">
@@ -194,5 +195,6 @@ const notificationSettings = reactive({
         </div>
       </CardContent>
     </Card>
+    </div>
   </div>
 </template>
