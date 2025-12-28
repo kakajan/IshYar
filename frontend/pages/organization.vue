@@ -234,10 +234,10 @@ const showEditModal = ref(false)
 // Fetch organization data
 onMounted(async () => {
   try {
-    const [orgRes, statsRes] = await Promise.all([
+    const [orgRes, statsRes] = (await Promise.all([
       $api('/organization'),
       $api('/organization/statistics'),
-    ])
+    ])) as [{ data: any }, { data: any }]
     organization.value = orgRes.data
     stats.value = statsRes.data
   } catch (error) {

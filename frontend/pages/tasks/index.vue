@@ -32,13 +32,13 @@ const priorityOptions = computed(() => [
 const fetchTasks = async () => {
   isLoading.value = true
   try {
-    const response = await $api('/tasks', {
+    const response = (await $api('/tasks', {
       query: {
         status: selectedStatus.value || undefined,
         priority: selectedPriority.value || undefined,
         search: searchQuery.value || undefined,
       },
-    })
+    })) as { data: { data: Task[] } }
     tasks.value = response.data.data
   } catch (error) {
     toast.add({
@@ -94,25 +94,34 @@ const resetForm = () => {
 }
 
 // Colors
-const priorityColor = (priority: string) => {
-  const colors: Record<string, string> = {
-    low: 'gray',
-    medium: 'yellow',
-    high: 'orange',
-    urgent: 'red',
+type BadgeColor =
+  | 'error'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'info'
+  | 'warning'
+  | 'neutral'
+
+const priorityColor = (priority: string): BadgeColor => {
+  const colors: Record<string, BadgeColor> = {
+    low: 'neutral',
+    medium: 'warning',
+    high: 'warning',
+    urgent: 'error',
   }
-  return colors[priority] || 'gray'
+  return colors[priority] || 'neutral'
 }
 
-const statusColor = (status: string) => {
-  const colors: Record<string, string> = {
-    pending: 'gray',
-    in_progress: 'blue',
-    completed: 'green',
-    on_hold: 'yellow',
-    cancelled: 'red',
+const statusColor = (status: string): BadgeColor => {
+  const colors: Record<string, BadgeColor> = {
+    pending: 'neutral',
+    in_progress: 'info',
+    completed: 'success',
+    on_hold: 'warning',
+    cancelled: 'error',
   }
-  return colors[status] || 'gray'
+  return colors[status] || 'neutral'
 }
 
 // Watch filters
@@ -150,7 +159,9 @@ interface Task {
     <!-- Header -->
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('tasks.title') }}</h1>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+          {{ $t('tasks.title') }}
+        </h1>
         <p class="mt-1 text-gray-600 dark:text-gray-400">
           {{ $t('tasks.description') }}
         </p>
@@ -259,7 +270,13 @@ interface Task {
                   { label: $t('common.edit'), icon: 'i-heroicons-pencil' },
                   { label: $t('tasks.view'), icon: 'i-heroicons-eye' },
                 ],
-                [{ label: $t('common.delete'), icon: 'i-heroicons-trash', color: 'red' }],
+                [
+                  {
+                    label: $t('common.delete'),
+                    icon: 'i-heroicons-trash',
+                    color: 'red',
+                  },
+                ],
               ]"
             >
               <UButton
@@ -281,14 +298,17 @@ interface Task {
 
       <form class="space-y-4 p-4" @submit.prevent="createTask">
         <UFormField :label="$t('tasks.form.title')" name="title" required>
-          <UInput v-model="newTask.title" :placeholder="$t('tasks.form.title_placeholder')" />
+          <UInput
+            v-model="newTask.title"
+            :placeholder="$t('tasks.form.title_placeholder')"
+          />
         </UFormField>
 
         <UFormField :label="$t('tasks.form.description')" name="description">
           <UTextarea
             v-model="newTask.description"
             :placeholder="$t('tasks.form.description_placeholder')"
-            rows="3"
+            :rows="3"
           />
         </UFormField>
 

@@ -1,7 +1,7 @@
 <template>
   <UDropdown :items="localeItems">
     <UButton
-      color="gray"
+      color="neutral"
       variant="ghost"
       :icon="
         currentLocale?.code === 'fa'
@@ -15,6 +15,8 @@
 </template>
 
 <script setup lang="ts">
+type LocaleCode = 'en' | 'fa'
+
 const { locale, locales, setLocale } = useI18n()
 
 const currentLocale = computed(() => {
@@ -26,8 +28,8 @@ const currentLocale = computed(() => {
 const localeItems = computed(() => [
   locales.value
     .filter(
-      (l): l is { code: string; name: string; dir: string } =>
-        typeof l === 'object'
+      (l): l is { code: LocaleCode; name: string; dir?: 'ltr' | 'rtl' } =>
+        typeof l === 'object' && 'code' in l
     )
     .map((l) => ({
       label: l.name,
@@ -37,7 +39,7 @@ const localeItems = computed(() => [
     })),
 ])
 
-const switchLocale = (code: string) => {
+const switchLocale = (code: LocaleCode) => {
   setLocale(code)
 
   // Update document direction for RTL support
@@ -49,7 +51,7 @@ const switchLocale = (code: string) => {
     typeof localeConfig === 'object' &&
     'dir' in localeConfig
   ) {
-    document.documentElement.dir = localeConfig.dir
+    document.documentElement.dir = (localeConfig.dir as string) || 'ltr'
     document.documentElement.lang = code
 
     // Add or remove RTL class
@@ -71,7 +73,7 @@ onMounted(() => {
     typeof localeConfig === 'object' &&
     'dir' in localeConfig
   ) {
-    document.documentElement.dir = localeConfig.dir
+    document.documentElement.dir = (localeConfig.dir as string) || 'ltr'
     document.documentElement.lang = locale.value
     if (localeConfig.dir === 'rtl') {
       document.documentElement.classList.add('rtl')

@@ -28,14 +28,17 @@ return [
 
     // Resource names
     'resources'                  => [
-        'user'       => 'کاربر',
-        'task'       => 'وظیفه',
-        'department' => 'دپارتمان',
-        'position'   => 'سمت',
-        'comment'    => 'نظر',
-        'attachment' => 'پیوست',
-        'role'       => 'نقش',
-        'permission' => 'مجوز',
+        'user'         => 'کاربر',
+        'task'         => 'وظیفه',
+        'department'   => 'دپارتمان',
+        'position'     => 'سمت',
+        'comment'      => 'نظر',
+        'attachment'   => 'پیوست',
+        'role'         => 'نقش',
+        'permission'   => 'مجوز',
+        'notification' => 'اعلان',
+        'routine'      => 'قالب دوره‌ای',
+        'time_entry'   => 'ورودی زمان',
     ],
 
     // Task messages
@@ -45,6 +48,32 @@ return [
     'task_already_completed'     => 'وظیفه قبلاً تکمیل شده است',
     'task_cannot_start'          => 'امکان شروع این وظیفه وجود ندارد',
     'task_cannot_complete'       => 'امکان تکمیل این وظیفه وجود ندارد',
+
+    // Comment messages
+    'comment_created'            => 'نظر با موفقیت اضافه شد',
+    'comment_updated'            => 'نظر با موفقیت به‌روزرسانی شد',
+    'comment_deleted'            => 'نظر با موفقیت حذف شد',
+
+    // Time entry messages
+    'time_entry_started'         => 'تایمر شروع شد',
+    'time_entry_stopped'         => 'تایمر متوقف شد',
+    'no_active_timer'            => 'تایمر فعالی یافت نشد',
+    'timer_already_running'      => 'تایمری برای این وظیفه در حال اجرا است',
+
+    // Notification messages
+    'notification_marked_read'   => 'اعلان خوانده شد',
+    'notifications_marked_read'  => 'همه اعلان‌ها خوانده شدند',
+    'notification_deleted'       => 'اعلان حذف شد',
+    'preferences_updated'        => 'تنظیمات اعلان به‌روزرسانی شد',
+
+    // Routine template messages
+    'routine_created'            => 'قالب دوره‌ای با موفقیت ایجاد شد',
+    'routine_updated'            => 'قالب دوره‌ای با موفقیت به‌روزرسانی شد',
+    'routine_deleted'            => 'قالب دوره‌ای با موفقیت حذف شد',
+    'routine_activated'          => 'قالب دوره‌ای فعال شد',
+    'routine_deactivated'        => 'قالب دوره‌ای غیرفعال شد',
+    'routine_triggered'          => 'قالب اجرا شد - وظیفه ایجاد شد',
+    'routine_inactive'           => 'امکان اجرای قالب غیرفعال وجود ندارد',
 
     // Validation messages
     'validation_failed'          => 'اعتبارسنجی ناموفق بود',

@@ -61,7 +61,9 @@ const handleSubmit = async () => {
       <!-- Register Card -->
       <UCard class="glass">
         <template #header>
-          <h2 class="text-xl font-semibold text-center">{{ $t('auth_pages.create_account') }}</h2>
+          <h2 class="text-xl font-semibold text-center">
+            {{ $t('auth_pages.create_account') }}
+          </h2>
         </template>
 
         <form class="space-y-6" @submit.prevent="handleSubmit">
@@ -95,7 +97,10 @@ const handleSubmit = async () => {
             />
           </UFormField>
 
-          <UFormField :label="$t('auth.confirm_password')" name="password_confirmation">
+          <UFormField
+            :label="$t('auth.confirm_password')"
+            name="password_confirmation"
+          >
             <UInput
               v-model="form.password_confirmation"
               type="password"

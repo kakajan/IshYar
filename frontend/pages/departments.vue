@@ -27,12 +27,12 @@
           </h3>
           <UButtonGroup>
             <UButton
-              :color="viewMode === 'tree' ? 'primary' : 'gray'"
+              :color="viewMode === 'tree' ? 'primary' : 'neutral'"
               icon="i-heroicons-rectangle-group"
               @click="viewMode = 'tree'"
             />
             <UButton
-              :color="viewMode === 'list' ? 'primary' : 'gray'"
+              :color="viewMode === 'list' ? 'primary' : 'neutral'"
               icon="i-heroicons-list-bullet"
               @click="viewMode = 'list'"
             />
@@ -61,34 +61,47 @@
       <!-- List View -->
       <UTable
         v-if="viewMode === 'list'"
-        :rows="allDepartments"
-        :columns="columns"
+        :rows="(allDepartments as any[])"
+        :columns="columnsTyped"
       >
-        <template #name-data="{ row }">
+        <template #name-data="slotProps">
           <div class="flex items-center gap-2">
             <UIcon
               name="i-heroicons-building-library"
               class="text-primary-500"
             />
-            <span class="font-medium">{{ row.name }}</span>
-            <UBadge v-if="row.code" size="xs" color="gray">{{
-              row.code
-            }}</UBadge>
+            <span class="font-medium">{{
+              getDept(slotProps.row).name
+            }}</span>
+            <UBadge
+              v-if="getDept(slotProps.row).code"
+              size="xs"
+              color="neutral"
+              >{{ getDept(slotProps.row).code }}</UBadge
+            >
           </div>
         </template>
-        <template #head-data="{ row }">
-          <span v-if="row.head">{{ row.head.name }}</span>
+        <template #head-data="slotProps">
+          <span v-if="getDept(slotProps.row).head">{{
+            getDept(slotProps.row).head?.name
+          }}</span>
           <span v-else class="text-gray-400">—</span>
         </template>
-        <template #is_active-data="{ row }">
-          <UBadge :color="row.is_active ? 'green' : 'red'">
-            {{ row.is_active ? $t('common.active') : $t('common.inactive') }}
+        <template #is_active-data="slotProps">
+          <UBadge
+            :color="getDept(slotProps.row).is_active ? 'success' : 'error'"
+          >
+            {{
+              getDept(slotProps.row).is_active
+                ? $t('common.active')
+                : $t('common.inactive')
+            }}
           </UBadge>
         </template>
-        <template #actions-data="{ row }">
-          <UDropdown :items="getActions(row)">
+        <template #actions-data="slotProps">
+          <UDropdown :items="getActions(getDept(slotProps.row))">
             <UButton
-              color="gray"
+              color="neutral"
               variant="ghost"
               icon="i-heroicons-ellipsis-vertical"
             />
@@ -151,7 +164,7 @@
 
         <template #footer>
           <div class="flex justify-end gap-3">
-            <UButton color="gray" variant="soft" @click="closeModal">
+            <UButton color="neutral" variant="soft" @click="closeModal">
               {{ $t('common.cancel') }}
             </UButton>
             <UButton color="primary" :loading="saving" @click="saveDepartment">
@@ -165,6 +178,16 @@
 </template>
 
 <script setup lang="ts">
+interface Department {
+  id: string
+  name: string
+  code?: string
+  head?: { name: string }
+  is_active: boolean
+  parent_id?: string | null
+  children?: Department[]
+}
+
 definePageMeta({
   layout: 'default',
 })
@@ -173,10 +196,10 @@ const { $api } = useNuxtApp()
 const { t: $t } = useI18n()
 
 const viewMode = ref<'tree' | 'list'>('tree')
-const allDepartments = ref<any[]>([])
-const rootDepartments = ref<any[]>([])
+const allDepartments = ref<Department[]>([])
+const rootDepartments = ref<Department[]>([])
 const showCreateModal = ref(false)
-const editingDepartment = ref<any>(null)
+const editingDepartment = ref<Department | null>(null)
 const saving = ref(false)
 
 const form = ref({
@@ -195,6 +218,12 @@ const columns = [
   { key: 'is_active', label: $t('common.status') },
   { key: 'actions', label: '' },
 ]
+
+// Typed columns for UTable compatibility
+const columnsTyped = computed(() => columns as any)
+
+// Helper to type-cast row data
+const getDept = (row: unknown): Department => row as Department
 
 const parentOptions = computed(() => [
   { value: null, label: $t('departments.no_parent') },
@@ -220,10 +249,10 @@ const getActions = (row: any) => [
 
 const fetchDepartments = async () => {
   try {
-    const [allRes, treeRes] = await Promise.all([
+    const [allRes, treeRes] = (await Promise.all([
       $api('/departments'),
       $api('/departments/tree'),
-    ])
+    ])) as [{ data: any[] }, { data: any[] }]
     allDepartments.value = allRes.data
     rootDepartments.value = treeRes.data
   } catch (error) {

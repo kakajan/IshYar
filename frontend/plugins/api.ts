@@ -7,23 +7,23 @@ export default defineNuxtPlugin(() => {
   let refreshPromise: Promise<void> | null = null
 
   const api = $fetch.create({
-    baseURL: config.public.apiBase,
+    baseURL: config.public.apiBase as string,
 
     async onRequest({ options }) {
       // Add auth token to requests
-      if (authStore.token) {
-        options.headers = {
-          ...options.headers,
-          Authorization: `Bearer ${authStore.token}`,
-        }
-      }
-
-      // Add common headers
-      options.headers = {
-        ...options.headers,
+      const headers: Record<string, string> = {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       }
+      
+      if (authStore.token) {
+        headers.Authorization = `Bearer ${authStore.token}`
+      }
+
+      options.headers = new Headers({
+        ...Object.fromEntries((options.headers as Headers)?.entries?.() || []),
+        ...headers,
+      })
     },
 
     async onResponseError({ request, response, options }) {
@@ -43,11 +43,11 @@ export default defineNuxtPlugin(() => {
           // Retry the original request
           return $fetch(request, {
             ...options,
-            headers: {
-              ...options.headers,
+            headers: new Headers({
+              ...Object.fromEntries((options.headers as Headers)?.entries?.() || []),
               Authorization: `Bearer ${authStore.token}`,
-            },
-          })
+            }),
+          } as any)
         }
 
         // Try to refresh the token
@@ -82,11 +82,11 @@ export default defineNuxtPlugin(() => {
         // Retry the original request with new token
         return $fetch(request, {
           ...options,
-          headers: {
-            ...options.headers,
+          headers: new Headers({
+            ...Object.fromEntries((options.headers as Headers)?.entries?.() || []),
             Authorization: `Bearer ${authStore.token}`,
-          },
-        })
+          }),
+        } as any)
       }
 
       // Handle other errors

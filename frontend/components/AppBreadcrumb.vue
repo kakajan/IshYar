@@ -40,7 +40,10 @@ const breadcrumbs = computed<Crumb[]>(() => {
 
   // Last item shouldn't be a link
   if (crumbs.length > 0) {
-    crumbs[crumbs.length - 1].to = undefined
+    const lastCrumb = crumbs[crumbs.length - 1]
+    if (lastCrumb) {
+      lastCrumb.to = undefined
+    }
   }
 
   return crumbs

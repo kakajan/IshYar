@@ -3,9 +3,13 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\DepartmentController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\OrganizationController;
 use App\Http\Controllers\Api\V1\PositionController;
+use App\Http\Controllers\Api\V1\RoutineTemplateController;
+use App\Http\Controllers\Api\V1\TaskCommentController;
 use App\Http\Controllers\Api\V1\TaskController;
+use App\Http\Controllers\Api\V1\TimeEntryController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -61,8 +65,46 @@ Route::prefix('v1')->group(function () {
         Route::prefix('tasks/{task}')->group(function () {
             Route::post('complete', [TaskController::class, 'complete']);
             Route::post('start', [TaskController::class, 'start']);
-            Route::get('comments', [TaskController::class, 'comments']);
-            Route::post('comments', [TaskController::class, 'addComment']);
+            
+            // Task Comments
+            Route::get('comments', [TaskCommentController::class, 'index']);
+            Route::post('comments', [TaskCommentController::class, 'store']);
+            Route::put('comments/{comment}', [TaskCommentController::class, 'update']);
+            Route::delete('comments/{comment}', [TaskCommentController::class, 'destroy']);
+            
+            // Time entries for task
+            Route::get('time-entries', [TimeEntryController::class, 'forTask']);
+            Route::post('time-entries', [TimeEntryController::class, 'store']);
+        });
+
+        // Routine Templates (Scheduled/Recurring Tasks)
+        Route::prefix('routines')->group(function () {
+            Route::get('/', [RoutineTemplateController::class, 'index']);
+            Route::post('/', [RoutineTemplateController::class, 'store']);
+            Route::get('{routine}', [RoutineTemplateController::class, 'show']);
+            Route::put('{routine}', [RoutineTemplateController::class, 'update']);
+            Route::delete('{routine}', [RoutineTemplateController::class, 'destroy']);
+            Route::post('{routine}/toggle', [RoutineTemplateController::class, 'toggle']);
+            Route::post('{routine}/trigger', [RoutineTemplateController::class, 'trigger']);
+        });
+
+        // Time entries
+        Route::prefix('time-entries')->group(function () {
+            Route::get('/', [TimeEntryController::class, 'index']);
+            Route::get('active', [TimeEntryController::class, 'active']);
+            Route::post('{timeEntry}/stop', [TimeEntryController::class, 'stop']);
+            Route::delete('{timeEntry}', [TimeEntryController::class, 'destroy']);
+        });
+
+        // Notifications
+        Route::prefix('notifications')->group(function () {
+            Route::get('/', [NotificationController::class, 'index']);
+            Route::get('unread-count', [NotificationController::class, 'unreadCount']);
+            Route::post('{notification}/read', [NotificationController::class, 'markAsRead']);
+            Route::post('read-all', [NotificationController::class, 'markAllAsRead']);
+            Route::delete('{notification}', [NotificationController::class, 'destroy']);
+            Route::get('preferences', [NotificationController::class, 'preferences']);
+            Route::put('preferences', [NotificationController::class, 'updatePreferences']);
         });
 
         // Dashboard

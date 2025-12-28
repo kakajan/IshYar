@@ -1,5 +1,14 @@
 import { useAuthStore } from '~/stores/auth'
 
+interface Permission {
+  name: string
+}
+
+interface Role {
+  name: string
+  permissions?: Permission[]
+}
+
 /**
  * Composable for user permission and role checking
  */
@@ -16,15 +25,15 @@ export const usePermissions = () => {
     
     // Check direct permissions
     const permissions = authStore.user.permissions || []
-    if (permissions.some((p: any) => p.name === permission)) {
+    if (permissions.some((p) => p.name === permission)) {
       return true
     }
 
     // Check permissions through roles
-    const roles = authStore.user.roles || []
+    const roles = (authStore.user.roles || []) as Role[]
     for (const role of roles) {
       const rolePermissions = role.permissions || []
-      if (rolePermissions.some((p: any) => p.name === permission)) {
+      if (rolePermissions.some((p) => p.name === permission)) {
         return true
       }
     }

@@ -122,34 +122,34 @@ export const usePaginatedData = <T>() => {
  */
 export const useForm = <T extends Record<string, any>>(initialValues: T) => {
   const values = reactive({ ...initialValues }) as T
-  const errors = reactive<Partial<Record<keyof T, string>>>({})
+  const errors = reactive({} as Record<string, string>)
   const isDirty = ref(false)
   const isSubmitting = ref(false)
 
   const reset = () => {
     Object.assign(values, initialValues)
-    Object.keys(errors).forEach((key) => delete errors[key as keyof T])
+    Object.keys(errors).forEach((key) => delete errors[key])
     isDirty.value = false
     isSubmitting.value = false
   }
 
   const setError = (field: keyof T, message: string) => {
-    errors[field] = message
+    errors[field as string] = message
   }
 
   const clearError = (field: keyof T) => {
-    delete errors[field]
+    delete errors[field as string]
   }
 
   const clearErrors = () => {
-    Object.keys(errors).forEach((key) => delete errors[key as keyof T])
+    Object.keys(errors).forEach((key) => delete errors[key])
   }
 
   const setErrors = (serverErrors: Record<string, string[]>) => {
     clearErrors()
     Object.entries(serverErrors).forEach(([field, messages]) => {
-      if (field in values && messages.length > 0) {
-        errors[field as keyof T] = messages[0]
+      if (field in values && messages.length > 0 && messages[0]) {
+        errors[field] = messages[0]
       }
     })
   }

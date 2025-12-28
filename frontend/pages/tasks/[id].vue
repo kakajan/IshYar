@@ -26,10 +26,19 @@ const statusOptions = computed(() => [
   { label: t('status.cancelled'), value: 'cancelled', color: 'error' },
 ])
 
-const priorityColors: Record<string, string> = {
-  low: 'gray',
+type BadgeColor =
+  | 'error'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'info'
+  | 'warning'
+  | 'neutral'
+
+const priorityColors: Record<string, BadgeColor> = {
+  low: 'neutral',
   medium: 'warning',
-  high: 'orange',
+  high: 'warning',
   urgent: 'error',
 }
 
@@ -190,7 +199,7 @@ onMounted(() => {
               </div>
               <div class="flex gap-2">
                 <UBadge
-                  :color="priorityColors[task.priority] || 'gray'"
+                  :color="priorityColors[task.priority] || 'neutral'"
                   variant="subtle"
                   size="lg"
                 >
@@ -198,8 +207,8 @@ onMounted(() => {
                 </UBadge>
                 <UBadge
                   :color="
-                    statusOptions.find((s) => s.value === task.status)?.color ||
-                    'gray'
+                    (statusOptions.find((s) => s.value === task.status)?.color as BadgeColor) ||
+                    'neutral'
                   "
                   size="lg"
                 >
@@ -256,7 +265,7 @@ onMounted(() => {
             <UTextarea
               v-model="newComment"
               :placeholder="t('task_detail.add_comment')"
-              rows="3"
+              :rows="3"
               class="mb-2"
             />
             <UButton

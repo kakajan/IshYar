@@ -38,28 +38,38 @@
 
     <!-- Users List -->
     <UCard>
-      <UTable :rows="users" :columns="columns" :loading="loading">
-        <template #name-data="{ row }">
+      <UTable
+        :rows="(users as any[])"
+        :columns="columnsTyped"
+        :loading="loading"
+      >
+        <template #name-data="slotProps">
           <div class="flex items-center gap-3">
-            <UAvatar :alt="row.name" size="sm" />
+            <UAvatar :alt="getUser(slotProps.row).name" size="sm" />
             <div>
-              <div class="font-medium">{{ row.name }}</div>
-              <div class="text-sm text-gray-500">{{ row.email }}</div>
+              <div class="font-medium">{{ getUser(slotProps.row).name }}</div>
+              <div class="text-sm text-gray-500">
+                {{ getUser(slotProps.row).email }}
+              </div>
             </div>
           </div>
         </template>
-        <template #department-data="{ row }">
-          <span v-if="row.department">{{ row.department.name }}</span>
+        <template #department-data="slotProps">
+          <span v-if="getUser(slotProps.row).department">{{
+            getUser(slotProps.row).department?.name
+          }}</span>
           <span v-else class="text-gray-400">—</span>
         </template>
-        <template #position-data="{ row }">
-          <span v-if="row.position">{{ row.position.name }}</span>
+        <template #position-data="slotProps">
+          <span v-if="getUser(slotProps.row).position">{{
+            getUser(slotProps.row).position?.name
+          }}</span>
           <span v-else class="text-gray-400">—</span>
         </template>
-        <template #roles-data="{ row }">
+        <template #roles-data="slotProps">
           <div class="flex gap-1">
             <UBadge
-              v-for="role in row.roles"
+              v-for="role in getUser(slotProps.row).roles"
               :key="role.id"
               size="xs"
               :color="getRoleColor(role.name)"
@@ -68,17 +78,24 @@
             </UBadge>
           </div>
         </template>
-        <template #is_active-data="{ row }">
-          <UBadge :color="row.is_active ? 'green' : 'red'" size="sm">
-            {{ row.is_active ? $t('common.active') : $t('common.inactive') }}
+        <template #is_active-data="slotProps">
+          <UBadge
+            :color="getUser(slotProps.row).is_active ? 'success' : 'error'"
+            size="sm"
+          >
+            {{
+              getUser(slotProps.row).is_active
+                ? $t('common.active')
+                : $t('common.inactive')
+            }}
           </UBadge>
         </template>
-        <template #actions-data="{ row }">
+        <template #actions-data="slotProps">
           <UButton
-            color="gray"
+            color="neutral"
             variant="ghost"
             icon="i-heroicons-eye"
-            @click="viewUser(row)"
+            @click="viewUser(getUser(slotProps.row))"
           />
         </template>
       </UTable>
@@ -155,7 +172,7 @@
         </div>
 
         <template #footer>
-          <UButton block color="gray" @click="showUserModal = false">
+          <UButton block color="neutral" @click="showUserModal = false">
             {{ $t('common.close') }}
           </UButton>
         </template>
@@ -165,6 +182,18 @@
 </template>
 
 <script setup lang="ts">
+interface User {
+  id: string
+  name: string
+  email: string
+  phone?: string
+  department?: { id: string; name: string }
+  position?: { id: string; name: string }
+  manager?: { id: string; name: string }
+  roles: { id: string; name: string }[]
+  is_active: boolean
+}
+
 definePageMeta({
   layout: 'default',
 })
@@ -172,8 +201,8 @@ definePageMeta({
 const { $api } = useNuxtApp()
 const { t: $t } = useI18n()
 
-const users = ref<any[]>([])
-const departments = ref<any[]>([])
+const users = ref<User[]>([])
+const departments = ref<{ id: string; name: string }[]>([])
 const loading = ref(false)
 const search = ref('')
 const page = ref(1)
@@ -196,6 +225,12 @@ const columns = [
   { key: 'actions', label: '' },
 ]
 
+// Typed columns for UTable compatibility
+const columnsTyped = computed(() => columns as any)
+
+// Helper to type-cast row data
+const getUser = (row: unknown): User => row as User
+
 const departmentOptions = computed(() => [
   { value: null, label: $t('users.all_departments') },
   ...departments.value.map((d) => ({ value: d.id, label: d.name })),
@@ -207,14 +242,23 @@ const statusOptions = [
   { value: false, label: $t('common.inactive') },
 ]
 
-const getRoleColor = (role: string): string => {
-  const colors: Record<string, string> = {
-    'super-admin': 'red',
-    admin: 'orange',
-    manager: 'blue',
-    employee: 'green',
+type BadgeColor =
+  | 'error'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'info'
+  | 'warning'
+  | 'neutral'
+
+const getRoleColor = (role: string): BadgeColor => {
+  const colors: Record<string, BadgeColor> = {
+    'super-admin': 'error',
+    admin: 'warning',
+    manager: 'info',
+    employee: 'success',
   }
-  return colors[role] || 'gray'
+  return colors[role] || 'neutral'
 }
 
 const fetchUsers = async () => {
@@ -229,7 +273,10 @@ const fetchUsers = async () => {
     params.append('page', String(page.value))
     params.append('per_page', String(perPage.value))
 
-    const response = await $api(`/users?${params.toString()}`)
+    const response = (await $api(`/users?${params.toString()}`)) as {
+      data: any[]
+      meta?: { total?: number }
+    }
     users.value = response.data
     total.value = response.meta?.total || response.data.length
   } catch (error) {
@@ -241,7 +288,7 @@ const fetchUsers = async () => {
 
 const fetchDepartments = async () => {
   try {
-    const response = await $api('/departments')
+    const response = (await $api('/departments')) as { data: any[] }
     departments.value = response.data
   } catch (error) {
     console.error('Failed to fetch departments:', error)
@@ -250,7 +297,7 @@ const fetchDepartments = async () => {
 
 const viewUser = async (user: any) => {
   try {
-    const response = await $api(`/users/${user.id}`)
+    const response = (await $api(`/users/${user.id}`)) as { data: any }
     selectedUser.value = response.data
     showUserModal.value = true
   } catch (error) {

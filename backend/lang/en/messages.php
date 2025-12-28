@@ -28,14 +28,17 @@ return [
 
     // Resource names
     'resources'                  => [
-        'user'       => 'User',
-        'task'       => 'Task',
-        'department' => 'Department',
-        'position'   => 'Position',
-        'comment'    => 'Comment',
-        'attachment' => 'Attachment',
-        'role'       => 'Role',
-        'permission' => 'Permission',
+        'user'         => 'User',
+        'task'         => 'Task',
+        'department'   => 'Department',
+        'position'     => 'Position',
+        'comment'      => 'Comment',
+        'attachment'   => 'Attachment',
+        'role'         => 'Role',
+        'permission'   => 'Permission',
+        'notification' => 'Notification',
+        'routine'      => 'Routine Template',
+        'time_entry'   => 'Time Entry',
     ],
 
     // Task messages
@@ -45,6 +48,32 @@ return [
     'task_already_completed'     => 'Task is already completed',
     'task_cannot_start'          => 'Cannot start this task',
     'task_cannot_complete'       => 'Cannot complete this task',
+
+    // Comment messages
+    'comment_created'            => 'Comment added successfully',
+    'comment_updated'            => 'Comment updated successfully',
+    'comment_deleted'            => 'Comment deleted successfully',
+
+    // Time entry messages
+    'time_entry_started'         => 'Timer started',
+    'time_entry_stopped'         => 'Timer stopped',
+    'no_active_timer'            => 'No active timer found',
+    'timer_already_running'      => 'A timer is already running for this task',
+
+    // Notification messages
+    'notification_marked_read'   => 'Notification marked as read',
+    'notifications_marked_read'  => 'All notifications marked as read',
+    'notification_deleted'       => 'Notification deleted',
+    'preferences_updated'        => 'Notification preferences updated',
+
+    // Routine template messages
+    'routine_created'            => 'Routine template created successfully',
+    'routine_updated'            => 'Routine template updated successfully',
+    'routine_deleted'            => 'Routine template deleted successfully',
+    'routine_activated'          => 'Routine template activated',
+    'routine_deactivated'        => 'Routine template deactivated',
+    'routine_triggered'          => 'Routine executed - task created',
+    'routine_inactive'           => 'Cannot trigger inactive routine',
 
     // Validation messages
     'validation_failed'          => 'Validation failed',

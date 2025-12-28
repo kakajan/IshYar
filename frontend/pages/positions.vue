@@ -1,6 +1,17 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
 
+interface Position {
+  id: string | number
+  title: string
+  code?: string
+  description?: string
+  department?: { id: string | number; name: string }
+  department_id?: number | null
+  is_active: boolean
+  users_count?: number
+}
+
 definePageMeta({
   layout: 'default',
 })
@@ -10,7 +21,7 @@ const toast = useToast()
 const authStore = useAuthStore()
 
 const isLoading = ref(true)
-const positions = ref<any[]>([])
+const positions = ref<Position[]>([])
 const meta = ref<{ current_page: number; last_page: number; total: number }>({
   current_page: 1,
   last_page: 1,
@@ -56,6 +67,9 @@ const columns = computed(() => [
   { key: 'users_count', label: t('positions.users_count') },
   { key: 'actions', label: '' },
 ])
+
+// Typed columns for UTable compatibility
+const columnsTyped = computed(() => columns.value as any)
 
 const fetchPositions = async (page = 1) => {
   isLoading.value = true
@@ -217,37 +231,48 @@ onMounted(() => {
 
     <!-- Positions Table -->
     <UCard>
-      <UTable :columns="columns" :rows="positions" :loading="isLoading">
-        <template #department-data="{ row }">
-          {{ row.department?.name || '—' }}
+      <UTable
+        :columns="columnsTyped"
+        :rows="(positions as any[])"
+        :loading="isLoading"
+      >
+        <template #department-data="slotProps">
+          {{ (slotProps.row as Position).department?.name || '—' }}
         </template>
 
-        <template #is_active-data="{ row }">
-          <UBadge :color="row.is_active ? 'success' : 'error'" variant="subtle">
-            {{ row.is_active ? t('common.active') : t('common.inactive') }}
+        <template #is_active-data="slotProps">
+          <UBadge
+            :color="(slotProps.row as Position).is_active ? 'success' : 'error'"
+            variant="subtle"
+          >
+            {{
+              (slotProps.row as Position).is_active
+                ? t('common.active')
+                : t('common.inactive')
+            }}
           </UBadge>
         </template>
 
-        <template #users_count-data="{ row }">
+        <template #users_count-data="slotProps">
           <UBadge color="neutral" variant="subtle">
-            {{ row.users_count || 0 }}
+            {{ (slotProps.row as Position).users_count || 0 }}
           </UBadge>
         </template>
 
-        <template #actions-data="{ row }">
+        <template #actions-data="slotProps">
           <div class="flex gap-2 justify-end">
             <UButton
               variant="ghost"
               icon="i-heroicons-pencil-square"
               size="xs"
-              @click="openEditModal(row)"
+              @click="openEditModal(slotProps.row as Position)"
             />
             <UButton
               variant="ghost"
               icon="i-heroicons-trash"
               color="error"
               size="xs"
-              @click="openDeleteModal(row)"
+              @click="openDeleteModal(slotProps.row as Position)"
             />
           </div>
         </template>
@@ -310,7 +335,7 @@ onMounted(() => {
               :label="t('departments.description')"
               name="description"
             >
-              <UTextarea v-model="createForm.description" rows="3" />
+              <UTextarea v-model="createForm.description" :rows="3" />
             </UFormField>
 
             <UFormField>
@@ -374,7 +399,7 @@ onMounted(() => {
               :label="t('departments.description')"
               name="description"
             >
-              <UTextarea v-model="editForm.description" rows="3" />
+              <UTextarea v-model="editForm.description" :rows="3" />
             </UFormField>
 
             <UFormField>

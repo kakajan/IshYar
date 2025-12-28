@@ -46,7 +46,7 @@ export const useAuthStore = defineStore('auth', () => {
       const response = await $api('/auth/login', {
         method: 'POST',
         body: { email, password },
-      })
+      }) as { data: { token: string; user: User } }
       
       setToken(response.data.token)
       user.value = response.data.user
@@ -70,7 +70,7 @@ export const useAuthStore = defineStore('auth', () => {
       const response = await $api('/auth/register', {
         method: 'POST',
         body: { name, email, password, password_confirmation },
-      })
+      }) as { data: { token: string; user: User } }
       
       setToken(response.data.token)
       user.value = response.data.user
@@ -94,7 +94,7 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading.value = true
     try {
       const { $api } = useNuxtApp()
-      const response = await $api('/auth/me')
+      const response = await $api('/auth/me') as { data: { user: User } }
       user.value = response.data.user
     } catch (error) {
       clearAuth()
@@ -120,7 +120,7 @@ export const useAuthStore = defineStore('auth', () => {
   const refreshToken = async () => {
     try {
       const { $api } = useNuxtApp()
-      const response = await $api('/auth/refresh', { method: 'POST' })
+      const response = await $api('/auth/refresh', { method: 'POST' }) as { data: { token: string } }
       setToken(response.data.token)
       return true
     } catch (error) {

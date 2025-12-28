@@ -199,7 +199,7 @@ const changePassword = async () => {
         </div>
 
         <div class="flex justify-end pt-4">
-          <UButton type="submit" :loading="isSavingPassword" color="gray">
+          <UButton type="submit" :loading="isSavingPassword" color="neutral">
             {{ t('profile.change_password') }}
           </UButton>
         </div>

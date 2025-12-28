@@ -172,7 +172,7 @@ const notificationSettings = reactive({
               {{ t('settings.export_data_desc') }}
             </p>
           </div>
-          <UButton color="gray" variant="outline">
+          <UButton color="neutral" variant="outline">
             {{ t('settings.export') }}
           </UButton>
         </div>
@@ -188,7 +188,7 @@ const notificationSettings = reactive({
               {{ t('settings.delete_account_desc') }}
             </p>
           </div>
-          <UButton color="red" variant="soft">
+          <UButton color="error" variant="soft">
             {{ t('settings.delete_account') }}
           </UButton>
         </div>

@@ -1,78 +1,77 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const authStore = useAuthStore()
+const { stats: dashboardStats, isLoading, fetchDashboard } = useDashboard()
 
-// Dashboard stats (computed for i18n reactivity)
-const stats = computed(() => [
-  {
-    name: t('dashboard.total_tasks'),
-    value: '24',
-    change: '+12%',
-    icon: 'i-heroicons-clipboard-document-list',
-  },
-  {
-    name: t('dashboard.completed_today'),
-    value: '8',
-    change: '+23%',
-    icon: 'i-heroicons-check-circle',
-  },
-  {
-    name: t('dashboard.in_progress'),
-    value: '12',
-    change: '-5%',
-    icon: 'i-heroicons-arrow-path',
-  },
-  {
-    name: t('dashboard.overdue'),
-    value: '4',
-    change: '+2%',
-    icon: 'i-heroicons-exclamation-triangle',
-  },
-])
+// Fetch dashboard data on mount
+onMounted(() => {
+  fetchDashboard()
+})
 
-const recentTasks = ref([
-  {
-    id: '1',
-    title: 'Review quarterly report',
-    status: 'in_progress',
-    priority: 'high',
-    due_date: '2025-12-28',
-  },
-  {
-    id: '2',
-    title: 'Team meeting preparation',
-    status: 'pending',
-    priority: 'medium',
-    due_date: '2025-12-29',
-  },
-  {
-    id: '3',
-    title: 'Client proposal draft',
-    status: 'completed',
-    priority: 'high',
-    due_date: '2025-12-27',
-  },
-])
+// Dashboard stats (computed from API or fallback)
+const stats = computed(() => {
+  const data = dashboardStats.value
+  return [
+    {
+      name: t('dashboard.total_tasks'),
+      value: data?.total_tasks?.toString() ?? '—',
+      change: data ? `${data.completion_rate}%` : '',
+      icon: 'i-heroicons-clipboard-document-list',
+    },
+    {
+      name: t('dashboard.completed_today'),
+      value: data?.completed_tasks?.toString() ?? '—',
+      change: '',
+      icon: 'i-heroicons-check-circle',
+    },
+    {
+      name: t('dashboard.in_progress'),
+      value: data?.in_progress_tasks?.toString() ?? '—',
+      change: '',
+      icon: 'i-heroicons-arrow-path',
+    },
+    {
+      name: t('dashboard.overdue'),
+      value: data?.overdue_tasks?.toString() ?? '—',
+      change: '',
+      icon: 'i-heroicons-exclamation-triangle',
+    },
+  ]
+})
 
-const priorityColor = (priority: string) => {
-  const colors: Record<string, string> = {
-    low: 'gray',
-    medium: 'yellow',
-    high: 'orange',
-    urgent: 'red',
+// Recent tasks from API
+const recentTasks = computed(() => {
+  return dashboardStats.value?.recent_tasks ?? []
+})
+
+type BadgeColor =
+  | 'error'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'info'
+  | 'warning'
+  | 'neutral'
+
+const priorityColor = (priority: string): BadgeColor => {
+  const colors: Record<string, BadgeColor> = {
+    low: 'neutral',
+    medium: 'warning',
+    high: 'warning',
+    urgent: 'error',
   }
-  return colors[priority] || 'gray'
+  return colors[priority] || 'neutral'
 }
 
-const statusColor = (status: string) => {
-  const colors: Record<string, string> = {
-    pending: 'gray',
-    in_progress: 'blue',
-    completed: 'green',
-    on_hold: 'yellow',
-    cancelled: 'red',
+const statusColor = (status: string): BadgeColor => {
+  const colors: Record<string, BadgeColor> = {
+    pending: 'neutral',
+    in_progress: 'info',
+    completed: 'success',
+    on_hold: 'warning',
+    cancelled: 'error',
   }
-  return colors[status] || 'gray'
+  return colors[status] || 'neutral'
 }
 </script>
 
@@ -81,15 +80,37 @@ const statusColor = (status: string) => {
     <!-- Welcome header -->
     <div>
       <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-        {{ $t('dashboard.welcome') }}, {{ authStore.user?.name?.split(' ')[0] }}! 👋
+        {{ $t('dashboard.welcome') }},
+        {{ authStore.user?.name?.split(' ')[0] }}! 👋
       </h1>
       <p class="mt-1 text-gray-600 dark:text-gray-400">
         {{ $t('dashboard.subtitle') }}
       </p>
     </div>
 
+    <!-- Loading state -->
+    <div
+      v-if="isLoading"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+    >
+      <UCard v-for="i in 4" :key="i" class="glass">
+        <div class="animate-pulse">
+          <div
+            class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"
+          ></div>
+          <div
+            class="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-2"
+          ></div>
+          <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+        </div>
+      </UCard>
+    </div>
+
     <!-- Stats grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div
+      v-if="!isLoading"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+    >
       <UCard v-for="stat in stats" :key="stat.name" class="glass">
         <div class="flex items-center justify-between">
           <div>
@@ -102,12 +123,23 @@ const statusColor = (status: string) => {
               {{ stat.value }}
             </p>
             <p
+              v-if="stat.change"
               class="mt-1 text-sm"
               :class="
-                stat.change.startsWith('+') ? 'text-green-600' : 'text-red-600'
+                stat.change.startsWith('+') || stat.change.startsWith('-')
+                  ? stat.change.startsWith('+')
+                    ? 'text-green-600'
+                    : 'text-red-600'
+                  : 'text-gray-500'
               "
             >
-              {{ stat.change }} {{ $t('dashboard.from_last_week') }}
+              {{ stat.change }}
+              <span
+                v-if="
+                  stat.change.startsWith('+') || stat.change.startsWith('-')
+                "
+                >{{ $t('dashboard.from_last_week') }}</span
+              >
             </p>
           </div>
           <div class="p-3 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
@@ -126,9 +158,13 @@ const statusColor = (status: string) => {
       <UCard class="lg:col-span-2">
         <template #header>
           <div class="flex items-center justify-between">
-            <h2 class="text-lg font-semibold">{{ $t('dashboard.recent_tasks') }}</h2>
+            <h2 class="text-lg font-semibold">
+              {{ $t('dashboard.recent_tasks') }}
+            </h2>
             <NuxtLink to="/tasks">
-              <UButton variant="ghost" size="sm">{{ $t('dashboard.view_all') }}</UButton>
+              <UButton variant="ghost" size="sm">{{
+                $t('dashboard.view_all')
+              }}</UButton>
             </NuxtLink>
           </div>
         </template>
@@ -145,7 +181,9 @@ const statusColor = (status: string) => {
                 <p class="font-medium text-gray-900 dark:text-white">
                   {{ task.title }}
                 </p>
-                <p class="text-sm text-gray-500">{{ $t('tasks.due_date') }} {{ task.due_date }}</p>
+                <p class="text-sm text-gray-500">
+                  {{ $t('tasks.due_date') }} {{ task.due_date }}
+                </p>
               </div>
             </div>
             <div class="flex items-center gap-2">
@@ -171,7 +209,9 @@ const statusColor = (status: string) => {
       <!-- Quick actions -->
       <UCard>
         <template #header>
-          <h2 class="text-lg font-semibold">{{ $t('dashboard.quick_actions') }}</h2>
+          <h2 class="text-lg font-semibold">
+            {{ $t('dashboard.quick_actions') }}
+          </h2>
         </template>
 
         <div class="space-y-3">

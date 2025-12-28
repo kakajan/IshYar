@@ -43,10 +43,10 @@
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2">
           <span class="font-medium truncate">{{ department.name }}</span>
-          <UBadge v-if="department.code" size="xs" color="gray">{{
+          <UBadge v-if="department.code" size="xs" color="neutral">{{
             department.code
           }}</UBadge>
-          <UBadge v-if="!department.is_active" size="xs" color="red">
+          <UBadge v-if="!department.is_active" size="xs" color="error">
             {{ $t('common.inactive') }}
           </UBadge>
         </div>
@@ -60,14 +60,14 @@
         class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1"
       >
         <UButton
-          color="gray"
+          color="neutral"
           variant="ghost"
           icon="i-heroicons-pencil"
           size="xs"
           @click="$emit('edit', department)"
         />
         <UButton
-          color="red"
+          color="error"
           variant="ghost"
           icon="i-heroicons-trash"
           size="xs"
