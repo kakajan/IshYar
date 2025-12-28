@@ -8,7 +8,7 @@ const router = useRouter()
 const toast = useToast()
 const { t } = useI18n()
 
-const token = computed(() => route.query.token as string || '')
+const token = computed(() => (route.query.token as string) || '')
 
 const form = reactive({
   email: (route.query.email as string) || '',
@@ -86,17 +86,20 @@ const handleSubmit = async () => {
       <!-- Invalid Token Warning -->
       <UCard v-if="!token" class="glass text-center">
         <div class="py-6">
-          <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-            <UIcon name="i-heroicons-exclamation-triangle" class="w-8 h-8 text-red-600" />
+          <div
+            class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <UIcon
+              name="i-heroicons-exclamation-triangle"
+              class="w-8 h-8 text-red-600"
+            />
           </div>
           <h2 class="text-xl font-semibold mb-2">Invalid reset link</h2>
           <p class="text-gray-600 dark:text-gray-400 mb-6">
             This password reset link is invalid or has expired.
           </p>
           <NuxtLink to="/forgot-password">
-            <UButton color="primary" block>
-              Request new link
-            </UButton>
+            <UButton color="primary" block> Request new link </UButton>
           </NuxtLink>
         </div>
       </UCard>
@@ -104,9 +107,7 @@ const handleSubmit = async () => {
       <!-- Reset Form -->
       <UCard v-else class="glass">
         <template #header>
-          <h2 class="text-xl font-semibold text-center">
-            Reset your password
-          </h2>
+          <h2 class="text-xl font-semibold text-center">Reset your password</h2>
         </template>
 
         <form class="space-y-6" @submit.prevent="handleSubmit">

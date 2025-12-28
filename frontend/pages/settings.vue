@@ -36,7 +36,10 @@ const notificationSettings = reactive({
     <UCard>
       <template #header>
         <div class="flex items-center gap-3">
-          <UIcon name="i-heroicons-paint-brush" class="w-5 h-5 text-primary-500" />
+          <UIcon
+            name="i-heroicons-paint-brush"
+            class="w-5 h-5 text-primary-500"
+          />
           <h2 class="text-lg font-semibold">Appearance</h2>
         </div>
       </template>
@@ -77,7 +80,9 @@ const notificationSettings = reactive({
         <div class="flex items-center justify-between">
           <div>
             <p class="font-medium">Email Notifications</p>
-            <p class="text-sm text-gray-500">Receive important updates via email</p>
+            <p class="text-sm text-gray-500">
+              Receive important updates via email
+            </p>
           </div>
           <UToggle v-model="notificationSettings.email_notifications" />
         </div>
@@ -97,7 +102,9 @@ const notificationSettings = reactive({
         <div class="flex items-center justify-between">
           <div>
             <p class="font-medium">Task Reminders</p>
-            <p class="text-sm text-gray-500">Remind me about upcoming deadlines</p>
+            <p class="text-sm text-gray-500">
+              Remind me about upcoming deadlines
+            </p>
           </div>
           <UToggle v-model="notificationSettings.task_reminders" />
         </div>
@@ -107,7 +114,9 @@ const notificationSettings = reactive({
         <div class="flex items-center justify-between">
           <div>
             <p class="font-medium">Weekly Digest</p>
-            <p class="text-sm text-gray-500">Receive a weekly summary of activities</p>
+            <p class="text-sm text-gray-500">
+              Receive a weekly summary of activities
+            </p>
           </div>
           <UToggle v-model="notificationSettings.weekly_digest" />
         </div>
@@ -126,8 +135,8 @@ const notificationSettings = reactive({
       <p class="text-sm text-gray-500">
         Language and timezone settings are managed in your
         <NuxtLink to="/profile" class="text-primary-500 hover:underline">
-          profile settings
-        </NuxtLink>.
+          profile settings </NuxtLink
+        >.
       </p>
     </UCard>
 
@@ -135,7 +144,10 @@ const notificationSettings = reactive({
     <UCard>
       <template #header>
         <div class="flex items-center gap-3">
-          <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 text-red-500" />
+          <UIcon
+            name="i-heroicons-exclamation-triangle"
+            class="w-5 h-5 text-red-500"
+          />
           <h2 class="text-lg font-semibold text-red-600">Danger Zone</h2>
         </div>
       </template>
@@ -144,11 +156,11 @@ const notificationSettings = reactive({
         <div class="flex items-center justify-between">
           <div>
             <p class="font-medium">Export My Data</p>
-            <p class="text-sm text-gray-500">Download all your data in JSON format</p>
+            <p class="text-sm text-gray-500">
+              Download all your data in JSON format
+            </p>
           </div>
-          <UButton color="gray" variant="outline">
-            Export
-          </UButton>
+          <UButton color="gray" variant="outline"> Export </UButton>
         </div>
 
         <UDivider />
@@ -156,11 +168,11 @@ const notificationSettings = reactive({
         <div class="flex items-center justify-between">
           <div>
             <p class="font-medium text-red-600">Delete Account</p>
-            <p class="text-sm text-gray-500">Permanently delete your account and all data</p>
+            <p class="text-sm text-gray-500">
+              Permanently delete your account and all data
+            </p>
           </div>
-          <UButton color="red" variant="soft">
-            Delete Account
-          </UButton>
+          <UButton color="red" variant="soft"> Delete Account </UButton>
         </div>
       </div>
     </UCard>

@@ -144,11 +144,17 @@ const changePassword = async () => {
           </UFormField>
 
           <UFormField :label="t('profile.timezone')" name="timezone">
-            <USelectMenu v-model="profileForm.timezone" :options="timezoneOptions" />
+            <USelectMenu
+              v-model="profileForm.timezone"
+              :options="timezoneOptions"
+            />
           </UFormField>
 
           <UFormField :label="t('profile.language')" name="locale">
-            <USelectMenu v-model="profileForm.locale" :options="localeOptions" />
+            <USelectMenu
+              v-model="profileForm.locale"
+              :options="localeOptions"
+            />
           </UFormField>
         </div>
 
@@ -163,11 +169,16 @@ const changePassword = async () => {
     <!-- Change Password -->
     <UCard>
       <template #header>
-        <h2 class="text-lg font-semibold">{{ t('profile.change_password') }}</h2>
+        <h2 class="text-lg font-semibold">
+          {{ t('profile.change_password') }}
+        </h2>
       </template>
 
       <form class="space-y-4" @submit.prevent="changePassword">
-        <UFormField :label="t('profile.current_password')" name="current_password">
+        <UFormField
+          :label="t('profile.current_password')"
+          name="current_password"
+        >
           <UInput v-model="passwordForm.current_password" type="password" />
         </UFormField>
 
@@ -176,8 +187,14 @@ const changePassword = async () => {
             <UInput v-model="passwordForm.password" type="password" />
           </UFormField>
 
-          <UFormField :label="t('profile.confirm_password')" name="password_confirmation">
-            <UInput v-model="passwordForm.password_confirmation" type="password" />
+          <UFormField
+            :label="t('profile.confirm_password')"
+            name="password_confirmation"
+          >
+            <UInput
+              v-model="passwordForm.password_confirmation"
+              type="password"
+            />
           </UFormField>
         </div>
 
@@ -198,7 +215,9 @@ const changePassword = async () => {
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
         <div>
           <span class="text-gray-500">Department</span>
-          <p class="font-medium">{{ authStore.user?.department?.name || '—' }}</p>
+          <p class="font-medium">
+            {{ authStore.user?.department?.name || '—' }}
+          </p>
         </div>
         <div>
           <span class="text-gray-500">Position</span>
@@ -214,7 +233,9 @@ const changePassword = async () => {
             >
               {{ role.name }}
             </UBadge>
-            <span v-if="!authStore.user?.roles?.length" class="text-gray-400">—</span>
+            <span v-if="!authStore.user?.roles?.length" class="text-gray-400"
+              >—</span
+            >
           </div>
         </div>
         <div>

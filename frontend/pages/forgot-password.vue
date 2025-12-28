@@ -51,8 +51,13 @@ const handleSubmit = async () => {
       <!-- Success State -->
       <UCard v-if="isSubmitted" class="glass text-center">
         <div class="py-6">
-          <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-            <UIcon name="i-heroicons-envelope-open" class="w-8 h-8 text-green-600" />
+          <div
+            class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <UIcon
+              name="i-heroicons-envelope-open"
+              class="w-8 h-8 text-green-600"
+            />
           </div>
           <h2 class="text-xl font-semibold mb-2">Check your email</h2>
           <p class="text-gray-600 dark:text-gray-400 mb-6">
@@ -60,9 +65,7 @@ const handleSubmit = async () => {
             <strong>{{ form.email }}</strong>
           </p>
           <NuxtLink to="/login">
-            <UButton variant="outline" block>
-              Back to login
-            </UButton>
+            <UButton variant="outline" block> Back to login </UButton>
           </NuxtLink>
         </div>
       </UCard>
@@ -76,7 +79,8 @@ const handleSubmit = async () => {
         </template>
 
         <p class="text-sm text-gray-600 dark:text-gray-400 text-center mb-6">
-          Enter your email address and we'll send you a link to reset your password.
+          Enter your email address and we'll send you a link to reset your
+          password.
         </p>
 
         <form class="space-y-6" @submit.prevent="handleSubmit">

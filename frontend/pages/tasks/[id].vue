@@ -54,7 +54,9 @@ const fetchTask = async () => {
 const fetchComments = async () => {
   try {
     const { $api } = useNuxtApp()
-    const response = await $api<{ data: any[] }>(`/tasks/${taskId.value}/comments`)
+    const response = await $api<{ data: any[] }>(
+      `/tasks/${taskId.value}/comments`
+    )
     comments.value = response.data
   } catch (error) {
     console.error('Failed to load comments', error)
@@ -123,22 +125,28 @@ const submitComment = async () => {
 
 const formatDate = (dateStr: string) => {
   if (!dateStr) return '—'
-  return new Date(dateStr).toLocaleDateString(locale.value === 'fa' ? 'fa-IR' : 'en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
+  return new Date(dateStr).toLocaleDateString(
+    locale.value === 'fa' ? 'fa-IR' : 'en-US',
+    {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }
+  )
 }
 
 const formatDateTime = (dateStr: string) => {
   if (!dateStr) return '—'
-  return new Date(dateStr).toLocaleString(locale.value === 'fa' ? 'fa-IR' : 'en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+  return new Date(dateStr).toLocaleString(
+    locale.value === 'fa' ? 'fa-IR' : 'en-US',
+    {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }
+  )
 }
 
 onMounted(() => {
@@ -150,14 +158,20 @@ onMounted(() => {
 <template>
   <div class="p-6">
     <!-- Back button -->
-    <NuxtLink to="/tasks" class="inline-flex items-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 mb-6">
+    <NuxtLink
+      to="/tasks"
+      class="inline-flex items-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 mb-6"
+    >
       <UIcon name="i-heroicons-arrow-left" class="mr-2" />
       {{ t('common.back') }} to Tasks
     </NuxtLink>
 
     <!-- Loading State -->
     <div v-if="isLoading" class="flex justify-center py-12">
-      <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 animate-spin text-primary-500" />
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="w-8 h-8 animate-spin text-primary-500"
+      />
     </div>
 
     <!-- Task Content -->
@@ -174,10 +188,20 @@ onMounted(() => {
                 </p>
               </div>
               <div class="flex gap-2">
-                <UBadge :color="priorityColors[task.priority] || 'gray'" variant="subtle" size="lg">
+                <UBadge
+                  :color="priorityColors[task.priority] || 'gray'"
+                  variant="subtle"
+                  size="lg"
+                >
                   {{ task.priority }}
                 </UBadge>
-                <UBadge :color="statusOptions.find(s => s.value === task.status)?.color || 'gray'" size="lg">
+                <UBadge
+                  :color="
+                    statusOptions.find((s) => s.value === task.status)?.color ||
+                    'gray'
+                  "
+                  size="lg"
+                >
                   {{ task.status?.replace('_', ' ') }}
                 </UBadge>
               </div>
@@ -232,7 +256,11 @@ onMounted(() => {
               rows="3"
               class="mb-2"
             />
-            <UButton type="submit" :loading="isSubmittingComment" :disabled="!newComment.trim()">
+            <UButton
+              type="submit"
+              :loading="isSubmittingComment"
+              :disabled="!newComment.trim()"
+            >
               Post Comment
             </UButton>
           </form>
@@ -247,10 +275,16 @@ onMounted(() => {
               <UAvatar :alt="comment.user?.name || 'User'" size="sm" />
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-1">
-                  <span class="font-medium">{{ comment.user?.name || 'Unknown' }}</span>
-                  <span class="text-sm text-gray-500">{{ formatDateTime(comment.created_at) }}</span>
+                  <span class="font-medium">{{
+                    comment.user?.name || 'Unknown'
+                  }}</span>
+                  <span class="text-sm text-gray-500">{{
+                    formatDateTime(comment.created_at)
+                  }}</span>
                 </div>
-                <p class="text-gray-700 dark:text-gray-300">{{ comment.content }}</p>
+                <p class="text-gray-700 dark:text-gray-300">
+                  {{ comment.content }}
+                </p>
               </div>
             </div>
           </div>
@@ -290,7 +324,11 @@ onMounted(() => {
               <dd class="mt-1">
                 <span
                   v-if="task.due_date"
-                  :class="{ 'text-red-600': new Date(task.due_date) < new Date() && task.status !== 'completed' }"
+                  :class="{
+                    'text-red-600':
+                      new Date(task.due_date) < new Date() &&
+                      task.status !== 'completed',
+                  }"
                 >
                   {{ formatDate(task.due_date) }}
                 </span>
@@ -304,12 +342,16 @@ onMounted(() => {
             </div>
 
             <div v-if="task.completed_at">
-              <dt class="text-sm text-gray-500 dark:text-gray-400">Completed</dt>
+              <dt class="text-sm text-gray-500 dark:text-gray-400">
+                Completed
+              </dt>
               <dd class="mt-1">{{ formatDateTime(task.completed_at) }}</dd>
             </div>
 
             <div v-if="task.department">
-              <dt class="text-sm text-gray-500 dark:text-gray-400">Department</dt>
+              <dt class="text-sm text-gray-500 dark:text-gray-400">
+                Department
+              </dt>
               <dd class="mt-1">{{ task.department.name }}</dd>
             </div>
           </dl>

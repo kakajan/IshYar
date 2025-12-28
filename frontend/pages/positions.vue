@@ -61,7 +61,9 @@ const fetchPositions = async (page = 1) => {
   isLoading.value = true
   try {
     const { $api } = useNuxtApp()
-    const response = await $api<{ data: any[]; meta: any }>(`/positions?page=${page}`)
+    const response = await $api<{ data: any[]; meta: any }>(
+      `/positions?page=${page}`
+    )
     positions.value = response.data
     meta.value = response.meta
   } catch (error) {
@@ -255,8 +257,10 @@ onMounted(() => {
       <template #footer>
         <div class="flex items-center justify-between">
           <p class="text-sm text-gray-500">
-            Showing page {{ meta.current_page }} of {{ meta.last_page }}
-            ({{ meta.total }} total)
+            Showing page {{ meta.current_page }} of {{ meta.last_page }} ({{
+              meta.total
+            }}
+            total)
           </p>
           <UPagination
             v-model="meta.current_page"
@@ -278,7 +282,10 @@ onMounted(() => {
 
           <form class="space-y-4" @submit.prevent="handleCreate">
             <UFormField label="Title" name="title" required>
-              <UInput v-model="createForm.title" placeholder="e.g., Senior Developer" />
+              <UInput
+                v-model="createForm.title"
+                placeholder="e.g., Senior Developer"
+              />
             </UFormField>
 
             <UFormField label="Code" name="code">
@@ -326,7 +333,10 @@ onMounted(() => {
 
           <form class="space-y-4" @submit.prevent="handleEdit">
             <UFormField label="Title" name="title" required>
-              <UInput v-model="editForm.title" placeholder="e.g., Senior Developer" />
+              <UInput
+                v-model="editForm.title"
+                placeholder="e.g., Senior Developer"
+              />
             </UFormField>
 
             <UFormField label="Code" name="code">
@@ -355,9 +365,7 @@ onMounted(() => {
               <UButton variant="outline" @click="isEditModalOpen = false">
                 Cancel
               </UButton>
-              <UButton :loading="isEditing" @click="handleEdit">
-                Save
-              </UButton>
+              <UButton :loading="isEditing" @click="handleEdit"> Save </UButton>
             </div>
           </template>
         </UCard>
@@ -374,7 +382,8 @@ onMounted(() => {
 
           <p>
             Are you sure you want to delete
-            <strong>{{ deletingPosition?.title }}</strong>? This action cannot be undone.
+            <strong>{{ deletingPosition?.title }}</strong
+            >? This action cannot be undone.
           </p>
 
           <template #footer>
@@ -382,7 +391,11 @@ onMounted(() => {
               <UButton variant="outline" @click="isDeleteModalOpen = false">
                 Cancel
               </UButton>
-              <UButton color="error" :loading="isDeleting" @click="handleDelete">
+              <UButton
+                color="error"
+                :loading="isDeleting"
+                @click="handleDelete"
+              >
                 Delete
               </UButton>
             </div>
