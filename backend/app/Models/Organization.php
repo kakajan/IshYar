@@ -6,10 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
 
 class Organization extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
+    use HasTranslations;
+
+    public array $translatable = [
+        'name',
+        'description',
+    ];
 
     protected $fillable = [
         'name',
@@ -53,5 +60,13 @@ class Organization extends Model
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    /**
+     * Get all tasks for this organization.
+     */
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
     }
 }

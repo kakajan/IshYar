@@ -53,7 +53,9 @@ const handleSubmit = async () => {
       <!-- Logo -->
       <div class="text-center mb-8">
         <h1 class="text-3xl font-bold">IshYar</h1>
-        <p class="mt-2 text-muted-foreground">Enterprise WorkSuite</p>
+        <p class="mt-2 text-muted-foreground">
+          {{ $t('auth.enterprise_worksuite') }}
+        </p>
       </div>
 
       <!-- Success State -->

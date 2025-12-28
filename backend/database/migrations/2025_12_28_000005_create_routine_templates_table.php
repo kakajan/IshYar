@@ -15,8 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('organization_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('creator_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('name');
-            $table->text('description')->nullable();
+            $table->json('name');
+            $table->json('description')->nullable();
             $table->string('frequency'); // daily, weekly, monthly, yearly
             $table->json('recurrence_rule');
             $table->json('default_checklist')->nullable();

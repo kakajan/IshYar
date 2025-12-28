@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('organizations', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name');
+            $table->json('name');
             $table->string('slug')->unique();
-            $table->text('description')->nullable();
+            $table->json('description')->nullable();
             $table->string('logo')->nullable();
             $table->string('timezone')->default('UTC');
             $table->string('default_locale')->default('en');

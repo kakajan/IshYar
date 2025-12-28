@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Position;
+use App\Rules\TranslatableValue;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -71,9 +72,9 @@ class PositionController extends Controller
         }
 
         $validated = $request->validate([
-            'name'             => 'required|string|max:255',
+            'name'             => ['required', new TranslatableValue(max: 255)],
             'slug'             => 'required|string|max:255|unique:positions,slug',
-            'description'      => 'nullable|string|max:1000',
+            'description'      => ['nullable', new TranslatableValue(max: 1000)],
             'department_id'    => 'nullable|uuid|exists:departments,id',
             'level'            => 'required|integer|min:1|max:10',
             'is_manager'       => 'boolean',
@@ -109,9 +110,9 @@ class PositionController extends Controller
         }
 
         $validated = $request->validate([
-            'name'             => 'sometimes|string|max:255',
+            'name'             => ['sometimes', new TranslatableValue(max: 255)],
             'slug'             => 'sometimes|string|max:255|unique:positions,slug,' . $position->id,
-            'description'      => 'nullable|string|max:1000',
+            'description'      => ['nullable', new TranslatableValue(max: 1000)],
             'department_id'    => 'nullable|uuid|exists:departments,id',
             'level'            => 'sometimes|integer|min:1|max:10',
             'is_manager'       => 'boolean',

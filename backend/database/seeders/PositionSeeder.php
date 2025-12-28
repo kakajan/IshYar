@@ -22,21 +22,21 @@ class PositionSeeder extends Seeder
         $positions = [
             // Executive positions
             [
-                'name'            => 'Chief Executive Officer',
+                'name'            => ['en' => 'Chief Executive Officer', 'fa' => 'مدیرعامل'],
                 'slug'            => 'ceo',
                 'level'           => 10,
                 'is_manager'      => true,
                 'department_slug' => 'executive',
             ],
             [
-                'name'            => 'Chief Technology Officer',
+                'name'            => ['en' => 'Chief Technology Officer', 'fa' => 'مدیر ارشد فناوری'],
                 'slug'            => 'cto',
                 'level'           => 9,
                 'is_manager'      => true,
                 'department_slug' => 'executive',
             ],
             [
-                'name'            => 'Chief Product Officer',
+                'name'            => ['en' => 'Chief Product Officer', 'fa' => 'مدیر ارشد محصول'],
                 'slug'            => 'cpo',
                 'level'           => 9,
                 'is_manager'      => true,
@@ -45,35 +45,35 @@ class PositionSeeder extends Seeder
 
             // Engineering positions
             [
-                'name'            => 'Engineering Manager',
+                'name'            => ['en' => 'Engineering Manager', 'fa' => 'مدیر مهندسی'],
                 'slug'            => 'engineering-manager',
                 'level'           => 7,
                 'is_manager'      => true,
                 'department_slug' => 'engineering',
             ],
             [
-                'name'            => 'Senior Software Engineer',
+                'name'            => ['en' => 'Senior Software Engineer', 'fa' => 'مهندس نرم افزار ارشد'],
                 'slug'            => 'senior-engineer',
                 'level'           => 5,
                 'is_manager'      => false,
                 'department_slug' => 'engineering',
             ],
             [
-                'name'            => 'Software Engineer',
+                'name'            => ['en' => 'Software Engineer', 'fa' => 'مهندس نرم افزار'],
                 'slug'            => 'software-engineer',
                 'level'           => 4,
                 'is_manager'      => false,
                 'department_slug' => 'engineering',
             ],
             [
-                'name'            => 'Junior Software Engineer',
+                'name'            => ['en' => 'Junior Software Engineer', 'fa' => 'مهندس نرم افزار جونیور'],
                 'slug'            => 'junior-engineer',
                 'level'           => 3,
                 'is_manager'      => false,
                 'department_slug' => 'engineering',
             ],
             [
-                'name'            => 'DevOps Engineer',
+                'name'            => ['en' => 'DevOps Engineer', 'fa' => 'مهندس دوآپز'],
                 'slug'            => 'devops-engineer',
                 'level'           => 5,
                 'is_manager'      => false,
@@ -82,21 +82,21 @@ class PositionSeeder extends Seeder
 
             // Product positions
             [
-                'name'            => 'Product Manager',
+                'name'            => ['en' => 'Product Manager', 'fa' => 'مدیر محصول'],
                 'slug'            => 'product-manager',
                 'level'           => 6,
                 'is_manager'      => true,
                 'department_slug' => 'product',
             ],
             [
-                'name'            => 'Senior UX Designer',
+                'name'            => ['en' => 'Senior UX Designer', 'fa' => 'طراح تجربه کاربری ارشد'],
                 'slug'            => 'senior-ux-designer',
                 'level'           => 5,
                 'is_manager'      => false,
                 'department_slug' => 'design',
             ],
             [
-                'name'            => 'UX Designer',
+                'name'            => ['en' => 'UX Designer', 'fa' => 'طراح تجربه کاربری'],
                 'slug'            => 'ux-designer',
                 'level'           => 4,
                 'is_manager'      => false,
@@ -105,14 +105,14 @@ class PositionSeeder extends Seeder
 
             // HR positions
             [
-                'name'            => 'HR Manager',
+                'name'            => ['en' => 'HR Manager', 'fa' => 'مدیر منابع انسانی'],
                 'slug'            => 'hr-manager',
                 'level'           => 6,
                 'is_manager'      => true,
                 'department_slug' => 'hr',
             ],
             [
-                'name'            => 'HR Specialist',
+                'name'            => ['en' => 'HR Specialist', 'fa' => 'کارشناس منابع انسانی'],
                 'slug'            => 'hr-specialist',
                 'level'           => 4,
                 'is_manager'      => false,

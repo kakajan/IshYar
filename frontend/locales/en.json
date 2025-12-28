@@ -23,7 +23,9 @@
     "created": "Created",
     "updated": "Updated",
     "back": "Back",
-    "all": "All"
+    "all": "All",
+    "previous": "Previous",
+    "next": "Next"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -51,7 +53,7 @@
     "invalid_credentials": "Invalid email or password",
     "enterprise_worksuite": "Enterprise WorkSuite",
     "sign_in_title": "Sign in to your account",
-    "email_placeholder": "you@company.com",
+    "email_placeholder": "you{'@'}company.com",
     "login_success": "You have successfully logged in.",
     "login_failed": "Login failed",
     "name": "Name",
@@ -167,7 +169,8 @@
     "filter_department": "Filter by department",
     "filter_status": "Filter by status",
     "all_departments": "All Departments",
-    "all_status": "All Status"
+    "all_status": "All Status",
+    "no_users": "No users found"
   },
   "profile": {
     "title": "Profile",

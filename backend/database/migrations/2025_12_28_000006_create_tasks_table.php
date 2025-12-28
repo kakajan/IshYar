@@ -17,8 +17,8 @@ return new class extends Migration
             $table->uuid('parent_id')->nullable();
             $table->foreignUuid('routine_template_id')->nullable()->constrained()->nullOnDelete();
 
-            $table->string('title');
-            $table->text('description')->nullable();
+            $table->json('title');
+            $table->json('description')->nullable();
             $table->enum('type', ['routine', 'situational'])->default('situational');
             $table->enum('status', ['pending', 'in_progress', 'completed', 'on_hold', 'cancelled'])->default('pending');
             $table->enum('priority', ['low', 'medium', 'high', 'urgent'])->default('medium');

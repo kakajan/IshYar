@@ -7,10 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
 
 class RoutineTemplate extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
+    use HasTranslations;
+
+    public array $translatable = [
+        'name',
+        'description',
+    ];
 
     /**
      * Recurrence frequency types.
@@ -23,40 +30,24 @@ class RoutineTemplate extends Model
 
     protected $fillable = [
         'organization_id',
-        'department_id',
-        'title',
+        'creator_id',
+        'name',
         'description',
-        'priority',
         'frequency',
         'recurrence_rule',
-        'time_of_day',
-        'day_of_week',
-        'day_of_month',
-        'assignee_id',
-        'assignee_role',
-        'estimated_hours',
-        'checklist',
-        'requires_approval',
-        'approval_chain',
+        'default_checklist',
+        'default_estimated_hours',
+        'default_priority',
         'is_active',
-        'next_run_at',
-        'last_run_at',
-        'metadata',
     ];
 
     protected function casts(): array
     {
         return [
-            'recurrence_rule'   => 'array',
-            'checklist'         => 'array',
-            'approval_chain'    => 'array',
-            'metadata'          => 'array',
-            'requires_approval' => 'boolean',
-            'is_active'         => 'boolean',
-            'next_run_at'       => 'datetime',
-            'last_run_at'       => 'datetime',
-            'time_of_day'       => 'datetime',
-            'estimated_hours'   => 'decimal:2',
+            'recurrence_rule'         => 'array',
+            'default_checklist'       => 'array',
+            'default_estimated_hours' => 'integer',
+            'is_active'               => 'boolean',
         ];
     }
 
@@ -71,19 +62,6 @@ class RoutineTemplate extends Model
     /**
      * Get the department.
      */
-    public function department(): BelongsTo
-    {
-        return $this->belongsTo(Department::class);
-    }
-
-    /**
-     * Get the default assignee.
-     */
-    public function assignee(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'assignee_id');
-    }
-
     /**
      * Get tasks generated from this template.
      */
@@ -100,23 +78,19 @@ class RoutineTemplate extends Model
         $task = Task::create([
             'organization_id'     => $this->organization_id,
             'routine_template_id' => $this->id,
-            'title'               => $this->title,
+            'title'               => $this->name,
             'description'         => $this->description,
             'type'                => Task::TYPE_ROUTINE,
-            'priority'            => $this->priority ?? Task::PRIORITY_MEDIUM,
-            'assignee_id'         => $this->assignee_id,
-            'department_id'       => $this->department_id,
-            'estimated_hours'     => $this->estimated_hours,
-            'checklist'           => $this->checklist,
+            'priority'            => $this->default_priority ?? Task::PRIORITY_MEDIUM,
+            'estimated_hours'     => $this->default_estimated_hours,
+            'checklist'           => $this->default_checklist,
             'is_recurring'        => true,
             'recurrence_rule'     => $this->recurrence_rule,
             'due_date'            => $this->calculateDueDate(),
         ]);
 
-        $this->update([
-            'last_run_at' => now(),
-            'next_run_at' => $this->calculateNextRunAt(),
-        ]);
+        // Intentionally no scheduling bookkeeping here yet;
+        // this model is used mainly as a template source for tasks.
 
         return $task;
     }
@@ -138,14 +112,4 @@ class RoutineTemplate extends Model
     /**
      * Calculate next run time.
      */
-    protected function calculateNextRunAt(): \Carbon\Carbon
-    {
-        return match ($this->frequency) {
-            self::FREQUENCY_DAILY   => now()->addDay(),
-            self::FREQUENCY_WEEKLY  => now()->addWeek(),
-            self::FREQUENCY_MONTHLY => now()->addMonth(),
-            self::FREQUENCY_YEARLY  => now()->addYear(),
-            default                 => now()->addDay(),
-        };
-    }
 }

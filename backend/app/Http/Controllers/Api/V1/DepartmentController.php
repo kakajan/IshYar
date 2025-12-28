@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Department;
+use App\Rules\TranslatableValue;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -91,9 +92,9 @@ class DepartmentController extends Controller
         }
 
         $validated = $request->validate([
-            'name'        => 'required|string|max:255',
+            'name'        => ['required', new TranslatableValue(max: 255)],
             'slug'        => 'required|string|max:255|unique:departments,slug',
-            'description' => 'nullable|string|max:1000',
+            'description' => ['nullable', new TranslatableValue(max: 1000)],
             'parent_id'   => 'nullable|uuid|exists:departments,id',
             'head_id'     => 'nullable|uuid|exists:users,id',
             'code'        => 'nullable|string|max:20',
@@ -128,9 +129,9 @@ class DepartmentController extends Controller
         }
 
         $validated = $request->validate([
-            'name'        => 'sometimes|string|max:255',
+            'name'        => ['sometimes', new TranslatableValue(max: 255)],
             'slug'        => 'sometimes|string|max:255|unique:departments,slug,' . $department->id,
-            'description' => 'nullable|string|max:1000',
+            'description' => ['nullable', new TranslatableValue(max: 1000)],
             'parent_id'   => 'nullable|uuid|exists:departments,id',
             'head_id'     => 'nullable|uuid|exists:users,id',
             'code'        => 'nullable|string|max:20',

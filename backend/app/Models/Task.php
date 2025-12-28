@@ -8,10 +8,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
 
 class Task extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
+    use HasTranslations;
+
+    public array $translatable = [
+        'title',
+        'description',
+    ];
 
     /**
      * Task types.

@@ -21,9 +21,9 @@ class DepartmentSeeder extends Seeder
         // Executive
         $executive = Department::create([
             'organization_id' => $org->id,
-            'name'            => 'Executive',
+            'name'            => ['en' => 'Executive', 'fa' => 'مدیریت ارشد'],
             'slug'            => 'executive',
-            'description'     => 'Executive leadership team',
+            'description'     => ['en' => 'Executive leadership team', 'fa' => 'تیم رهبری و مدیریت ارشد'],
             'code'            => 'EXEC',
             'sort_order'      => 1,
             'is_active'       => true,
@@ -32,9 +32,9 @@ class DepartmentSeeder extends Seeder
         // Engineering
         $engineering = Department::create([
             'organization_id' => $org->id,
-            'name'            => 'Engineering',
+            'name'            => ['en' => 'Engineering', 'fa' => 'مهندسی'],
             'slug'            => 'engineering',
-            'description'     => 'Software development and engineering',
+            'description'     => ['en' => 'Software development and engineering', 'fa' => 'توسعه و مهندسی نرم‌افزار'],
             'code'            => 'ENG',
             'sort_order'      => 2,
             'is_active'       => true,
@@ -44,9 +44,9 @@ class DepartmentSeeder extends Seeder
         Department::create([
             'organization_id' => $org->id,
             'parent_id'       => $engineering->id,
-            'name'            => 'Backend',
+            'name'            => ['en' => 'Backend', 'fa' => 'بک‌اند'],
             'slug'            => 'backend',
-            'description'     => 'Backend development team',
+            'description'     => ['en' => 'Backend development team', 'fa' => 'تیم توسعه بک‌اند'],
             'code'            => 'ENG-BE',
             'sort_order'      => 1,
             'is_active'       => true,
@@ -55,9 +55,9 @@ class DepartmentSeeder extends Seeder
         Department::create([
             'organization_id' => $org->id,
             'parent_id'       => $engineering->id,
-            'name'            => 'Frontend',
+            'name'            => ['en' => 'Frontend', 'fa' => 'فرانت‌اند'],
             'slug'            => 'frontend',
-            'description'     => 'Frontend development team',
+            'description'     => ['en' => 'Frontend development team', 'fa' => 'تیم توسعه فرانت‌اند'],
             'code'            => 'ENG-FE',
             'sort_order'      => 2,
             'is_active'       => true,
@@ -66,9 +66,9 @@ class DepartmentSeeder extends Seeder
         Department::create([
             'organization_id' => $org->id,
             'parent_id'       => $engineering->id,
-            'name'            => 'DevOps',
+            'name'            => ['en' => 'DevOps', 'fa' => 'دوآپز'],
             'slug'            => 'devops',
-            'description'     => 'DevOps and infrastructure team',
+            'description'     => ['en' => 'DevOps and infrastructure team', 'fa' => 'تیم دوآپز و زیرساخت'],
             'code'            => 'ENG-DO',
             'sort_order'      => 3,
             'is_active'       => true,
@@ -77,9 +77,9 @@ class DepartmentSeeder extends Seeder
         // Product
         $product = Department::create([
             'organization_id' => $org->id,
-            'name'            => 'Product',
+            'name'            => ['en' => 'Product', 'fa' => 'محصول'],
             'slug'            => 'product',
-            'description'     => 'Product management and design',
+            'description'     => ['en' => 'Product management and design', 'fa' => 'مدیریت و طراحی محصول'],
             'code'            => 'PROD',
             'sort_order'      => 3,
             'is_active'       => true,
@@ -88,9 +88,9 @@ class DepartmentSeeder extends Seeder
         Department::create([
             'organization_id' => $org->id,
             'parent_id'       => $product->id,
-            'name'            => 'Design',
+            'name'            => ['en' => 'Design', 'fa' => 'طراحی'],
             'slug'            => 'design',
-            'description'     => 'UI/UX design team',
+            'description'     => ['en' => 'UI/UX design team', 'fa' => 'تیم طراحی UI/UX'],
             'code'            => 'PROD-DES',
             'sort_order'      => 1,
             'is_active'       => true,
@@ -99,9 +99,9 @@ class DepartmentSeeder extends Seeder
         // Operations
         Department::create([
             'organization_id' => $org->id,
-            'name'            => 'Operations',
+            'name'            => ['en' => 'Operations', 'fa' => 'عملیات'],
             'slug'            => 'operations',
-            'description'     => 'Business operations',
+            'description'     => ['en' => 'Business operations', 'fa' => 'عملیات کسب‌وکار'],
             'code'            => 'OPS',
             'sort_order'      => 4,
             'is_active'       => true,
@@ -110,9 +110,9 @@ class DepartmentSeeder extends Seeder
         // Human Resources
         Department::create([
             'organization_id' => $org->id,
-            'name'            => 'Human Resources',
+            'name'            => ['en' => 'Human Resources', 'fa' => 'منابع انسانی'],
             'slug'            => 'hr',
-            'description'     => 'HR and talent management',
+            'description'     => ['en' => 'HR and talent management', 'fa' => 'مدیریت منابع انسانی و استعدادها'],
             'code'            => 'HR',
             'sort_order'      => 5,
             'is_active'       => true,

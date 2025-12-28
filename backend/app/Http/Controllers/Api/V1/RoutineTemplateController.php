@@ -17,14 +17,10 @@ class RoutineTemplateController extends Controller
 
         $routines = RoutineTemplate::query()
             ->where('organization_id', $user->organization_id)
-            ->with(['department:id,name', 'assignee:id,name,email'])
-            ->when($request->filled('department_id'), function ($query) use ($request) {
-                $query->where('department_id', $request->department_id);
-            })
             ->when($request->filled('is_active'), function ($query) use ($request) {
                 $query->where('is_active', filter_var($request->is_active, FILTER_VALIDATE_BOOLEAN));
             })
-            ->orderBy('next_run_at')
+            ->latest()
             ->paginate($request->get('per_page', 20));
 
         return response()->json($routines);
@@ -35,7 +31,7 @@ class RoutineTemplateController extends Controller
      */
     public function show(RoutineTemplate $routine): JsonResponse
     {
-        $routine->load(['department:id,name', 'assignee:id,name,email', 'tasks' => function ($query) {
+        $routine->load(['tasks' => function ($query) {
             $query->latest()->limit(10);
         }]);
 
@@ -48,33 +44,27 @@ class RoutineTemplateController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'title'              => ['required', 'string', 'max:255'],
-            'description'        => ['nullable', 'string'],
-            'department_id'      => ['nullable', 'uuid', 'exists:departments,id'],
-            'assignee_id'        => ['nullable', 'uuid', 'exists:users,id'],
-            'priority'           => ['required', 'in:low,medium,high,critical'],
-            'estimated_time'     => ['nullable', 'integer', 'min:1'],
-            'frequency'          => ['required', 'in:daily,weekly,monthly,custom'],
-            'frequency_settings' => ['nullable', 'array'],
-            'next_run_at'        => ['required', 'date', 'after:now'],
-            'is_active'          => ['boolean'],
-            'settings'           => ['nullable', 'array'],
+            'name'                    => ['required', 'string', 'max:255'],
+            'description'             => ['nullable', 'string'],
+            'frequency'               => ['required', 'in:daily,weekly,monthly,yearly,custom'],
+            'recurrence_rule'         => ['required', 'array'],
+            'default_checklist'       => ['nullable', 'array'],
+            'default_estimated_hours' => ['nullable', 'integer', 'min:0'],
+            'default_priority'        => ['required', 'in:low,medium,high,urgent'],
+            'is_active'               => ['boolean'],
         ]);
 
         $routine = RoutineTemplate::create([
-            'organization_id'    => $request->user()->organization_id,
-            'created_by'         => $request->user()->id,
-            'title'              => $validated['title'],
-            'description'        => $validated['description'] ?? null,
-            'department_id'      => $validated['department_id'] ?? null,
-            'assignee_id'        => $validated['assignee_id'] ?? null,
-            'priority'           => $validated['priority'],
-            'estimated_time'     => $validated['estimated_time'] ?? null,
-            'frequency'          => $validated['frequency'],
-            'frequency_settings' => $validated['frequency_settings'] ?? [],
-            'next_run_at'        => $validated['next_run_at'],
-            'is_active'          => $validated['is_active'] ?? true,
-            'settings'           => $validated['settings'] ?? [],
+            'organization_id'         => $request->user()->organization_id,
+            'creator_id'              => $request->user()->id,
+            'name'                    => $validated['name'],
+            'description'             => $validated['description'] ?? null,
+            'frequency'               => $validated['frequency'],
+            'recurrence_rule'         => $validated['recurrence_rule'],
+            'default_checklist'       => $validated['default_checklist'] ?? null,
+            'default_estimated_hours' => $validated['default_estimated_hours'] ?? null,
+            'default_priority'        => $validated['default_priority'],
+            'is_active'               => $validated['is_active'] ?? true,
         ]);
 
         return response()->json([
@@ -89,17 +79,14 @@ class RoutineTemplateController extends Controller
     public function update(Request $request, RoutineTemplate $routine): JsonResponse
     {
         $validated = $request->validate([
-            'title'              => ['sometimes', 'required', 'string', 'max:255'],
-            'description'        => ['nullable', 'string'],
-            'department_id'      => ['nullable', 'uuid', 'exists:departments,id'],
-            'assignee_id'        => ['nullable', 'uuid', 'exists:users,id'],
-            'priority'           => ['sometimes', 'required', 'in:low,medium,high,critical'],
-            'estimated_time'     => ['nullable', 'integer', 'min:1'],
-            'frequency'          => ['sometimes', 'required', 'in:daily,weekly,monthly,custom'],
-            'frequency_settings' => ['nullable', 'array'],
-            'next_run_at'        => ['nullable', 'date'],
-            'is_active'          => ['boolean'],
-            'settings'           => ['nullable', 'array'],
+            'name'                    => ['sometimes', 'required', 'string', 'max:255'],
+            'description'             => ['nullable', 'string'],
+            'frequency'               => ['sometimes', 'required', 'in:daily,weekly,monthly,yearly,custom'],
+            'recurrence_rule'         => ['sometimes', 'required', 'array'],
+            'default_checklist'       => ['nullable', 'array'],
+            'default_estimated_hours' => ['nullable', 'integer', 'min:0'],
+            'default_priority'        => ['sometimes', 'required', 'in:low,medium,high,urgent'],
+            'is_active'               => ['boolean'],
         ]);
 
         $routine->update($validated);
@@ -149,9 +136,6 @@ class RoutineTemplateController extends Controller
         }
 
         $task = $routine->generateTask();
-
-        // Update next run
-        $routine->calculateNextRunAt();
 
         return response()->json([
             'message' => __('messages.routine_triggered'),

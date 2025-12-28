@@ -25,7 +25,7 @@ return [
     |
     */
 
-    'secret' => env('JWT_SECRET'),
+    'secret'                 => env('JWT_SECRET'),
 
     /*
     |--------------------------------------------------------------------------
@@ -44,7 +44,7 @@ return [
     |
     */
 
-    'keys' => [
+    'keys'                   => [
 
         /*
         |--------------------------------------------------------------------------
@@ -57,7 +57,7 @@ return [
         |
         */
 
-        'public' => env('JWT_PUBLIC_KEY'),
+        'public'     => env('JWT_PUBLIC_KEY'),
 
         /*
         |--------------------------------------------------------------------------
@@ -70,7 +70,7 @@ return [
         |
         */
 
-        'private' => env('JWT_PRIVATE_KEY'),
+        'private'    => env('JWT_PRIVATE_KEY'),
 
         /*
         |--------------------------------------------------------------------------
@@ -101,7 +101,7 @@ return [
     |
     */
 
-    'ttl' => env('JWT_TTL', 60),
+    'ttl'                    => (($ttl = env('JWT_TTL', 60)) === null  ?null : (int) $ttl),
 
     /*
     |--------------------------------------------------------------------------
@@ -120,7 +120,7 @@ return [
     |
     */
 
-    'refresh_ttl' => env('JWT_REFRESH_TTL', 20160),
+    'refresh_ttl'            => (($refreshTtl = env('JWT_REFRESH_TTL', 20160)) === null  ?null : (int) $refreshTtl),
 
     /*
     |--------------------------------------------------------------------------
@@ -131,7 +131,7 @@ return [
     |
     */
 
-    'algo' => env('JWT_ALGO', Tymon\JWTAuth\Providers\JWT\Provider::ALGO_HS256),
+    'algo'                   => env('JWT_ALGO', Tymon\JWTAuth\Providers\JWT\Provider::ALGO_HS256),
 
     /*
     |--------------------------------------------------------------------------
@@ -144,7 +144,7 @@ return [
     |
     */
 
-    'required_claims' => [
+    'required_claims'        => [
         'iss',
         'iat',
         'exp',
@@ -166,7 +166,7 @@ return [
     |
     */
 
-    'persistent_claims' => [
+    'persistent_claims'      => [
         // 'foo',
         // 'bar',
     ],
@@ -188,7 +188,7 @@ return [
     |
     */
 
-    'lock_subject' => true,
+    'lock_subject'           => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -205,7 +205,7 @@ return [
     |
     */
 
-    'leeway' => env('JWT_LEEWAY', 0),
+    'leeway'                 => (int) env('JWT_LEEWAY', 0),
 
     /*
     |--------------------------------------------------------------------------
@@ -217,7 +217,7 @@ return [
     |
     */
 
-    'blacklist_enabled' => env('JWT_BLACKLIST_ENABLED', true),
+    'blacklist_enabled'      => env('JWT_BLACKLIST_ENABLED', true),
 
     /*
     | -------------------------------------------------------------------------
@@ -250,7 +250,7 @@ return [
     |
     */
 
-    'decrypt_cookies' => false,
+    'decrypt_cookies'        => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -261,7 +261,7 @@ return [
     |
     */
 
-    'providers' => [
+    'providers'              => [
 
         /*
         |--------------------------------------------------------------------------
@@ -272,7 +272,7 @@ return [
         |
         */
 
-        'jwt' => Tymon\JWTAuth\Providers\JWT\Lcobucci::class,
+        'jwt'     => Tymon\JWTAuth\Providers\JWT\Lcobucci::class,
 
         /*
         |--------------------------------------------------------------------------
@@ -283,7 +283,7 @@ return [
         |
         */
 
-        'auth' => Tymon\JWTAuth\Providers\Auth\Illuminate::class,
+        'auth'    => Tymon\JWTAuth\Providers\Auth\Illuminate::class,
 
         /*
         |--------------------------------------------------------------------------

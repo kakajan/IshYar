@@ -12,9 +12,15 @@ class OrganizationSeeder extends Seeder
     public function run(): void
     {
         Organization::create([
-            'name'             => 'IshYar Demo Company',
+            'name'             => [
+                'en' => 'IshYar Demo Company',
+                'fa' => 'شرکت نمایشی ایشیار',
+            ],
             'slug'             => 'ishyar-demo',
-            'description'      => 'A demonstration organization for IshYar Enterprise WorkSuite',
+            'description'      => [
+                'en' => 'A demonstration organization for IshYar Enterprise WorkSuite',
+                'fa' => 'یک سازمان نمایشی برای مجموعه سازمانی ایشیار',
+            ],
             'timezone'         => 'UTC',
             'default_locale'   => 'en',
             'default_currency' => 'USD',

@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Task;
+use App\Rules\TranslatableValue;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -14,13 +15,15 @@ class TaskController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        $locale = app()->getLocale();
+
         $query = Task::with(['creator', 'assignee', 'department'])
             ->when($request->status, fn($q, $status) => $q->where('status', $status))
             ->when($request->type, fn($q, $type) => $q->where('type', $type))
             ->when($request->priority, fn($q, $priority) => $q->where('priority', $priority))
             ->when($request->assignee_id, fn($q, $id) => $q->where('assignee_id', $id))
             ->when($request->department_id, fn($q, $id) => $q->where('department_id', $id))
-            ->when($request->search, fn($q, $search) => $q->where('title', 'like', "%{$search}%"))
+            ->when($request->search, fn($q, $search) => $q->where("title->{$locale}", 'like', "%{$search}%"))
             ->orderBy($request->sort_by ?? 'created_at', $request->sort_order ?? 'desc');
 
         $tasks = $query->paginate($request->per_page ?? 15);
@@ -37,8 +40,8 @@ class TaskController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'title'           => ['required', 'string', 'max:255'],
-            'description'     => ['nullable', 'string'],
+            'title'           => ['required', new TranslatableValue(max: 255)],
+            'description'     => ['nullable', new TranslatableValue()],
             'type'            => ['required', 'in:routine,situational'],
             'priority'        => ['nullable', 'in:low,medium,high,urgent'],
             'assignee_id'     => ['nullable', 'uuid', 'exists:users,id'],
@@ -94,8 +97,8 @@ class TaskController extends Controller
     public function update(Request $request, Task $task): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'title'           => ['sometimes', 'string', 'max:255'],
-            'description'     => ['nullable', 'string'],
+            'title'           => ['sometimes', new TranslatableValue(max: 255)],
+            'description'     => ['nullable', new TranslatableValue()],
             'status'          => ['sometimes', 'in:pending,in_progress,completed,on_hold,cancelled'],
             'priority'        => ['sometimes', 'in:low,medium,high,urgent'],
             'assignee_id'     => ['nullable', 'uuid', 'exists:users,id'],

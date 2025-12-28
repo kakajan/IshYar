@@ -15,9 +15,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('organization_id')->constrained()->cascadeOnDelete();
             $table->uuid('parent_id')->nullable();
-            $table->string('name');
+            $table->json('name');
             $table->string('slug');
-            $table->text('description')->nullable();
+            $table->json('description')->nullable();
             $table->string('code')->nullable();
             $table->uuid('head_id')->nullable();
             $table->integer('sort_order')->default(0);

@@ -7,10 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
 
 class Department extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
+    use HasTranslations;
+
+    public array $translatable = [
+        'name',
+        'description',
+    ];
 
     protected $fillable = [
         'organization_id',

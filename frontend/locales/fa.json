@@ -23,7 +23,9 @@
     "created": "ایجاد شده",
     "updated": "به‌روزرسانی",
     "back": "بازگشت",
-    "all": "همه"
+    "all": "همه",
+    "previous": "قبلی",
+    "next": "بعدی"
   },
   "nav": {
     "dashboard": "داشبورد",
@@ -51,7 +53,7 @@
     "invalid_credentials": "ایمیل یا رمز عبور نادرست است",
     "enterprise_worksuite": "مجموعه کاری سازمانی",
     "sign_in_title": "ورود به حساب کاربری",
-    "email_placeholder": "you@company.com",
+    "email_placeholder": "you{'@'}company.com",
     "login_success": "با موفقیت وارد شدید.",
     "login_failed": "ورود ناموفق",
     "name": "نام",
@@ -167,7 +169,8 @@
     "filter_department": "فیلتر بر اساس دپارتمان",
     "filter_status": "فیلتر بر اساس وضعیت",
     "all_departments": "همه دپارتمان‌ها",
-    "all_status": "همه وضعیت‌ها"
+    "all_status": "همه وضعیت‌ها",
+    "no_users": "کاربری یافت نشد"
   },
   "profile": {
     "title": "پروفایل",

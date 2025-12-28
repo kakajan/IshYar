@@ -5,10 +5,17 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Translatable\HasTranslations;
 
 class Notification extends Model
 {
     use HasFactory, HasUuids;
+    use HasTranslations;
+
+    public array $translatable = [
+        'title',
+        'body',
+    ];
 
     protected $table = 'notifications_custom';
 

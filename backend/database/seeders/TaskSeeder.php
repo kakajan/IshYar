@@ -26,8 +26,8 @@ class TaskSeeder extends Seeder
         // Sample tasks
         $tasks = [
             [
-                'title'        => 'Set up development environment',
-                'description'  => 'Configure local development environment with Docker and necessary tools',
+                'title'        => ['en' => 'Set up development environment', 'fa' => 'راه اندازی محیط توسعه'],
+                'description'  => ['en' => 'Configure local development environment with Docker and necessary tools', 'fa' => 'پیکربندی محیط توسعه محلی با Docker و ابزارهای موردنیاز'],
                 'type'         => 'situational',
                 'status'       => 'completed',
                 'priority'     => 'high',
@@ -38,8 +38,8 @@ class TaskSeeder extends Seeder
                 'completed_at' => now()->subDays(3),
             ],
             [
-                'title'        => 'Implement user authentication API',
-                'description'  => 'Create login, register, and JWT token refresh endpoints',
+                'title'        => ['en' => 'Implement user authentication API', 'fa' => 'پیاده سازی API احراز هویت کاربر'],
+                'description'  => ['en' => 'Create login, register, and JWT token refresh endpoints', 'fa' => 'ایجاد endpointهای ورود، ثبت نام و نوسازی توکن JWT'],
                 'type'         => 'situational',
                 'status'       => 'completed',
                 'priority'     => 'high',
@@ -50,8 +50,8 @@ class TaskSeeder extends Seeder
                 'completed_at' => now()->subDays(1),
             ],
             [
-                'title'       => 'Design dashboard UI mockups',
-                'description' => 'Create high-fidelity mockups for the main dashboard interface',
+                'title'       => ['en' => 'Design dashboard UI mockups', 'fa' => 'طراحی ماکاپ های UI داشبورد'],
+                'description' => ['en' => 'Create high-fidelity mockups for the main dashboard interface', 'fa' => 'ایجاد ماکاپ های با جزئیات بالا برای رابط داشبورد اصلی'],
                 'type'        => 'situational',
                 'status'      => 'in_progress',
                 'priority'    => 'high',
@@ -61,8 +61,8 @@ class TaskSeeder extends Seeder
                 'due_date'    => now()->addDays(2),
             ],
             [
-                'title'       => 'Implement task management API',
-                'description' => 'Create CRUD endpoints for tasks with filtering and pagination',
+                'title'       => ['en' => 'Implement task management API', 'fa' => 'پیاده سازی API مدیریت تسک ها'],
+                'description' => ['en' => 'Create CRUD endpoints for tasks with filtering and pagination', 'fa' => 'ایجاد endpointهای CRUD برای تسک ها با فیلتر و صفحه بندی'],
                 'type'        => 'situational',
                 'status'      => 'in_progress',
                 'priority'    => 'high',
@@ -72,8 +72,8 @@ class TaskSeeder extends Seeder
                 'due_date'    => now()->addDays(3),
             ],
             [
-                'title'       => 'Write API documentation',
-                'description' => 'Document all API endpoints using OpenAPI/Swagger specification',
+                'title'       => ['en' => 'Write API documentation', 'fa' => 'نوشتن مستندات API'],
+                'description' => ['en' => 'Document all API endpoints using OpenAPI/Swagger specification', 'fa' => 'مستندسازی تمام endpointهای API با OpenAPI/Swagger'],
                 'type'        => 'situational',
                 'status'      => 'pending',
                 'priority'    => 'medium',
@@ -83,8 +83,8 @@ class TaskSeeder extends Seeder
                 'due_date'    => now()->addDays(7),
             ],
             [
-                'title'       => 'Set up CI/CD pipeline',
-                'description' => 'Configure GitHub Actions for automated testing and deployment',
+                'title'       => ['en' => 'Set up CI/CD pipeline', 'fa' => 'راه اندازی پایپ لاین CI/CD'],
+                'description' => ['en' => 'Configure GitHub Actions for automated testing and deployment', 'fa' => 'پیکربندی GitHub Actions برای تست و استقرار خودکار'],
                 'type'        => 'situational',
                 'status'      => 'pending',
                 'priority'    => 'medium',
@@ -94,8 +94,8 @@ class TaskSeeder extends Seeder
                 'due_date'    => now()->addDays(10),
             ],
             [
-                'title'           => 'Code review - Authentication module',
-                'description'     => 'Review pull request for authentication implementation',
+                'title'           => ['en' => 'Code review - Authentication module', 'fa' => 'بازبینی کد - ماژول احراز هویت'],
+                'description'     => ['en' => 'Review pull request for authentication implementation', 'fa' => 'بازبینی Pull Request مربوط به پیاده سازی احراز هویت'],
                 'type'            => 'situational',
                 'status'          => 'pending',
                 'priority'        => 'high',
@@ -106,8 +106,8 @@ class TaskSeeder extends Seeder
                 'approval_status' => 'pending',
             ],
             [
-                'title'           => 'Daily standup meeting',
-                'description'     => 'Team synchronization and progress updates',
+                'title'           => ['en' => 'Daily standup meeting', 'fa' => 'جلسه روزانه استندآپ'],
+                'description'     => ['en' => 'Team synchronization and progress updates', 'fa' => 'هماهنگی تیم و به روزرسانی پیشرفت ها'],
                 'type'            => 'routine',
                 'status'          => 'pending',
                 'priority'        => 'low',
@@ -123,8 +123,8 @@ class TaskSeeder extends Seeder
                 'due_date'        => now()->addDays(1)->setTime(9, 0),
             ],
             [
-                'title'           => 'Weekly code review session',
-                'description'     => 'Review and discuss code quality improvements',
+                'title'           => ['en' => 'Weekly code review session', 'fa' => 'جلسه هفتگی بازبینی کد'],
+                'description'     => ['en' => 'Review and discuss code quality improvements', 'fa' => 'بازبینی و گفتگو درباره بهبود کیفیت کد'],
                 'type'            => 'routine',
                 'status'          => 'pending',
                 'priority'        => 'medium',
@@ -140,8 +140,8 @@ class TaskSeeder extends Seeder
                 'due_date'        => now()->next('Friday')->setTime(14, 0),
             ],
             [
-                'title'        => 'Implement frontend login page',
-                'description'  => 'Create responsive login page with form validation',
+                'title'        => ['en' => 'Implement frontend login page', 'fa' => 'پیاده سازی صفحه ورود فرانت اند'],
+                'description'  => ['en' => 'Create responsive login page with form validation', 'fa' => 'ایجاد صفحه ورود واکنش گرا با اعتبارسنجی فرم'],
                 'type'         => 'situational',
                 'status'       => 'completed',
                 'priority'     => 'high',

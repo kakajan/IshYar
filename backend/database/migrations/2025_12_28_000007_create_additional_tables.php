@@ -47,8 +47,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->string('type');
-            $table->string('title');
-            $table->text('body')->nullable();
+            $table->json('title');
+            $table->json('body')->nullable();
             $table->json('data')->nullable();
             $table->string('action_url')->nullable();
             $table->json('channels')->nullable(); // ['web', 'email', 'sms', 'telegram']

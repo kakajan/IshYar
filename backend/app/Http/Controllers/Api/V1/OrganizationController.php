@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Organization;
+use App\Rules\TranslatableValue;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -45,8 +46,8 @@ class OrganizationController extends Controller
         }
 
         $validated = $request->validate([
-            'name'             => 'sometimes|string|max:255',
-            'description'      => 'nullable|string|max:1000',
+            'name'             => ['sometimes', new TranslatableValue(max: 255)],
+            'description'      => ['nullable', new TranslatableValue(max: 1000)],
             'timezone'         => 'sometimes|string|timezone',
             'default_locale'   => 'sometimes|string|in:en,fa',
             'default_currency' => 'sometimes|string|max:3',

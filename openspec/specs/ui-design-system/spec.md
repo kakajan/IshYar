@@ -72,6 +72,13 @@ The system SHALL provide delightful micro-interactions throughout.
 ### Requirement: Animation Guidelines
 The system SHALL use CSS transitions and Vue transitions for smooth animations with consistent timing.
 
+#### Scenario: Shadcn component micro-interactions
+- **WHEN** using any Shadcn Vue UI component (or implementing a custom component that visually matches Shadcn)
+- **THEN** all interactive states MUST be animated with smooth transitions
+- **AND** focus rings MUST animate (e.g. include `transition`/`transition-shadow` with a consistent `duration-*`)
+- **AND** hover/active/disabled state changes MUST transition (colors/shadows/transforms as applicable)
+- **AND** overlay components (dialog/dropdown/popover/select) MUST animate open/close using enter/exit transitions
+
 #### Scenario: Page transitions
 - **WHEN** navigating between pages
 - **THEN** fade out current content (150ms)

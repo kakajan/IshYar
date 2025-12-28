@@ -21,6 +21,11 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
   ],
 
+  // Disable hydration hints (false positives in SPA mode with ssr: false)
+  hints: {
+    hydration: false,
+  },
+
   // Vite configuration for Tailwind CSS v4
   vite: {
     plugins: [tailwindcss()],
