@@ -30,6 +30,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "tasks": "Tasks",
+    "kanban": "Kanban Board",
     "organization": "Organization",
     "departments": "Departments",
     "positions": "Positions",
@@ -83,10 +84,19 @@
     "schedule_meeting": "Schedule Meeting",
     "generate_report": "Generate Report"
   },
+  "kanban": {
+    "title": "Kanban Board",
+    "subtitle": "Visualize and manage project tasks",
+    "no_tasks_title": "No tasks found",
+    "no_tasks_description": "Why not create a new task?",
+    "wip_limit_exceeded": "WIP Limit Exceeded",
+    "no_tasks": "No tasks"
+  },
   "tasks": {
     "title": "Tasks",
     "description": "Manage and track all your tasks",
     "create": "Create Task",
+    "new": "New Task",
     "edit": "Edit Task",
     "view": "View Task",
     "total": "Total",
@@ -104,7 +114,19 @@
       "high": "High",
       "urgent": "Urgent"
     },
+    "status": {
+      "pending": "Pending",
+      "pending_review": "Pending Review",
+      "in_progress": "In Progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "overdue": "Overdue"
+    },
     "due_date": "Due Date",
+    "due_today": "Today",
+    "due_tomorrow": "Tomorrow",
+    "due_in_days": "In {days} days",
+    "overdue": "{days} days overdue",
     "assignee": "Assignee",
     "creator": "Creator",
     "progress": "Progress",
@@ -120,7 +142,8 @@
       "title_placeholder": "Enter task title",
       "description": "Description",
       "description_placeholder": "Task description...",
-      "type": "Type"
+      "type": "Type",
+      "labels": "Labels"
     }
   },
   "organization": {

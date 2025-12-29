@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     '@nuxt/test-utils',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
+    '@nuxt/icon',
   ],
 
   // Disable hydration hints (false positives in SPA mode with ssr: false)
@@ -62,6 +63,7 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'description', content: 'Next-generation Enterprise Resource Planning and Task Management Platform' },
         { name: 'theme-color', content: '#3b82f6' },
+        { name: 'google', content: 'notranslate' },
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -74,6 +76,7 @@ export default defineNuxtConfig({
       htmlAttrs: {
         lang: process.env.NUXT_PUBLIC_DEFAULT_LOCALE || 'fa',
         dir: (process.env.NUXT_PUBLIC_DEFAULT_LOCALE || 'fa') === 'fa' ? 'rtl' : 'ltr',
+        translate: 'no',
       },
     },
   },

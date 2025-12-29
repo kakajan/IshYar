@@ -23,6 +23,9 @@ import {
   User,
   LogOut,
   X,
+  SquareKanban,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-vue-next'
 import { useWindowSize } from '@vueuse/core'
 
@@ -35,7 +38,14 @@ const { toasts, dismiss } = useToast()
 // Navigation items with Lucide icons
 const navigation = computed(() => [
   { name: t('nav.dashboard'), to: '/dashboard', icon: Home },
-  { name: t('nav.tasks'), to: '/tasks', icon: ClipboardList },
+  { 
+    name: t('nav.tasks'), 
+    to: '/tasks', 
+    icon: ClipboardList,
+    children: [
+      { name: t('nav.kanban'), to: '/tasks/kanban', icon: SquareKanban },
+    ]
+  },
   { name: t('nav.organization'), to: '/organization', icon: Building2 },
   { name: t('nav.departments'), to: '/departments', icon: Library },
   { name: t('nav.positions'), to: '/positions', icon: Briefcase },
@@ -43,20 +53,37 @@ const navigation = computed(() => [
   { name: t('nav.settings'), to: '/settings', icon: Settings },
 ])
 
+// Track expanded menu items
+const expandedMenus = ref<string[]>(['tasks'])
+
+const toggleMenu = (menuTo: string) => {
+  const index = expandedMenus.value.indexOf(menuTo)
+  if (index >= 0) {
+    expandedMenus.value.splice(index, 1)
+  } else {
+    expandedMenus.value.push(menuTo)
+  }
+}
+
+const isMenuExpanded = (menuTo: string) => expandedMenus.value.includes(menuTo)
+
 const rtlLocales = ['fa', 'ar', 'he', 'ur']
 const isRtl = computed(() => rtlLocales.includes(locale.value))
 const slideFromClass = computed(() =>
   isRtl.value ? 'translate-x-full' : '-translate-x-full'
 )
 
-// Mobile-first: closed by default on mobile, open on desktop
-const isSidebarOpen = ref(false)
+// Sidebar state
 const { width } = useWindowSize()
 const isDesktop = computed(() => width.value >= 1024)
+const isSidebarOpen = ref(isDesktop.value)
 
-watchEffect(() => {
-  if (isDesktop.value) {
+// Update sidebar state when switching between mobile/desktop
+watch(isDesktop, (val) => {
+  if (val) {
     isSidebarOpen.value = true
+  } else {
+    isSidebarOpen.value = false
   }
 })
 
@@ -112,7 +139,7 @@ const toggleColorMode = () => {
       :leave-to-class="slideFromClass"
     >
       <aside
-        v-if="isSidebarOpen || isDesktop"
+        v-if="isSidebarOpen"
         :class="[
           'fixed inset-y-0 start-0 z-50 flex flex-col bg-card border-e transition-all duration-300',
           'w-64 lg:w-64',
@@ -132,6 +159,8 @@ const toggleColorMode = () => {
             </div>
             <span class="font-semibold text-lg">IshYar</span>
           </NuxtLink>
+          
+          <!-- Close button (Mobile only) -->
           <Button
             variant="ghost"
             size="icon"
@@ -140,25 +169,91 @@ const toggleColorMode = () => {
           >
             <X class="h-5 w-5" />
           </Button>
+
+          <!-- Collapse button (Desktop only) -->
+          <Button
+            variant="ghost"
+            size="icon"
+            class="hidden lg:flex"
+            @click="toggleSidebar"
+            :title="t('common.collapse_sidebar')"
+          >
+            <PanelLeftClose class="h-5 w-5" />
+          </Button>
         </div>
 
         <!-- Navigation -->
         <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
-          <NuxtLink
-            v-for="item in navigation"
-            :key="item.name"
-            :to="item.to"
-            :class="[
-              'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
-              route.path.startsWith(item.to)
-                ? 'bg-primary/10 text-primary'
-                : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
-            ]"
-            @click="closeSidebar"
-          >
-            <component :is="item.icon" class="h-5 w-5 shrink-0" />
-            <span>{{ item.name }}</span>
-          </NuxtLink>
+          <template v-for="item in navigation" :key="item.name">
+            <!-- Item with children -->
+            <div v-if="item.children">
+              <button
+                :class="[
+                  'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors w-full',
+                  route.path.startsWith(item.to)
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+                ]"
+                @click="toggleMenu(item.to)"
+              >
+                <component :is="item.icon" class="h-5 w-5 shrink-0" />
+                <span class="flex-1 text-start">{{ item.name }}</span>
+                <ChevronDown
+                  :class="[
+                    'h-4 w-4 transition-transform',
+                    isMenuExpanded(item.to) ? 'rotate-180' : '',
+                  ]"
+                />
+              </button>
+              <!-- Parent link -->
+              <NuxtLink
+                v-if="isMenuExpanded(item.to)"
+                :to="item.to"
+                :class="[
+                  'flex items-center gap-3 ps-10 py-2 rounded-lg transition-colors text-sm',
+                  route.path === item.to
+                    ? 'text-primary font-medium'
+                    : 'text-muted-foreground hover:text-accent-foreground',
+                ]"
+                @click="closeSidebar"
+              >
+                {{ t('common.all') }}
+              </NuxtLink>
+              <!-- Child items -->
+              <NuxtLink
+                v-for="child in item.children"
+                v-show="isMenuExpanded(item.to)"
+                :key="child.name"
+                :to="child.to"
+                :class="[
+                  'flex items-center gap-3 ps-10 py-2 rounded-lg transition-colors text-sm',
+                  route.path === child.to
+                    ? 'text-primary font-medium'
+                    : 'text-muted-foreground hover:text-accent-foreground',
+                ]"
+                @click="closeSidebar"
+              >
+                <component :is="child.icon" class="h-4 w-4 shrink-0" />
+                <span>{{ child.name }}</span>
+              </NuxtLink>
+            </div>
+            
+            <!-- Simple item without children -->
+            <NuxtLink
+              v-else
+              :to="item.to"
+              :class="[
+                'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
+                route.path.startsWith(item.to)
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+              ]"
+              @click="closeSidebar"
+            >
+              <component :is="item.icon" class="h-5 w-5 shrink-0" />
+              <span>{{ item.name }}</span>
+            </NuxtLink>
+          </template>
         </nav>
 
         <!-- User section -->
@@ -193,20 +288,26 @@ const toggleColorMode = () => {
     </Transition>
 
     <!-- Main content -->
-    <div :class="['min-h-screen transition-all duration-300', 'lg:ps-64']">
+    <div 
+      :class="[
+        'min-h-screen transition-all duration-300', 
+        isSidebarOpen ? 'lg:ps-64' : 'lg:ps-0'
+      ]"
+    >
       <!-- Top bar -->
       <header
         class="sticky top-0 z-40 h-16 bg-card border-b flex items-center justify-between px-4 lg:px-6"
       >
         <div class="flex items-center gap-4">
-          <!-- Mobile hamburger menu -->
+          <!-- Toggle Sidebar Button (Mobile & Desktop) -->
           <Button
             variant="ghost"
             size="icon"
-            class="lg:hidden"
+            :class="{ 'lg:hidden': isSidebarOpen }"
             @click="toggleSidebar"
           >
-            <Menu class="h-5 w-5" />
+            <Menu v-if="!isSidebarOpen" class="h-5 w-5" />
+            <PanelLeftOpen v-else class="h-5 w-5 lg:hidden" />
           </Button>
           <div class="text-sm text-muted-foreground">
             {{ route.meta?.title || '' }}

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->json('title');
             $table->json('description')->nullable();
             $table->enum('type', ['routine', 'situational'])->default('situational');
-            $table->enum('status', ['pending', 'in_progress', 'completed', 'on_hold', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'in_progress', 'pending_review', 'completed', 'on_hold', 'cancelled'])->default('pending');
             $table->enum('priority', ['low', 'medium', 'high', 'urgent'])->default('medium');
 
             $table->foreignUuid('creator_id')->nullable()->constrained('users')->nullOnDelete();

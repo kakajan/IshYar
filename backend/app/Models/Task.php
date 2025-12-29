@@ -31,11 +31,20 @@ class Task extends Model
     /**
      * Task statuses.
      */
-    public const STATUS_PENDING     = 'pending';
-    public const STATUS_IN_PROGRESS = 'in_progress';
-    public const STATUS_COMPLETED   = 'completed';
-    public const STATUS_ON_HOLD     = 'on_hold';
-    public const STATUS_CANCELLED   = 'cancelled';
+    public const STATUS_PENDING        = 'pending';
+    public const STATUS_IN_PROGRESS    = 'in_progress';
+    public const STATUS_PENDING_REVIEW = 'pending_review';
+    public const STATUS_COMPLETED      = 'completed';
+    public const STATUS_ON_HOLD        = 'on_hold';
+    public const STATUS_CANCELLED      = 'cancelled';
+
+    /**
+     * Approval statuses.
+     */
+    public const APPROVAL_NOT_REQUIRED = 'not_required';
+    public const APPROVAL_PENDING      = 'pending';
+    public const APPROVAL_APPROVED     = 'approved';
+    public const APPROVAL_REJECTED     = 'rejected';
 
     /**
      * Priority levels.
@@ -71,6 +80,9 @@ class Task extends Model
         'approval_status',
         'approved_by',
         'approved_at',
+        'revision_count',
+        'revision_notes',
+        'submitted_at',
     ];
 
     protected function casts(): array
@@ -88,6 +100,9 @@ class Task extends Model
             'metadata'        => 'array',
             'recurrence_rule' => 'array',
             'is_recurring'    => 'boolean',
+            'revision_notes'  => 'array',
+            'revision_count'  => 'integer',
+            'submitted_at'    => 'datetime',
         ];
     }
 
@@ -220,6 +235,21 @@ class Task extends Model
     }
 
     /**
+     * Get task labels.
+     */
+    public function assignees()
+    {
+        return $this->belongsToMany(User::class, 'task_assignees', 'task_id', 'user_id');
+    }
+
+    public function labels(): BelongsToMany
+    {
+        return $this->belongsToMany(Label::class, 'label_task')
+            ->using(LabelTask::class)
+            ->withTimestamps();
+    }
+
+    /**
      * Scope for routine tasks.
      */
     public function scopeRoutine($query)
@@ -280,5 +310,92 @@ class Task extends Model
             'completed_at' => now(),
             'progress'     => 100,
         ]);
+    }
+
+    /**
+     * Submit task for approval.
+     */
+    public function submitForApproval(): void
+    {
+        $this->update([
+            'status'          => self::STATUS_PENDING_REVIEW,
+            'approval_status' => self::APPROVAL_PENDING,
+            'progress'        => 100,
+            'submitted_at'    => now(),
+        ]);
+    }
+
+    /**
+     * Approve task completion.
+     */
+    public function approve(string $approverId): void
+    {
+        $this->update([
+            'status'          => self::STATUS_COMPLETED,
+            'approval_status' => self::APPROVAL_APPROVED,
+            'approved_by'     => $approverId,
+            'approved_at'     => now(),
+            'completed_at'    => now(),
+        ]);
+    }
+
+    /**
+     * Request revision on task.
+     */
+    public function requestRevision(string $reason, ?\DateTime $deadline = null): void
+    {
+        $revisionNotes = $this->revision_notes ?? [];
+        $revisionNotes[] = [
+            'reason'     => $reason,
+            'created_at' => now()->toIso8601String(),
+            'created_by' => auth()->id(),
+        ];
+
+        $this->update([
+            'status'          => self::STATUS_IN_PROGRESS,
+            'approval_status' => self::APPROVAL_REJECTED,
+            'revision_count'  => ($this->revision_count ?? 0) + 1,
+            'revision_notes'  => $revisionNotes,
+            'due_date'        => $deadline ?? $this->due_date,
+            'submitted_at'    => null,
+        ]);
+    }
+
+    /**
+     * Check if task is pending review.
+     */
+    public function isPendingReview(): bool
+    {
+        return $this->status === self::STATUS_PENDING_REVIEW;
+    }
+
+    /**
+     * Check if task requires approval.
+     */
+    public function requiresApproval(): bool
+    {
+        return $this->approval_status !== self::APPROVAL_NOT_REQUIRED;
+    }
+
+    /**
+     * Scope for tasks pending review.
+     */
+    public function scopePendingReview($query)
+    {
+        return $query->where('status', self::STATUS_PENDING_REVIEW);
+    }
+
+    /**
+     * Get the designated approver (manager or task creator).
+     */
+    public function getApprover(): ?User
+    {
+        // First try assignee's manager
+        if ($this->assignee && $this->assignee->manager) {
+            return $this->assignee->manager;
+        }
+
+        // Fall back to task creator
+        return $this->creator;
     }
 }

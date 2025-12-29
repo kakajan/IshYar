@@ -11,7 +11,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register Jalali Date Service Provider
+        $this->app->register(JalaliDateServiceProvider::class);
     }
 
     /**

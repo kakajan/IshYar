@@ -49,6 +49,40 @@ class UserController extends Controller
     }
 
     /**
+     * Create a new user
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8',
+            'department_id' => 'nullable|exists:departments,id',
+            'position_id' => 'nullable|exists:positions,id',
+            'roles' => 'nullable|array',
+            'roles.*' => 'exists:roles,name',
+        ]);
+
+        $user = auth()->user();
+
+        $newUser = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => \Illuminate\Support\Facades\Hash::make($validated['password']),
+            'organization_id' => $user->organization_id,
+            'department_id' => $validated['department_id'] ?? null,
+            'position_id' => $validated['position_id'] ?? null,
+            'is_active' => true,
+        ]);
+
+        if (!empty($validated['roles'])) {
+            $newUser->syncRoles($validated['roles']);
+        }
+
+        return response()->json(['data' => $newUser], 201);
+    }
+
+    /**
      * Get a specific user
      */
     public function show(User $user): JsonResponse

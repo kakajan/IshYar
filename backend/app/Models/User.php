@@ -42,6 +42,8 @@ class User extends Authenticatable implements JWTSubject, FilamentUser, MustVeri
         'is_active',
         'last_login_at',
         'preferences',
+        'phone_verified_at',
+        'notification_preferences',
     ];
 
     /**
@@ -69,7 +71,9 @@ class User extends Authenticatable implements JWTSubject, FilamentUser, MustVeri
             'last_login_at'           => 'datetime',
             'is_active'               => 'boolean',
             'preferences'             => 'array',
+            'notification_preferences' => 'array',
             'two_factor_confirmed_at' => 'datetime',
+            'phone_verified_at'       => 'datetime',
         ];
     }
 
@@ -98,6 +102,14 @@ class User extends Authenticatable implements JWTSubject, FilamentUser, MustVeri
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->hasRole(['super-admin', 'admin', 'manager']);
+    }
+
+    /**
+     * Get user's organization.
+     */
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class);
     }
 
     /**

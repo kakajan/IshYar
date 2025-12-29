@@ -10,6 +10,10 @@
           {{ $t('users.description') }}
         </p>
       </div>
+      <Button @click="showCreateUserModal = true">
+        <Plus class="w-4 h-4 mr-2" />
+        {{ $t('users.create') || 'ایجاد کاربر' }}
+      </Button>
     </div>
 
     <!-- Filters -->
@@ -245,6 +249,111 @@
         </DialogFooter>
       </DialogContent>
     </Dialog>
+
+    <!-- Create User Modal -->
+    <Dialog v-model:open="showCreateUserModal">
+      <DialogContent class="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>{{ $t('users.create') || 'ایجاد کاربر' }}</DialogTitle>
+        </DialogHeader>
+
+        <div class="space-y-4 py-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="text-sm font-medium">{{ $t('users.name') }}</label>
+              <Input v-model="createForm.name" :placeholder="$t('users.name')" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-medium">{{ $t('users.email') }}</label>
+              <Input
+                v-model="createForm.email"
+                type="email"
+                :placeholder="$t('users.email')"
+              />
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-medium">{{ $t('auth.password') }}</label>
+            <Input
+              v-model="createForm.password"
+              type="password"
+              placeholder="******"
+            />
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="text-sm font-medium">{{ $t('users.department') }}</label>
+              <Select v-model="createForm.department_id">
+                <SelectTrigger>
+                  <SelectValue :placeholder="$t('users.department')" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="dept in departments"
+                    :key="dept.id"
+                    :value="dept.id"
+                  >
+                    {{ dept.name }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-medium">{{ $t('users.position') }}</label>
+              <Select v-model="createForm.position_id">
+                <SelectTrigger>
+                  <SelectValue :placeholder="$t('users.position')" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="pos in positions"
+                    :key="pos.id"
+                    :value="pos.id"
+                  >
+                    {{ pos.name }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-medium">{{ $t('users.roles') }}</label>
+            <Select v-model="createForm.roles[0]">
+               <SelectTrigger>
+                 <SelectValue :placeholder="$t('users.roles')" />
+               </SelectTrigger>
+               <SelectContent>
+                 <SelectItem
+                   v-for="role in availableRoles"
+                   :key="role.id"
+                   :value="role.id"
+                 >
+                   {{ role.name }}
+                 </SelectItem>
+               </SelectContent>
+            </Select>
+             <!-- Simplified role selection (single role for now to match Select limitations) -->
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button
+            variant="outline"
+            @click="showCreateUserModal = false"
+            :disabled="creating"
+          >
+            {{ $t('common.cancel') }}
+          </Button>
+          <Button @click="handleCreateUser" :disabled="creating">
+            <Loader2 v-if="creating" class="w-4 h-4 mr-2 animate-spin" />
+            {{ $t('common.create') }}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
@@ -277,7 +386,7 @@ import {
   SelectItem,
 } from '~/components/ui/select'
 import { Separator } from '~/components/ui/separator'
-import { Search, Eye, Loader2 } from 'lucide-vue-next'
+import { Search, Eye, Loader2, Plus } from 'lucide-vue-next'
 
 interface User {
   id: string
@@ -291,22 +400,49 @@ interface User {
   is_active: boolean
 }
 
+interface CreateUserForm {
+  name: string
+  email: string
+  password: string
+  department_id: string
+  position_id: string
+  roles: string[]
+}
+
 definePageMeta({
   layout: 'default',
 })
 
 const { $api } = useNuxtApp()
 const { t: $t } = useI18n()
+const { add: toast } = useToast()
 
 const users = ref<User[]>([])
 const departments = ref<{ id: string; name: string }[]>([])
+const positions = ref<{ id: string; name: string }[]>([])
 const loading = ref(false)
 const search = ref('')
 const page = ref(1)
 const perPage = ref(15)
 const total = ref(0)
 const showUserModal = ref(false)
+const showCreateUserModal = ref(false)
 const selectedUser = ref<User | null>(null)
+const createForm = ref<CreateUserForm>({
+  name: '',
+  email: '',
+  password: '',
+  department_id: '',
+  position_id: '',
+  roles: [],
+})
+const creating = ref(false)
+
+const availableRoles = [
+  { id: 'admin', name: 'admin' },
+  { id: 'manager', name: 'manager' },
+  { id: 'employee', name: 'employee' },
+]
 
 const filters = ref({
   department_id: 'all' as string,
@@ -328,6 +464,7 @@ const getRoleVariant = (role: string): BadgeVariant => {
     admin: 'warning',
     manager: 'info',
     employee: 'success',
+    user: 'secondary',
   }
   return variants[role] || 'secondary'
 }
@@ -344,14 +481,27 @@ const fetchUsers = async () => {
     params.append('page', String(page.value))
     params.append('per_page', String(perPage.value))
 
-    const response = (await $api(`/users?${params.toString()}`)) as {
-      data: User[]
-      meta?: { total?: number }
+    const response = (await $api(`/users?${params.toString()}`)) as any
+    // If response is the paginated object directly
+    if (response.data && Array.isArray(response.data)) {
+        users.value = response.data
+        total.value = response.total || response.data.length
+    } else if (Array.isArray(response)) {
+        // Direct array
+        users.value = response
+        total.value = response.length
+    } else {
+        users.value = []
+        total.value = 0
     }
-    users.value = response.data
-    total.value = response.meta?.total || response.data.length
+
   } catch (error) {
     console.error('Failed to fetch users:', error)
+    toast({
+      title: $t('common.error'),
+      description: $t('messages.load_error'),
+      variant: 'destructive',
+    })
   } finally {
     loading.value = false
   }
@@ -359,12 +509,58 @@ const fetchUsers = async () => {
 
 const fetchDepartments = async () => {
   try {
-    const response = (await $api('/departments')) as {
-      data: { id: string; name: string }[]
-    }
-    departments.value = response.data
+    const response = (await $api('/departments?per_page=100')) as any
+    departments.value = response.data || response
   } catch (error) {
     console.error('Failed to fetch departments:', error)
+  }
+}
+
+const fetchPositions = async () => {
+  try {
+    const response = (await $api('/positions?per_page=100')) as any
+    positions.value = response.data || response
+  } catch (error) {
+    console.error('Failed to fetch positions:', error)
+  }
+}
+
+const handleCreateUser = async () => {
+  creating.value = true
+  try {
+    await $api('/users', {
+      method: 'POST',
+      body: createForm.value,
+    })
+    showCreateUserModal.value = false
+    // Reset form
+    createForm.value = {
+      name: '',
+      email: '',
+      password: '',
+      department_id: '',
+      position_id: '',
+      roles: [],
+    }
+    
+    toast({
+      title: $t('common.success'),
+      description: $t('messages.create_success'),
+      variant: 'success',
+    })
+    
+    // Refresh list
+    fetchUsers()
+  } catch (error: any) {
+    console.error('Failed to create user:', error)
+    const errorMsg = error.response?._data?.message || error.message || $t('messages.create_error')
+    toast({
+      title: $t('common.error'),
+      description: errorMsg,
+      variant: 'destructive',
+    })
+  } finally {
+    creating.value = false
   }
 }
 
@@ -382,6 +578,6 @@ const viewUser = async (user: User) => {
 watch([search, filters, page], fetchUsers, { deep: true })
 
 onMounted(async () => {
-  await Promise.all([fetchUsers(), fetchDepartments()])
+  await Promise.all([fetchUsers(), fetchDepartments(), fetchPositions()])
 })
 </script>

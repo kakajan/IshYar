@@ -175,3 +175,15 @@ export const useForm = <T extends Record<string, any>>(initialValues: T) => {
     setErrors,
   }
 }
+
+/**
+ * Generic API wrapper using useFetch
+ * Used for simple API calls needing standard Nuxt fetch behavior
+ */
+export const useApi = <T>(url: string, options: any = {}) => {
+  return useFetch<T>(url, {
+    ...options,
+    key: url,
+    // Add default headers or interceptors here if needed
+  })
+}

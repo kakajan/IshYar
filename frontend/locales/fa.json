@@ -1,6 +1,8 @@
 {
   "common": {
     "save": "ذخیره",
+    "saving": "در حال ذخیره",
+    "saved": "ذخیره شد",
     "cancel": "لغو",
     "delete": "حذف",
     "edit": "ویرایش",
@@ -25,11 +27,18 @@
     "back": "بازگشت",
     "all": "همه",
     "previous": "قبلی",
-    "next": "بعدی"
+    "next": "بعدی",
+    "filters": "فیلترها",
+    "clear_filters": "پاک کردن فیلترها",
+    "retry": "تلاش مجدد",
+    "collapse": "جمع کردن",
+    "collapse_sidebar": "بستن منو",
+    "error_occurred": "خطایی رخ داد"
   },
   "nav": {
     "dashboard": "داشبورد",
     "tasks": "وظایف",
+    "kanban": "تابلوی کانبن",
     "organization": "سازمان",
     "departments": "دپارتمان‌ها",
     "positions": "سمت‌ها",
@@ -120,8 +129,46 @@
       "title_placeholder": "عنوان وظیفه را وارد کنید",
       "description": "توضیحات",
       "description_placeholder": "توضیحات وظیفه...",
-      "type": "نوع"
+      "type": "نوع",
+      "assignee": "مسئول",
+      "select_assignee": "انتخاب مسئول",
+      "labels": "برچسب‌ها"
+    },
+    "quick_add_placeholder": "عنوان وظیفه را وارد کنید و Enter بزنید",
+    "quick_add_hint": "برای ایجاد وظیفه Enter بزنید",
+    "assign_user": "تخصیص کاربر",
+    "label_added": "برچسب با موفقیت اضافه شد",
+    "label_add_failed": "افزودن برچسب ناموفق بود",
+    "label_removed": "برچسب با موفقیت حذف شد",
+    "label_remove_failed": "حذف برچسب ناموفق بود",
+    "created": "وظیفه با موفقیت ایجاد شد",
+    "assigned": "وظیفه با موفقیت تخصیص داده شد",
+    "new": "وظیفه جدید",
+    "subject": "موضوع/تگ",
+    "pending_review": "در انتظار بررسی",
+    "unassigned": "بدون مسئول",
+    "no_department": "بدون دپارتمان",
+    "overdue": "{days} روز دیرکرد",
+    "due_today": "مهلت امروز",
+    "due_tomorrow": "مهلت فردا",
+    "due_in_days": "مهلت در {days} روز",
+    "status": {
+      "pending": "لیست انتظار",
+      "in_progress": "در حال انجام",
+      "pending_review": "بررسی",
+      "completed": "تکمیل شده",
+      "on_hold": "متوقف",
+      "cancelled": "لغو شده"
     }
+  },
+  "kanban": {
+    "title": "تابلوی کانبن",
+    "subtitle": "مدیریت و نمایش وظایف با قابلیت کشیدن و رها کردن",
+    "no_tasks": "وظیفه‌ای در این ستون نیست",
+    "no_tasks_title": "وظیفه‌ای برای نمایش وجود ندارد",
+    "no_tasks_description": "وظایف پس از ایجاد در اینجا نمایش داده می‌شوند. با افزودن یک وظیفه جدید شروع کنید.",
+    "wip_limit_exceeded": "محدودیت WIP بیش از حد مجاز است",
+    "drag_hint": "برای تغییر وضعیت، وظایف را بین ستون‌ها بکشید"
   },
   "organization": {
     "title": "سازمان",
@@ -150,7 +197,7 @@
     "parent": "دپارتمان والد",
     "select_parent": "انتخاب دپارتمان والد",
     "no_parent": "بدون والد (سطح ریشه)",
-    "description": "توضیحات",
+    "field_description": "توضیحات",
     "head": "رئیس دپارتمان",
     "no_departments": "دپارتمانی یافت نشد",
     "confirm_delete": "آیا از حذف این دپارتمان اطمینان دارید؟"

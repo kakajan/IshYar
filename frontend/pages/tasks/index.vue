@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
+import { Card, CardContent } from '~/components/ui/card'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Badge } from '~/components/ui/badge'
@@ -27,6 +27,8 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '~/components/ui/dropdown-menu'
+import UserSelect from '~/components/tasks/UserSelect.vue'
+import LabelPicker from '~/components/tasks/LabelPicker.vue'
 import {
   Plus,
   Search,
@@ -107,6 +109,8 @@ const newTask = reactive({
   type: 'situational',
   priority: 'medium',
   due_date: '',
+  assignee_ids: [] as string[],
+  label_ids: [],
 })
 
 const createTask = async () => {
@@ -139,6 +143,8 @@ const resetForm = () => {
     type: 'situational',
     priority: 'medium',
     due_date: '',
+    assignee_ids: [],
+    label_ids: [],
   })
 }
 
@@ -200,6 +206,7 @@ interface Task {
   progress: number
   creator?: { name: string }
   assignee?: { name: string }
+  assignees?: { id: string, name: string, avatar_url?: string }[]
 }
 </script>
 
@@ -215,10 +222,39 @@ interface Task {
           {{ $t('tasks.description') }}
         </p>
       </div>
-      <Button @click="isCreateModalOpen = true">
-        <Plus class="w-4 h-4 mr-2" />
-        {{ $t('tasks.create') }}
-      </Button>
+      
+      <div class="flex items-center gap-3">
+        <!-- View Switcher -->
+        <div class="view-switcher-container">
+          <NuxtLink 
+            to="/tasks/kanban" 
+            class="view-switcher-btn"
+            :class="{ 'active': $route.path === '/tasks/kanban' }"
+          >
+            <Icon name="heroicons:view-columns" class="w-5 h-5" />
+          </NuxtLink>
+          <button 
+            class="view-switcher-btn"
+            :class="{ 'active': $route.path === '/tasks' || $route.path === '/tasks/' }"
+          >
+            <Icon name="heroicons:list-bullet" class="w-5 h-5" />
+          </button>
+        </div>
+        
+        <!-- Refresh Button -->
+        <Button variant="outline" size="sm" @click="fetchTasks" :disabled="isLoading">
+          <Icon 
+            name="heroicons:arrow-path" 
+            class="w-4 h-4" 
+            :class="{ 'animate-spin': isLoading }" 
+          />
+        </Button>
+        
+        <Button @click="isCreateModalOpen = true">
+          <Plus class="w-4 h-4 mr-2" />
+          {{ $t('tasks.create') }}
+        </Button>
+      </div>
     </div>
 
     <!-- Filters -->
@@ -303,7 +339,20 @@ interface Task {
                 <div
                   class="flex items-center gap-3 mt-1 text-sm text-muted-foreground"
                 >
-                  <span v-if="task.assignee">{{ task.assignee.name }}</span>
+                  <div class="flex -space-x-2 overflow-hidden" v-if="task.assignees && task.assignees.length">
+                    <div 
+                      v-for="user in task.assignees.slice(0, 3)" 
+                      :key="user.id"
+                      class="inline-block h-6 w-6 rounded-full ring-2 ring-white dark:ring-slate-900 bg-gray-200 flex items-center justify-center text-[10px]"
+                    >
+                      <img v-if="user.avatar_url" :src="user.avatar_url" class="h-full w-full rounded-full object-cover" />
+                       <span v-else>{{ user.name.charAt(0) }}</span>
+                    </div>
+                    <div v-if="task.assignees.length > 3" class="inline-block h-6 w-6 rounded-full ring-2 ring-white dark:ring-slate-900 bg-gray-100 flex items-center justify-center text-[8px]">
+                      +{{ task.assignees.length - 3 }}
+                    </div>
+                  </div>
+                  <span v-else-if="task.assignee">{{ task.assignee.name }}</span>
                   <span v-if="task.due_date"
                     >{{ $t('tasks.due_date') }}: {{ task.due_date }}</span
                   >
@@ -385,7 +434,16 @@ interface Task {
               :placeholder="$t('tasks.form.description_placeholder')"
               :rows="3"
             />
+            <div class="space-y-2">
+            <Label>{{ $t('tasks.form.assignee') }}</Label>
+            <UserSelect v-model="newTask.assignee_ids" :multiple="true" :placeholder="$t('tasks.form.select_assignee')" />
           </div>
+
+          <div class="space-y-2">
+            <Label>{{ $t('tasks.form.labels') }}</Label>
+            <LabelPicker v-model="newTask.label_ids" />
+          </div>
+        </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
@@ -447,3 +505,33 @@ interface Task {
     </Dialog>
   </div>
 </template>
+
+<style scoped>
+/* View switcher custom styles */
+.view-switcher-container {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: hsl(var(--muted));
+  border-radius: 0.5rem;
+  padding: 2px;
+}
+
+.view-switcher-btn {
+  padding: 6px 10px;
+  border-radius: 0.375rem;
+  transition: all 150ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.view-switcher-btn:hover {
+  background: hsl(var(--background));
+}
+
+.view-switcher-btn.active {
+  background: hsl(var(--background));
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+</style>

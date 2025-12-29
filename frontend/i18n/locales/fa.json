@@ -30,6 +30,7 @@
   "nav": {
     "dashboard": "داشبورد",
     "tasks": "وظایف",
+    "kanban": "برد کانبان",
     "organization": "سازمان",
     "departments": "دپارتمان‌ها",
     "positions": "سمت‌ها",
@@ -83,10 +84,19 @@
     "schedule_meeting": "زمان‌بندی جلسه",
     "generate_report": "تولید گزارش"
   },
+  "kanban": {
+    "title": "برد کانبان",
+    "subtitle": "مدیریت بصری وظایف پروژه‌ها",
+    "no_tasks_title": "هیچ وظیفه‌ای یافت نشد",
+    "no_tasks_description": "چرا یک وظیفه جدید ایجاد نمی‌کنید؟",
+    "wip_limit_exceeded": "محدودیت کار در جریان (WIP) رعایت نشده",
+    "no_tasks": "وظیفه‌ای نیست"
+  },
   "tasks": {
     "title": "وظایف",
     "description": "مدیریت و پیگیری تمام وظایف شما",
     "create": "ایجاد وظیفه",
+    "new": "وظیفه جدید",
     "edit": "ویرایش وظیفه",
     "view": "مشاهده وظیفه",
     "total": "کل",
@@ -104,7 +114,19 @@
       "high": "زیاد",
       "urgent": "فوری"
     },
+    "status": {
+      "pending": "در انتظار",
+      "pending_review": "در انتظار بررسی",
+      "in_progress": "در حال انجام",
+      "completed": "تکمیل شده",
+      "cancelled": "لغو شده",
+      "overdue": "معوق"
+    },
     "due_date": "مهلت",
+    "due_today": "امروز",
+    "due_tomorrow": "فردا",
+    "due_in_days": "{days} روز دیگر",
+    "overdue": "{days} روز تأخیر",
     "assignee": "مسئول",
     "creator": "ایجادکننده",
     "progress": "پیشرفت",
@@ -120,7 +142,8 @@
       "title_placeholder": "عنوان وظیفه را وارد کنید",
       "description": "توضیحات",
       "description_placeholder": "توضیحات وظیفه...",
-      "type": "نوع"
+      "type": "نوع",
+      "labels": "برچسب‌ها"
     }
   },
   "organization": {

@@ -2,6 +2,8 @@
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig()
   const authStore = useAuthStore()
+  const { $i18n } = useNuxtApp()
+  const locale = $i18n.locale
 
   let isRefreshing = false
   let refreshPromise: Promise<void> | null = null
@@ -10,9 +12,6 @@ export default defineNuxtPlugin(() => {
     baseURL: config.public.apiBase as string,
 
     async onRequest({ options }) {
-      // Get current locale
-      const { locale } = useI18n()
-      
       // Add auth token to requests
       const headers: Record<string, string> = {
         Accept: 'application/json',

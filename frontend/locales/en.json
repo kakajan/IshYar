@@ -8,6 +8,8 @@
     "close": "Close",
     "search": "Search",
     "filter": "Filter",
+    "filters": "Filters",
+    "clear_filters": "Clear filters",
     "loading": "Loading...",
     "active": "Active",
     "inactive": "Inactive",
@@ -25,11 +27,14 @@
     "back": "Back",
     "all": "All",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "retry": "Retry",
+    "collapse": "Collapse"
   },
   "nav": {
     "dashboard": "Dashboard",
     "tasks": "Tasks",
+    "kanban": "Kanban Board",
     "organization": "Organization",
     "departments": "Departments",
     "positions": "Positions",
@@ -89,9 +94,11 @@
     "create": "Create Task",
     "edit": "Edit Task",
     "view": "View Task",
+    "new": "New Task",
     "total": "Total",
     "pending": "Pending",
     "in_progress": "In Progress",
+    "pending_review": "Pending Review",
     "completed": "Completed",
     "on_hold": "On Hold",
     "cancelled": "Cancelled",
@@ -104,10 +111,25 @@
       "high": "High",
       "urgent": "Urgent"
     },
+    "status": {
+      "pending": "Backlog",
+      "in_progress": "In Progress",
+      "pending_review": "Review",
+      "completed": "Completed",
+      "on_hold": "On Hold",
+      "cancelled": "Cancelled"
+    },
     "due_date": "Due Date",
     "assignee": "Assignee",
     "creator": "Creator",
     "progress": "Progress",
+    "subject": "Subject/Tag",
+    "overdue": "{days}d overdue",
+    "due_today": "Due today",
+    "due_tomorrow": "Due tomorrow",
+    "due_in_days": "Due in {days}d",
+    "unassigned": "Unassigned",
+    "no_department": "No Department",
     "no_tasks": "No tasks found",
     "get_started": "Get started by creating a new task.",
     "mark_complete": "Mark as Complete",
@@ -120,8 +142,29 @@
       "title_placeholder": "Enter task title",
       "description": "Description",
       "description_placeholder": "Task description...",
-      "type": "Type"
-    }
+      "type": "Type",
+      "assignee": "Assignee",
+      "select_assignee": "Select assignee",
+      "labels": "Labels"
+    },
+    "quick_add_placeholder": "Enter task title and press Enter",
+    "quick_add_hint": "Press Enter to create task",
+    "assign_user": "Assign user",
+    "label_added": "Label added successfully",
+    "label_add_failed": "Failed to add label",
+    "label_removed": "Label removed successfully",
+    "label_remove_failed": "Failed to remove label",
+    "created": "Task created successfully",
+    "assigned": "Task assigned successfully"
+  },
+  "kanban": {
+    "title": "Kanban Board",
+    "subtitle": "Visualize and manage your tasks with drag & drop",
+    "no_tasks": "No tasks in this column",
+    "no_tasks_title": "No tasks to display",
+    "no_tasks_description": "Tasks will appear here once created. Start by adding a new task.",
+    "wip_limit_exceeded": "WIP limit exceeded",
+    "drag_hint": "Drag tasks between columns to update status"
   },
   "organization": {
     "title": "Organization",
@@ -150,7 +193,7 @@
     "parent": "Parent Department",
     "select_parent": "Select parent department",
     "no_parent": "No parent (Root level)",
-    "description": "Description",
+    "field_description": "Description",
     "head": "Department Head",
     "no_departments": "No departments found",
     "confirm_delete": "Are you sure you want to delete this department?"

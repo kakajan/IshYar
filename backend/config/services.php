@@ -31,4 +31,28 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | IPPanel SMS Gateway
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for IPPanel SMS service used for OTP verification
+    | and pattern-based SMS notifications.
+    | Docs: https://ippanelcom.github.io/Edge-Document/docs/
+    |
+    */
+
+    'ippanel' => [
+        'base_url' => env('IPPANEL_BASE_URL', 'https://edge.ippanel.com/v1'),
+        'api_key' => env('IPPANEL_API_KEY'),
+        'from_number' => env('IPPANEL_FROM_NUMBER'),
+        'patterns' => [
+            'otp' => env('IPPANEL_PATTERN_OTP'),
+            'task_assigned' => env('IPPANEL_PATTERN_TASK_ASSIGNED'),
+            'task_completed' => env('IPPANEL_PATTERN_TASK_COMPLETED'),
+            'task_comment' => env('IPPANEL_PATTERN_TASK_COMMENT'),
+            'approval_request' => env('IPPANEL_PATTERN_APPROVAL'),
+        ],
+    ],
+
 ];

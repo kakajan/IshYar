@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             UserSeeder::class,
             TaskSeeder::class,
+            IranianHolidaysSeeder::class,
         ]);
     }
 }
