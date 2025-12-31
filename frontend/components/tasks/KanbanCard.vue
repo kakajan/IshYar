@@ -31,21 +31,9 @@ const priorityColors: Record<string, string> = {
 }
 
 // Format relative date
-const formatDueDate = (date?: string) => {
-  if (!date) return null
-  const d = new Date(date)
-  const now = new Date()
-  const diff = Math.ceil((d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-  
-  if (diff < 0) return { text: t('tasks.overdue', { days: Math.abs(diff) }), color: 'text-red-500' }
-  if (diff === 0) return { text: t('tasks.due_today'), color: 'text-amber-500' }
-  if (diff === 1) return { text: t('tasks.due_tomorrow'), color: 'text-amber-400' }
-  if (diff <= 7) return { text: t('tasks.due_in_days', { days: diff }), color: 'text-blue-500' }
-  return { text: d.toLocaleDateString(), color: 'text-slate-500' }
-}
+import FormattedDate from '~/components/jalali/FormattedDate.vue'
 
-const dueInfo = computed(() => formatDueDate(props.task.due_date))
-const priorityColor = computed(() => priorityColors[props.task.priority] || priorityColors.medium)
+const priorityColor = computed(() => priorityColors[props.task.priority?.toLowerCase()] || priorityColors.medium)
 
 const onDrop = (evt: DragEvent) => {
   const data = evt.dataTransfer?.getData('application/json')
@@ -183,9 +171,9 @@ const onDrop = (evt: DragEvent) => {
           </div>
 
           <!-- Due date badge -->
-          <div v-if="dueInfo" class="due-date" :class="dueInfo.color">
+          <div v-if="task.due_date" class="due-date text-slate-500">
             <Icon name="heroicons:calendar" class="w-3.5 h-3.5" />
-            <span>{{ dueInfo.text }}</span>
+            <FormattedDate :date="task.due_date" :relative="true" />
           </div>
 
           <!-- Revision indicator -->
@@ -331,6 +319,7 @@ const onDrop = (evt: DragEvent) => {
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

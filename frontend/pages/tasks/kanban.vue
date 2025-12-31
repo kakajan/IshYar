@@ -146,7 +146,7 @@ const handleLabelDrop = async (label: any, task: Task) => {
      const { add: addToast } = useToast()
      addToast({
        title: t('common.success'),
-       description: t('tasks.label_added'),
+       description: t('tasks.label_added_msg'),
        variant: 'default'
      })
   } catch (e) {
@@ -172,7 +172,7 @@ const handleLabelDrop = async (label: any, task: Task) => {
      const { add: addToast } = useToast()
      addToast({
        title: t('common.error'),
-       description: t('tasks.label_add_failed'),
+       description: t('tasks.label_add_failed_msg'),
        variant: 'destructive'
      })
   }
@@ -287,7 +287,7 @@ const handleLabelRemove = async (label: any, task: Task) => {
     const { add: addToast } = useToast()
     addToast({
       title: t('common.success'),
-      description: t('tasks.label_removed'),
+      description: t('tasks.label_removed_msg'),
       variant: 'default'
     })
   } catch (e) {
@@ -298,7 +298,7 @@ const handleLabelRemove = async (label: any, task: Task) => {
     const { add: addToast } = useToast()
     addToast({
       title: t('common.error'),
-      description: t('tasks.label_remove_failed'),
+      description: t('tasks.label_remove_failed_msg'),
       variant: 'destructive'
     })
   }
@@ -408,7 +408,7 @@ const onLabelsMouseMove = (e: MouseEvent) => {
               type="text" 
               class="filter-input"
               :placeholder="t('common.search')"
-            />
+            >
           </div>
 
           <!-- Subject/Tag filter -->

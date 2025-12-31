@@ -4,7 +4,6 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from '~/components/ui/command'
@@ -32,13 +31,15 @@ const props = withDefaults(defineProps<{
 }>(), {
   modelValue: '',
   multiple: false,
-  confirmSelection: false
+  confirmSelection: false,
+  placeholder: ''
 })
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string | string[]): void
 }>()
 
+const { t } = useI18n()
 const { $api } = useNuxtApp()
 const open = ref(false)
 const users = ref<User[]>([])
@@ -156,24 +157,24 @@ const isSelected = (userId: string) => {
                 <span class="truncate max-w-[100px]">{{ user.name }}</span>
              </div>
           </div>
-          <span v-else class="text-muted-foreground">{{ placeholder || 'Select user...' }}</span>
+          <span v-else class="text-muted-foreground">{{ placeholder || t('common.select_user') }}</span>
           <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </slot>
     </PopoverTrigger>
     <PopoverContent class="w-[300px] p-0" align="start">
-      <Command v-model:searchTerm="searchQuery" :filter-function="(list: any[]) => list">
+      <Command v-model:search-term="searchQuery" :filter-function="(list: any[]) => list">
         <div class="flex items-center border-b px-3" cmdk-input-wrapper>
           <Search class="mr-2 h-4 w-4 shrink-0 opacity-50" />
           <input
             v-model="searchQuery"
             class="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-            :placeholder="placeholder || 'Search users...'"
-          />
+            :placeholder="placeholder || t('users.search_placeholder')"
+          >
         </div>
         <CommandList>
-          <CommandEmpty v-if="!isLoading && users.length === 0">No users found.</CommandEmpty>
-          <div v-if="isLoading" class="p-4 text-center text-sm text-muted-foreground">Loading...</div>
+          <CommandEmpty v-if="!isLoading && users.length === 0">{{ t('users.no_users') }}</CommandEmpty>
+          <div v-if="isLoading" class="p-4 text-center text-sm text-muted-foreground">{{ t('common.loading') }}</div>
           <CommandGroup v-else>
             <CommandItem
               v-for="user in users"
@@ -204,7 +205,7 @@ const isSelected = (userId: string) => {
         <!-- Confirm Footer -->
         <div v-if="confirmSelection" class="p-2 border-t">
           <Button class="w-full" size="sm" @click="confirm">
-             Confirm
+             {{ t('common.confirm') }}
           </Button>
         </div>
       </Command>

@@ -7,9 +7,9 @@
 
 import { computed } from 'vue'
 import type { JalaliDate } from '~/types/jalali.d'
-import { toJalali, toGregorian } from '~/utils/jalali/jalali-converter'
-import { toPersianNumerals } from '~/utils/jalali/persian-numerals'
+import { toJalali } from '~/utils/jalali/jalali-converter'
 import { formatJalali, formatJalaliRelative } from '~/utils/jalali/jalali-formatter'
+import { useI18n } from 'vue-i18n'
 
 interface Props {
   date: Date | string | null | undefined
@@ -27,6 +27,9 @@ const props = withDefaults(defineProps<Props>(), {
   persianNumerals: true,
   tag: 'span',
 })
+
+const { locale } = useI18n()
+const isJalali = computed(() => locale.value === 'fa')
 
 // Convert to Jalali if valid date
 const jalaliDate = computed<JalaliDate | null>(() => {
@@ -80,7 +83,20 @@ const displayValue = computed(() => {
     return relativeTime.value
   }
   
-  return formattedDate.value
+  if (isJalali.value) {
+    return formattedDate.value
+  }
+
+  // Standard locale formatting for non-fa
+  if (!props.date) return '—'
+  const d = typeof props.date === 'string' ? new Date(props.date) : props.date
+  return d.toLocaleDateString(locale.value, {
+     year: 'numeric',
+     month: 'short',
+     day: 'numeric',
+     // Add time if format implies it - simple heuristic for now
+     ...(props.format === 'full' ? { hour: '2-digit', minute: '2-digit' } : {})
+  })
 })
 </script>
 
