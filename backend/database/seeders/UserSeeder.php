@@ -17,38 +17,38 @@ class UserSeeder extends Seeder
     {
         $org = Organization::first();
 
-        if (! $org) {
+        if (!$org) {
             return;
         }
 
         // Create Super Admin
         $superAdmin = User::create([
-            'organization_id'   => $org->id,
-            'name'              => 'Super Admin',
-            'email'             => 'admin@ishyar.local',
-            'password'          => Hash::make('password'),
+            'organization_id' => $org->id,
+            'name' => 'Super Admin',
+            'email' => 'admin@ishyar.local',
+            'password' => 'password',
             'email_verified_at' => now(),
-            'timezone'          => 'UTC',
-            'locale'            => 'en',
-            'is_active'         => true,
+            'timezone' => 'UTC',
+            'locale' => 'en',
+            'is_active' => true,
         ]);
         $superAdmin->assignRole('super-admin');
 
         // Create Department Head / Manager
-        $engineering     = Department::where('slug', 'engineering')->first();
+        $engineering = Department::where('slug', 'engineering')->first();
         $managerPosition = Position::where('slug', 'engineering-manager')->first();
 
         $manager = User::create([
-            'organization_id'   => $org->id,
-            'department_id'     => $engineering?->id,
-            'position_id'       => $managerPosition?->id,
-            'name'              => 'John Manager',
-            'email'             => 'manager@ishyar.local',
-            'password'          => Hash::make('password'),
+            'organization_id' => $org->id,
+            'department_id' => $engineering?->id,
+            'position_id' => $managerPosition?->id,
+            'name' => 'John Manager',
+            'email' => 'manager@ishyar.local',
+            'password' => 'password',
             'email_verified_at' => now(),
-            'timezone'          => 'UTC',
-            'locale'            => 'en',
-            'is_active'         => true,
+            'timezone' => 'UTC',
+            'locale' => 'en',
+            'is_active' => true,
         ]);
         $manager->assignRole('manager');
 
@@ -58,37 +58,37 @@ class UserSeeder extends Seeder
         }
 
         // Create Regular Employees
-        $backend          = Department::where('slug', 'backend')->first();
-        $seniorPosition   = Position::where('slug', 'senior-engineer')->first();
+        $backend = Department::where('slug', 'backend')->first();
+        $seniorPosition = Position::where('slug', 'senior-engineer')->first();
         $engineerPosition = Position::where('slug', 'software-engineer')->first();
 
         $employee1 = User::create([
-            'organization_id'   => $org->id,
-            'department_id'     => $backend?->id,
-            'position_id'       => $seniorPosition?->id,
-            'manager_id'        => $manager->id,
-            'name'              => 'Alice Developer',
-            'email'             => 'alice@ishyar.local',
-            'password'          => Hash::make('password'),
+            'organization_id' => $org->id,
+            'department_id' => $backend?->id,
+            'position_id' => $seniorPosition?->id,
+            'manager_id' => $manager->id,
+            'name' => 'Alice Developer',
+            'email' => 'alice@ishyar.local',
+            'password' => 'password',
             'email_verified_at' => now(),
-            'timezone'          => 'UTC',
-            'locale'            => 'en',
-            'is_active'         => true,
+            'timezone' => 'UTC',
+            'locale' => 'en',
+            'is_active' => true,
         ]);
         $employee1->assignRole('employee');
 
         $employee2 = User::create([
-            'organization_id'   => $org->id,
-            'department_id'     => $backend?->id,
-            'position_id'       => $engineerPosition?->id,
-            'manager_id'        => $manager->id,
-            'name'              => 'Bob Developer',
-            'email'             => 'bob@ishyar.local',
-            'password'          => Hash::make('password'),
+            'organization_id' => $org->id,
+            'department_id' => $backend?->id,
+            'position_id' => $engineerPosition?->id,
+            'manager_id' => $manager->id,
+            'name' => 'Bob Developer',
+            'email' => 'bob@ishyar.local',
+            'password' => 'password',
             'email_verified_at' => now(),
-            'timezone'          => 'UTC',
-            'locale'            => 'en',
-            'is_active'         => true,
+            'timezone' => 'UTC',
+            'locale' => 'en',
+            'is_active' => true,
         ]);
         $employee2->assignRole('employee');
 
@@ -96,17 +96,17 @@ class UserSeeder extends Seeder
         $frontend = Department::where('slug', 'frontend')->first();
 
         $employee3 = User::create([
-            'organization_id'   => $org->id,
-            'department_id'     => $frontend?->id,
-            'position_id'       => $engineerPosition?->id,
-            'manager_id'        => $manager->id,
-            'name'              => 'Carol Frontend',
-            'email'             => 'carol@ishyar.local',
-            'password'          => Hash::make('password'),
+            'organization_id' => $org->id,
+            'department_id' => $frontend?->id,
+            'position_id' => $engineerPosition?->id,
+            'manager_id' => $manager->id,
+            'name' => 'Carol Frontend',
+            'email' => 'carol@ishyar.local',
+            'password' => 'password',
             'email_verified_at' => now(),
-            'timezone'          => 'UTC',
-            'locale'            => 'en',
-            'is_active'         => true,
+            'timezone' => 'UTC',
+            'locale' => 'en',
+            'is_active' => true,
         ]);
         $employee3->assignRole('employee');
     }

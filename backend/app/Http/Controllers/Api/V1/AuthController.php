@@ -20,33 +20,33 @@ class AuthController extends Controller
     public function register(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Validation failed',
-                'errors'  => $validator->errors(),
+                'errors' => $validator->errors(),
             ], 422);
         }
 
         $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
         ]);
 
         $token = JWTAuth::fromUser($user);
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'User registered successfully',
-            'data'    => [
-                'user'       => $user,
-                'token'      => $token,
+            'data' => [
+                'user' => $user,
+                'token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => config('jwt.ttl') * 60,
             ],
@@ -59,23 +59,24 @@ class AuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'email'    => ['required', 'string', 'email'],
+            'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Validation failed',
-                'errors'  => $validator->errors(),
+                'errors' => $validator->errors(),
             ], 422);
         }
 
         $credentials = $request->only('email', 'password');
 
-        if (! $token = JWTAuth::attempt($credentials)) {
+        if (!$token = JWTAuth::attempt($credentials)) {
+            \Illuminate\Support\Facades\Log::warning('Login failed for credentials', $credentials);
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Invalid credentials',
             ], 401);
         }
@@ -86,11 +87,11 @@ class AuthController extends Controller
         $user->update(['last_login_at' => now()]);
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Login successful',
-            'data'    => [
-                'user'       => $user->load(['department', 'position']),
-                'token'      => $token,
+            'data' => [
+                'user' => $user->load(['department', 'position']),
+                'token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => config('jwt.ttl') * 60,
             ],
@@ -106,7 +107,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data'   => [
+            'data' => [
                 'user' => $user,
             ],
         ]);
@@ -122,15 +123,15 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'data'   => [
-                    'token'      => $token,
+                'data' => [
+                    'token' => $token,
                     'token_type' => 'bearer',
                     'expires_in' => config('jwt.ttl') * 60,
                 ],
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Could not refresh token',
             ], 401);
         }
@@ -145,12 +146,12 @@ class AuthController extends Controller
             JWTAuth::invalidate(JWTAuth::getToken());
 
             return response()->json([
-                'status'  => 'success',
+                'status' => 'success',
                 'message' => 'Successfully logged out',
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Could not logout',
             ], 500);
         }
@@ -164,27 +165,27 @@ class AuthController extends Controller
         $user = auth()->user();
 
         $validator = Validator::make($request->all(), [
-            'name'        => ['sometimes', 'string', 'max:255'],
-            'phone'       => ['sometimes', 'nullable', 'string', 'max:20'],
-            'timezone'    => ['sometimes', 'string', 'timezone'],
-            'locale'      => ['sometimes', 'string', 'in:en,fa'],
+            'name' => ['sometimes', 'string', 'max:255'],
+            'phone' => ['sometimes', 'nullable', 'string', 'max:20'],
+            'timezone' => ['sometimes', 'string', 'timezone'],
+            'locale' => ['sometimes', 'string', 'in:en,fa'],
             'preferences' => ['sometimes', 'array'],
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Validation failed',
-                'errors'  => $validator->errors(),
+                'errors' => $validator->errors(),
             ], 422);
         }
 
         $user->update($request->only(['name', 'phone', 'timezone', 'locale', 'preferences']));
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Profile updated successfully',
-            'data'    => [
+            'data' => [
                 'user' => $user->fresh(),
             ],
         ]);
@@ -197,32 +198,32 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'current_password' => ['required', 'string'],
-            'password'         => ['required', 'confirmed', Password::defaults()],
+            'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Validation failed',
-                'errors'  => $validator->errors(),
+                'errors' => $validator->errors(),
             ], 422);
         }
 
         $user = auth()->user();
 
-        if (! Hash::check($request->current_password, $user->password)) {
+        if (!Hash::check($request->current_password, $user->password)) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Current password is incorrect',
             ], 422);
         }
 
         $user->update([
-            'password' => Hash::make($request->password),
+            'password' => $request->password,
         ]);
 
         return response()->json([
-            'status'  => 'success',
+            'status' => 'success',
             'message' => 'Password changed successfully',
         ]);
     }
@@ -238,9 +239,9 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Validation failed',
-                'errors'  => $validator->errors(),
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -250,13 +251,13 @@ class AuthController extends Controller
 
         if ($status === PasswordFacade::RESET_LINK_SENT) {
             return response()->json([
-                'status'  => 'success',
+                'status' => 'success',
                 'message' => 'Password reset link sent to your email',
             ]);
         }
 
         return response()->json([
-            'status'  => 'error',
+            'status' => 'error',
             'message' => __($status),
         ], 400);
     }
@@ -267,16 +268,16 @@ class AuthController extends Controller
     public function resetPassword(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'token'    => ['required'],
-            'email'    => ['required', 'string', 'email'],
+            'token' => ['required'],
+            'email' => ['required', 'string', 'email'],
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Validation failed',
-                'errors'  => $validator->errors(),
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -284,7 +285,7 @@ class AuthController extends Controller
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function (User $user, string $password) {
                 $user->forceFill([
-                    'password'       => Hash::make($password),
+                    'password' => $password,
                     'remember_token' => Str::random(60),
                 ])->save();
             }
@@ -292,13 +293,13 @@ class AuthController extends Controller
 
         if ($status === PasswordFacade::PASSWORD_RESET) {
             return response()->json([
-                'status'  => 'success',
+                'status' => 'success',
                 'message' => 'Password has been reset successfully',
             ]);
         }
 
         return response()->json([
-            'status'  => 'error',
+            'status' => 'error',
             'message' => __($status),
         ], 400);
     }

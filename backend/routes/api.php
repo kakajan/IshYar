@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
+    Route::get('debug-test', [App\Http\Controllers\Api\V1\DebugController::class, 'index']);
 
     // Public authentication routes
     Route::prefix('auth')->group(function () {
