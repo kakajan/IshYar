@@ -37,6 +37,8 @@ import { Progress } from '~/components/ui/progress'
 import UserSelect from '~/components/tasks/UserSelect.vue'
 import LabelPicker from '~/components/tasks/LabelPicker.vue'
 import StatusBadgePicker from '~/components/tasks/StatusBadgePicker.vue'
+import SmartDatePicker from '~/components/common/SmartDatePicker.vue'
+import FormattedDate from '~/components/jalali/FormattedDate.vue'
 import { useDebounceFn } from '@vueuse/core'
 
 definePageMeta({
@@ -45,7 +47,7 @@ definePageMeta({
 
 const route = useRoute()
 const router = useRouter()
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const { add: addToast } = useToast()
 
 const taskId = computed(() => route.params.id as string)
@@ -299,20 +301,6 @@ const updateChecklistProgress = () => {
     })
 }
 
-const formatDateTime = (dateStr: string) => {
-  if (!dateStr) return '—'
-  return new Date(dateStr).toLocaleString(
-    locale.value === 'fa' ? 'fa-IR' : 'en-US',
-    {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }
-  )
-}
-
 onMounted(() => {
   fetchTask()
   fetchComments()
@@ -366,7 +354,7 @@ onMounted(() => {
                 />
                 
                 <p class="text-muted-foreground text-sm flex items-center gap-2">
-                  <span>{{ t('task_detail.created_at') }} {{ formatDateTime(task.created_at) }}</span>
+                  <span>{{ t('task_detail.created_at') }} <FormattedDate :date="task.created_at" format="full" /></span>
                   <span>•</span>
                   <span>{{ task.reporter?.name }}</span>
                 </p>
@@ -405,13 +393,13 @@ onMounted(() => {
                     @update:model-value="handleStatusChange"
                  />
                  
-                 <!-- Editable Due Date (Simple native picker for now) -->
+                 <!-- Editable Due Date -->
                  <div class="flex items-center gap-1 text-sm text-muted-foreground">
                     <Calendar class="w-3 h-3" />
-                    <input 
+                    <SmartDatePicker 
                         v-model="task.due_date" 
-                        type="date" 
-                        class="bg-transparent border-none p-0 h-auto focus:ring-0 text-xs w-24 text-right" 
+                        class="bg-transparent border-none p-0 h-auto focus:ring-0 text-xs w-24 text-right shadow-none" 
+                        placeholder=""
                     />
                  </div>
               </div>
@@ -501,7 +489,7 @@ onMounted(() => {
 
           <CardFooter class="border-t pt-4 flex justify-between items-center">
             <div class="flex gap-2 text-xs text-muted-foreground">
-               <span v-if="task.updated_at">{{ t('common.updated') }}: {{ formatDateTime(task.updated_at) }}</span>
+               <span v-if="task.updated_at">{{ t('common.updated') }}: <FormattedDate :date="task.updated_at" format="full" /></span>
             </div>
             
             <div class="flex gap-2">
@@ -570,9 +558,9 @@ onMounted(() => {
                     <span class="font-medium">{{
                       comment.user?.name || 'Unknown'
                     }}</span>
-                    <span class="text-sm text-muted-foreground">{{
-                      formatDateTime(comment.created_at)
-                    }}</span>
+                    <span class="text-sm text-muted-foreground">
+                      <FormattedDate :date="comment.created_at" format="full" />
+                    </span>
                   </div>
                   <p class="text-foreground">{{ comment.content }}</p>
                 </div>

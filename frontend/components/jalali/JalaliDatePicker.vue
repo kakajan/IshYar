@@ -7,7 +7,7 @@
 
 import { ref, computed, watch } from 'vue'
 import { Calendar, ChevronLeft, ChevronRight, X } from 'lucide-vue-next'
-import type { JalaliDate, CalendarDay, Holiday } from '~/types/jalali.d'
+import type { JalaliDate, CalendarDay } from '~/types/jalali.d'
 import { JALALI_MONTH_NAMES, JALALI_DAY_NAMES_SHORT } from '~/types/jalali.d'
 import {
   toJalali,
@@ -15,7 +15,6 @@ import {
   getJalaliToday,
   getDaysInJalaliMonth,
   getJalaliDayOfWeek,
-  isLeapJalaliYear,
   areJalaliDatesEqual,
 } from '~/utils/jalali/jalali-converter'
 import { toPersianNumerals } from '~/utils/jalali/persian-numerals'
@@ -38,6 +37,8 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: null,
+  minDate: undefined,
+  maxDate: undefined,
   disabledDates: () => [],
   disabledDays: () => [],
   showHolidays: true,
@@ -60,6 +61,9 @@ const inputRef = ref<HTMLInputElement | null>(null)
 const today = getJalaliToday()
 const viewYear = ref(today.year)
 const viewMonth = ref(today.month)
+const viewMode = ref<'day' | 'month' | 'year'>('day')
+const dropdownPosition = ref<'top' | 'bottom'>('bottom')
+const dropdownAlign = ref<'start' | 'end'>('start')
 
 // Create selected date from modelValue
 const selectedDate = computed<JalaliDate | null>(() => {
@@ -135,6 +139,12 @@ const calendarDays = computed<CalendarDay[]>(() => {
   return days
 })
 
+// Years for year view
+const yearRange = computed(() => {
+  const start = Math.floor(viewYear.value / 15) * 15
+  return Array.from({ length: 15 }, (_, i) => start + i)
+})
+
 // Check if a day is disabled
 function checkIsDisabled(jDate: JalaliDate, gregorian: Date): boolean {
   // Check disabled days of week
@@ -188,9 +198,11 @@ function nextMonth() {
   }
 }
 
+// Go to today
 function goToToday() {
   viewYear.value = today.year
   viewMonth.value = today.month
+  viewMode.value = 'day'
 }
 
 // Select a day
@@ -206,8 +218,56 @@ function selectDay(day: CalendarDay) {
   
   emit('update:modelValue', gregorian)
   emit('change', gregorian, jalaliString)
+  emit('change', gregorian, jalaliString)
   isOpen.value = false
 }
+
+function selectMonth(monthIndex: number) {
+  viewMonth.value = monthIndex
+  viewMode.value = 'day'
+}
+
+function selectYear(year: number) {
+  viewYear.value = year
+  viewMode.value = 'month'
+}
+
+function updatePosition() {
+  if (!inputRef.value) return
+  const rect = inputRef.value.getBoundingClientRect()
+  const spaceBelow = window.innerHeight - rect.bottom
+  // If less than 350px space below, show on top
+  dropdownPosition.value = spaceBelow < 350 ? 'top' : 'bottom'
+
+  // Horizontal Logic (RTL support)
+  // Default is 'start' (Right in RTL), expanding Left
+  // We check if expanding Left would go off-screen
+  const dropdownWidth = 320 // w-80 approx
+  const viewportWidth = window.innerWidth
+  
+  // In RTL, Start=Right. 
+  // Left edge of dropdown = input.right - dropdownWidth
+  const leftEdge = rect.right - dropdownWidth
+  
+  if (leftEdge < 10) {
+    // If it would overflow left, align to End (Left in RTL), expanding Right
+    dropdownAlign.value = 'end'
+  } else {
+    // Otherwise check if aligning to End would overflow Right (though less likely in this context?)
+    // Actually, stick to Start unless forced to swap
+    dropdownAlign.value = 'start'
+  }
+}
+
+watch(isOpen, (val) => {
+  if (val) {
+    viewMode.value = 'day'
+    // Use nextTick to ensure element is visible/layout is computed if needed, 
+    // though rect uses input which is always visible.
+    // However, window resize might change things, so good to check now.
+    updatePosition()
+  }
+})
 
 // Clear selection
 function clear() {
@@ -258,11 +318,16 @@ onUnmounted(() => {
         :placeholder="placeholder"
         :disabled="disabled"
         :readonly="true"
-        class="w-full px-3 py-2 pe-10 border border-gray-300 rounded-lg bg-white text-right
-               focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-               disabled:bg-gray-100 disabled:cursor-not-allowed
-               dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-      />
+        class="w-full px-4 py-2.5 pe-10 border border-gray-200 rounded-xl bg-gray-50/50 text-right
+               text-sm font-medium text-gray-700
+               transition-all duration-200
+               placeholder:text-gray-400
+               focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 focus:bg-white
+               disabled:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60
+               dark:bg-gray-900/50 dark:border-gray-700 dark:text-gray-200
+               dark:focus:bg-gray-900 dark:focus:ring-primary-400/10 dark:focus:border-primary-400
+               dark:placeholder:text-gray-500"
+      >
       <div class="absolute start-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
         <button
           v-if="modelValue && !disabled && !readonly"
@@ -287,78 +352,147 @@ onUnmounted(() => {
     >
       <div
         v-if="isOpen"
-        class="absolute z-50 mt-2 w-72 bg-white rounded-xl shadow-lg border border-gray-200
-               dark:bg-gray-800 dark:border-gray-700"
+        class="absolute z-50 w-80 bg-white rounded-2xl shadow-xl border border-gray-100
+               ring-1 ring-black/5
+               backdrop-blur-xl
+               dark:bg-gray-800/95 dark:border-gray-700/50 dark:ring-white/5 dark:shadow-2xl"
+        :class="[
+          dropdownPosition === 'top' ? 'bottom-full mb-3' : 'top-full mt-3',
+          dropdownAlign === 'end' ? 'left-0' : 'right-0'
+        ]"
+      >
       >
         <!-- Header -->
-        <div class="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-between p-4 border-b border-gray-100/10 dark:border-gray-700/50">
           <button
-            type="button"
-            class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-            @click="nextMonth"
-          >
-            <ChevronRight class="w-5 h-5" />
-          </button>
-          
-          <div class="flex items-center gap-2 font-semibold text-gray-900 dark:text-white">
-            <span>{{ JALALI_MONTH_NAMES[viewMonth] }}</span>
-            <span>{{ formatNum(viewYear) }}</span>
-          </div>
-          
-          <button
+            v-if="viewMode === 'day'"
             type="button"
             class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
             @click="prevMonth"
           >
+            <ChevronRight class="w-5 h-5" />
+          </button>
+          <div v-else class="w-8" />
+          
+          <div class="flex items-center gap-2 font-semibold text-gray-900 dark:text-white">
+            <button 
+              type="button"
+              class="hover:text-primary-600 transition-colors px-1 rounded"
+              @click="viewMode = viewMode === 'month' ? 'day' : 'month'"
+            >
+              {{ JALALI_MONTH_NAMES[viewMonth] }}
+            </button>
+            <button 
+              type="button"
+              class="hover:text-primary-600 transition-colors px-1 rounded"
+              @click="viewMode = viewMode === 'year' ? 'day' : 'year'"
+            >
+              {{ formatNum(viewYear) }}
+            </button>
+          </div>
+          
+          <button
+            v-if="viewMode === 'day'"
+            type="button"
+            class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            @click="nextMonth"
+          >
             <ChevronLeft class="w-5 h-5" />
           </button>
+          <div v-else class="w-8" />
         </div>
         
-        <!-- Day names -->
-        <div class="grid grid-cols-7 gap-1 p-2 border-b border-gray-200 dark:border-gray-700">
-          <div
-            v-for="(name, idx) in JALALI_DAY_NAMES_SHORT"
-            :key="idx"
-            class="text-center text-xs font-medium text-gray-500 dark:text-gray-400"
-            :class="{ 'text-red-500 dark:text-red-400': Number(idx) === 6 }"
-          >
-            {{ name }}
+        <!-- Views -->
+        <div class="p-3">
+          <!-- Day View -->
+          <div v-if="viewMode === 'day'">
+            <!-- Day names -->
+            <div class="grid grid-cols-7 gap-1 mb-3">
+              <div
+                v-for="(name, idx) in JALALI_DAY_NAMES_SHORT"
+                :key="idx"
+                class="text-center text-xs font-semibold text-gray-400 dark:text-gray-500"
+                :class="{ 'text-red-500/80 dark:text-red-400/80': Number(idx) === 6 }"
+              >
+                {{ name }}
+              </div>
+            </div>
+            
+            <!-- Days grid -->
+            <div class="grid grid-cols-7 gap-1.5">
+              <button
+                v-for="(day, idx) in calendarDays"
+                :key="idx"
+                type="button"
+                :disabled="day.isDisabled || day.day === 0"
+                class="relative aspect-square flex items-center justify-center text-sm rounded-xl
+                       transition-all duration-200 group"
+                :class="{
+                  'invisible': day.day === 0,
+                  'text-gray-300 cursor-not-allowed': day.isDisabled && day.day !== 0,
+                  'text-red-500 dark:text-red-400 font-medium': day.isWeekend && !day.isDisabled && !day.isSelected,
+                  'bg-primary-600 text-white shadow-lg shadow-primary-500/30 scale-100': day.isSelected,
+                  'ring-1 ring-primary-500 text-primary-600 bg-primary-50 dark:bg-primary-900/10 dark:text-primary-400': day.isToday && !day.isSelected,
+                  'hover:bg-gray-50 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-200': !day.isDisabled && !day.isSelected && day.day !== 0 && !day.isWeekend && !day.isToday,
+                  'hover:bg-red-50 dark:hover:bg-red-900/10': !day.isDisabled && !day.isSelected && day.isWeekend,
+                }"
+                @click="selectDay(day)"
+              >
+                {{ day.day > 0 ? formatNum(day.day) : '' }}
+                <span 
+                  v-if="day.isToday && !day.isSelected" 
+                  class="absolute bottom-1 w-1 h-1 rounded-full bg-primary-500"
+                />
+              </button>
+            </div>
+          </div>
+
+          <!-- Month View -->
+          <div v-else-if="viewMode === 'month'" class="grid grid-cols-3 gap-3">
+            <button
+              v-for="(month, idx) in JALALI_MONTH_NAMES"
+              :key="idx"
+              type="button"
+              class="p-3 rounded-xl text-sm font-medium transition-all duration-200 border border-transparent"
+              :class="{
+                'bg-primary-600 text-white shadow-lg shadow-primary-500/30': Number(idx) === viewMonth,
+                'hover:bg-gray-50 hover:border-gray-200 dark:hover:bg-gray-700/50 dark:hover:border-gray-600 text-gray-700 dark:text-gray-200': Number(idx) !== viewMonth
+              }"
+              @click.stop="selectMonth(Number(idx))"
+            >
+              {{ month }}
+            </button>
+          </div>
+
+          <!-- Year View -->
+          <div v-else-if="viewMode === 'year'" class="grid grid-cols-3 gap-3">
+            <button
+              v-for="year in yearRange"
+              :key="year"
+              type="button"
+              class="p-3 rounded-xl text-sm font-medium transition-all duration-200 border border-transparent"
+              :class="{
+                'bg-primary-600 text-white shadow-lg shadow-primary-500/30': year === viewYear,
+                'hover:bg-gray-50 hover:border-gray-200 dark:hover:bg-gray-700/50 dark:hover:border-gray-600 text-gray-700 dark:text-gray-200': year !== viewYear
+              }"
+              @click.stop="selectYear(year)"
+            >
+              {{ formatNum(year) }}
+            </button>
           </div>
         </div>
         
-        <!-- Days grid -->
-        <div class="grid grid-cols-7 gap-1 p-2">
-          <button
-            v-for="(day, idx) in calendarDays"
-            :key="idx"
-            type="button"
-            :disabled="day.isDisabled || day.day === 0"
-            class="aspect-square flex items-center justify-center text-sm rounded-lg
-                   transition-colors duration-150"
-            :class="{
-              'text-transparent cursor-default': day.day === 0,
-              'text-gray-400 cursor-not-allowed': day.isDisabled && day.day !== 0,
-              'text-red-500 dark:text-red-400': day.isWeekend && !day.isDisabled && !day.isSelected,
-              'bg-primary-500 text-white': day.isSelected,
-              'ring-2 ring-primary-500': day.isToday && !day.isSelected,
-              'hover:bg-gray-100 dark:hover:bg-gray-700': !day.isDisabled && !day.isSelected && day.day !== 0,
-              'text-gray-900 dark:text-white': !day.isWeekend && !day.isDisabled && !day.isSelected,
-            }"
-            @click="selectDay(day)"
-          >
-            {{ day.day > 0 ? formatNum(day.day) : '' }}
-          </button>
-        </div>
-        
         <!-- Footer -->
-        <div class="flex items-center justify-between p-2 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-center p-3 border-t border-gray-100 dark:border-gray-700/50 bg-gray-50/50 dark:bg-gray-800/50 rounded-b-2xl">
           <button
             type="button"
-            class="px-3 py-1.5 text-sm text-primary-600 hover:bg-primary-50 rounded-lg
-                   dark:text-primary-400 dark:hover:bg-primary-900/20"
+            class="px-4 py-2 text-sm font-medium text-primary-600 hover:text-primary-700 
+                   bg-primary-50 hover:bg-primary-100 
+                   dark:text-primary-400 dark:bg-primary-900/10 dark:hover:bg-primary-900/20
+                   rounded-lg transition-colors duration-200 w-full"
             @click="goToToday"
           >
-            امروز
+            برو به امروز
           </button>
         </div>
       </div>

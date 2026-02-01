@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Card, CardHeader, CardTitle, CardContent } from '~/components/ui/card'
+import FormattedDate from '~/components/jalali/FormattedDate.vue'
 import { Button } from '~/components/ui/button'
 import { Badge } from '~/components/ui/badge'
 import { Checkbox } from '~/components/ui/checkbox'
@@ -200,7 +201,7 @@ const statusVariant = (status: string): BadgeVariant => {
                     {{ task.title }}
                   </p>
                   <p class="text-sm text-muted-foreground">
-                    {{ $t('tasks.due_date') }} {{ task.due_date }}
+                    {{ $t('tasks.due_date') }} <FormattedDate :date="task.due_date" />
                   </p>
                 </div>
               </div>

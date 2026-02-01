@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* Tailwind CSS v4 Theme Configuration */
 @theme {
@@ -78,10 +79,13 @@
   }
 
   @keyframes caret-blink {
-    0%, 70%, 100% {
+    0%,
+    70%,
+    100% {
       opacity: 1;
     }
-    20%, 50% {
+    20%,
+    50% {
       opacity: 0;
     }
   }
@@ -161,7 +165,9 @@
 
   /* Base styles for html */
   html {
-    font-family: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif,
+      "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+      "Noto Color Emoji";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -175,7 +181,6 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
   }
-
 }
 
 /* Base styles */
@@ -242,7 +247,7 @@ body {
 
 /* Persian/Farsi font support */
 [lang="fa"] {
-  font-family: 'Vazirmatn', 'IRANSans', 'Tahoma', system-ui, sans-serif;
+  font-family: "Vazirmatn", "IRANSans", "Tahoma", system-ui, sans-serif;
 }
 
 /* Persian numerals */

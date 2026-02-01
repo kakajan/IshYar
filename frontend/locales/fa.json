@@ -33,6 +33,7 @@
     "retry": "تلاش مجدد",
     "collapse": "جمع کردن",
     "collapse_sidebar": "بستن منو",
+    "select_user": "انتخاب کاربر...",
     "error_occurred": "خطایی رخ داد"
   },
   "nav": {
@@ -111,7 +112,8 @@
       "low": "کم",
       "medium": "متوسط",
       "high": "زیاد",
-      "urgent": "فوری"
+      "urgent": "فوری",
+"critical": "بحرانی"
     },
     "due_date": "مهلت",
     "assignee": "مسئول",
@@ -132,15 +134,19 @@
       "type": "نوع",
       "assignee": "مسئول",
       "select_assignee": "انتخاب مسئول",
-      "labels": "برچسب‌ها"
+      "labels": "برچسب‌ها",
+      "select_labels": "انتخاب برچسب...",
+      "search_labels": "جستجوی برچسب...",
+      "no_labels_found": "برچسبی یافت نشد.",
+       "create_new_label": "ایجاد برچسب جدید..."
     },
     "quick_add_placeholder": "عنوان وظیفه را وارد کنید و Enter بزنید",
     "quick_add_hint": "برای ایجاد وظیفه Enter بزنید",
     "assign_user": "تخصیص کاربر",
-    "label_added": "برچسب با موفقیت اضافه شد",
-    "label_add_failed": "افزودن برچسب ناموفق بود",
-    "label_removed": "برچسب با موفقیت حذف شد",
-    "label_remove_failed": "حذف برچسب ناموفق بود",
+    "label_added_msg": "برچسب با موفقیت اضافه شد",
+    "label_add_failed_msg": "افزودن برچسب ناموفق بود",
+    "label_removed_msg": "برچسب با موفقیت حذف شد",
+    "label_remove_failed_msg": "حذف برچسب ناموفق بود",
     "created": "وظیفه با موفقیت ایجاد شد",
     "assigned": "وظیفه با موفقیت تخصیص داده شد",
     "new": "وظیفه جدید",
@@ -380,7 +386,9 @@
     "start_failed": "شروع وظیفه ناموفق بود",
     "complete_failed": "تکمیل وظیفه ناموفق بود",
     "comment_failed": "افزودن نظر ناموفق بود",
-    "completed": "وظیفه تکمیل شد"
+    "completed": "وظیفه تکمیل شد",
+    "checklist": "چک‌لیست",
+    "add_checklist_item": "افزودن آیتم جدید"
   },
   "breadcrumb": {
     "home": "خانه"

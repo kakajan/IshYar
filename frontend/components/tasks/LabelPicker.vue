@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Check, ChevronsUpDown, Plus, Search } from 'lucide-vue-next'
 import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from '~/components/ui/command'
@@ -34,6 +33,7 @@ const emit = defineEmits<{
 }>()
 
 const { $api } = useNuxtApp()
+const { t } = useI18n()
 const open = ref(false)
 const labels = ref<Label[]>([])
 const isLoading = ref(false)
@@ -119,7 +119,7 @@ const filteredLabels = computed(() => {
             {{ label.name }}
           </Badge>
         </div>
-        <span v-else class="text-muted-foreground">Select labels...</span>
+        <span v-else class="text-muted-foreground">{{ t('tasks.form.select_labels') }}</span>
         <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </Button>
     </PopoverTrigger>
@@ -130,21 +130,21 @@ const filteredLabels = computed(() => {
           <input
             v-model="searchQuery"
             class="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-            placeholder="Search labels..."
-          />
+            :placeholder="t('tasks.form.search_labels')"
+          >
         </div>
         <CommandList>
           <CommandEmpty class="pt-2 pb-2 px-2">
-             <div class="text-sm text-muted-foreground mb-2">No label found.</div>
+             <div class="text-sm text-muted-foreground mb-2">{{ t('tasks.form.no_labels_found') }}</div>
              <div class="flex items-center gap-2">
-                <div class="h-4 w-4 rounded-full border" :style="{ backgroundColor: newLabelColor }"></div>
+                <div class="h-4 w-4 rounded-full border" :style="{ backgroundColor: newLabelColor }" />
                 <Input 
                   v-model="newLabelName" 
-                  placeholder="Create new label..." 
+                  :placeholder="t('tasks.form.create_new_label')" 
                   class="h-8 text-xs"
                   @keydown.enter.prevent="createLabel"
                 />
-                <Button size="sm" variant="ghost" class="h-8 w-8 p-0" @click="createLabel" :disabled="!newLabelName">
+                <Button size="sm" variant="ghost" class="h-8 w-8 p-0" :disabled="!newLabelName" @click="createLabel">
                   <Plus class="h-4 w-4" />
                 </Button>
              </div>
@@ -163,7 +163,7 @@ const filteredLabels = computed(() => {
                 )"
               />
               <div class="flex items-center gap-2">
-                <div class="h-3 w-3 rounded-full" :style="{ backgroundColor: label.color }"></div>
+                <div class="h-3 w-3 rounded-full" :style="{ backgroundColor: label.color }" />
                 <span>{{ label.name }}</span>
               </div>
             </CommandItem>

@@ -29,6 +29,8 @@ import {
 } from '~/components/ui/dropdown-menu'
 import UserSelect from '~/components/tasks/UserSelect.vue'
 import LabelPicker from '~/components/tasks/LabelPicker.vue'
+import SmartDatePicker from '~/components/common/SmartDatePicker.vue'
+import FormattedDate from '~/components/jalali/FormattedDate.vue'
 import {
   Plus,
   Search,
@@ -353,9 +355,9 @@ interface Task {
                     </div>
                   </div>
                   <span v-else-if="task.assignee">{{ task.assignee.name }}</span>
-                  <span v-if="task.due_date"
-                    >{{ $t('tasks.due_date') }}: {{ task.due_date }}</span
-                  >
+                  <span v-if="task.due_date" class="flex items-center gap-1">
+                    {{ $t('tasks.due_date') }}: <FormattedDate :date="task.due_date" />
+                  </span>
                 </div>
               </div>
             </div>
@@ -487,7 +489,7 @@ interface Task {
 
           <div class="space-y-2">
             <Label for="due_date">{{ $t('tasks.due_date') }}</Label>
-            <Input id="due_date" v-model="newTask.due_date" type="date" />
+            <SmartDatePicker id="due_date" v-model="newTask.due_date" placeholder="" />
           </div>
 
           <DialogFooter>

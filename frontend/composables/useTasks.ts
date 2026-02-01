@@ -13,7 +13,7 @@ export interface Task {
     | "completed"
     | "on_hold"
     | "cancelled";
-  priority: "low" | "medium" | "high" | "urgent";
+  priority: "low" | "medium" | "high" | "urgent" | "critical";
   due_date?: string;
   start_date?: string;
   estimated_time?: number;

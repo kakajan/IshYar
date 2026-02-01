@@ -29,7 +29,8 @@
     "previous": "Previous",
     "next": "Next",
     "retry": "Retry",
-    "collapse": "Collapse"
+    "collapse": "Collapse",
+    "select_user": "Select user..."
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -109,7 +110,8 @@
       "low": "Low",
       "medium": "Medium",
       "high": "High",
-      "urgent": "Urgent"
+      "urgent": "Urgent",
+    "critical": "Critical"
     },
     "status": {
       "pending": "Backlog",
@@ -145,15 +147,19 @@
       "type": "Type",
       "assignee": "Assignee",
       "select_assignee": "Select assignee",
-      "labels": "Labels"
+      "labels": "Labels",
+      "select_labels": "Select labels...",
+      "search_labels": "Search labels...",
+      "no_labels_found": "No labels found.",
+      "create_new_label": "Create new label..."
     },
     "quick_add_placeholder": "Enter task title and press Enter",
     "quick_add_hint": "Press Enter to create task",
     "assign_user": "Assign user",
-    "label_added": "Label added successfully",
-    "label_add_failed": "Failed to add label",
-    "label_removed": "Label removed successfully",
-    "label_remove_failed": "Failed to remove label",
+    "label_added_msg": "Label added successfully",
+    "label_add_failed_msg": "Failed to add label",
+    "label_removed_msg": "Label removed successfully",
+    "label_remove_failed_msg": "Failed to remove label",
     "created": "Task created successfully",
     "assigned": "Task assigned successfully"
   },
@@ -376,7 +382,9 @@
     "start_failed": "Failed to start task",
     "complete_failed": "Failed to complete task",
     "comment_failed": "Failed to add comment",
-    "completed": "Task completed"
+    "completed": "Task completed",
+    "checklist": "Checklist",
+    "add_checklist_item": "Add new item"
   },
   "breadcrumb": {
     "home": "Home"
