@@ -51,6 +51,10 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api/v1',
       appName: 'IshYar',
       defaultLocale: process.env.NUXT_PUBLIC_DEFAULT_LOCALE || 'fa',
+      reverbAppKey: process.env.NUXT_PUBLIC_REVERB_APP_KEY || 'local',
+      reverbHost: process.env.NUXT_PUBLIC_REVERB_HOST || '127.0.0.1',
+      reverbPort: process.env.NUXT_PUBLIC_REVERB_PORT || '8080',
+      reverbScheme: process.env.NUXT_PUBLIC_REVERB_SCHEME || 'http',
     }
   },
 
